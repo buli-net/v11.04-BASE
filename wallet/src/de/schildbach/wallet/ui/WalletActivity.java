@@ -63,10 +63,10 @@ import de.schildbach.wallet.ui.send.SweepWalletActivity;
 import de.schildbach.wallet.util.CrashReporter;
 import de.schildbach.wallet.util.Nfc;
 import de.schildbach.wallet.util.OnFirstPreDraw;
+import org.bitcoinj.base.ScriptType;
 import org.bitcoinj.core.PrefixedChecksummedBytes;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.VerificationException;
-import org.bitcoinj.script.Script;
 
 /**
  * @author Andreas Schildbach
