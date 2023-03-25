@@ -259,7 +259,7 @@ public final class WalletActivity extends AbstractWalletActivity {
                     handleRequestCoins();
                     return true;
                 } else if (itemId == R.id.wallet_options_request_legacy) {
-                    RequestCoinsActivity.start(WalletActivity.this, Script.ScriptType.P2PKH);
+                    RequestCoinsActivity.start(WalletActivity.this, ScriptType.P2PKH);
                     return true;
                 } else if (itemId == R.id.wallet_options_send) {
                     handleSendCoins();
