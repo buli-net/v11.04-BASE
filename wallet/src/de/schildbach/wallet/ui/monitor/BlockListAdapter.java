@@ -43,7 +43,7 @@ import de.schildbach.wallet.addressbook.AddressBookEntry;
 import de.schildbach.wallet.ui.CurrencyTextView;
 import de.schildbach.wallet.ui.SeparatorViewHolder;
 import de.schildbach.wallet.util.WalletUtils;
-import org.bitcoinj.core.Address;
+import org.bitcoinj.base.Address;
 import org.bitcoinj.base.Coin;
 import org.bitcoinj.base.Sha256Hash;
 import org.bitcoinj.core.StoredBlock;
