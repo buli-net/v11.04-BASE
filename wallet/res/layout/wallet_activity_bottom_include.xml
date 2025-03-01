@@ -12,13 +12,13 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/wallet_actions_fragment"
-        android:name="de.schildbach.wallet.ui.WalletActionsFragment"
+        android:name="wallet.ui.WalletActionsFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/wallet_disclaimer_fragment"
-        android:name="de.schildbach.wallet.ui.WalletDisclaimerFragment"
+        android:name="wallet.ui.WalletDisclaimerFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

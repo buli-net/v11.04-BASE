@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize" />
 
-    <de.schildbach.wallet.util.ViewPagerTabs
+    <wallet.util.ViewPagerTabs
         android:id="@+id/network_monitor_pager_tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

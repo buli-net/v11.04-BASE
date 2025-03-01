@@ -14,7 +14,7 @@
 
     <androidx.fragment.app.FragmentContainerView
     android:id="@+id/exchange_rates_fragment"
-    android:name="de.schildbach.wallet.ui.ExchangeRatesFragment"
+    android:name="wallet.ui.ExchangeRatesFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />
 </LinearLayout>

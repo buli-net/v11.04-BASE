@@ -21,7 +21,7 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/request_coins_fragment"
-            android:name="de.schildbach.wallet.ui.RequestCoinsFragment"
+            android:name="wallet.ui.RequestCoinsFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </ScrollView>

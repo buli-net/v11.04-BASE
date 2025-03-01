@@ -17,7 +17,7 @@
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground">
 
-        <de.schildbach.wallet.util.FillGapsLinearLayout
+        <wallet.util.FillGapsLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/list_entry_padding_vertical"
@@ -55,7 +55,7 @@
                 android:layout_marginBottom="@dimen/list_entry_padding_vertical_cram"
                 android:layout_marginLeft="@dimen/list_entry_padding_horizontal_cram"
                 android:layout_gravity="right" />
-        </de.schildbach.wallet.util.FillGapsLinearLayout>
+        </wallet.util.FillGapsLinearLayout>
 
         <Toolbar
             android:id="@+id/address_book_row_context_bar"
