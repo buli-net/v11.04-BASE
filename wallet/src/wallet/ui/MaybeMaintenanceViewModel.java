@@ -22,13 +22,13 @@ import android.os.AsyncTask;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MediatorLiveData;
 import com.google.common.util.concurrent.ListenableFuture;
+import org.bitcoinj.core.Transaction;
+import org.bitcoinj.wallet.DeterministicUpgradeRequiresPassword;
+import org.bitcoinj.wallet.Wallet;
 import wallet.Constants;
 import wallet.WalletApplication;
 import wallet.data.AbstractWalletLiveData;
 import wallet.service.BlockchainState;
-import org.bitcoinj.core.Transaction;
-import org.bitcoinj.wallet.DeterministicUpgradeRequiresPassword;
-import org.bitcoinj.wallet.Wallet;
 
 import java.util.List;
 

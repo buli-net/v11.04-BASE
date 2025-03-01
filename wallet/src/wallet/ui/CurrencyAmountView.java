@@ -34,14 +34,14 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
-import wallet.Constants;
-import wallet.R;
-import wallet.util.GenericUtils;
-import wallet.util.MonetarySpannable;
 import org.bitcoinj.base.Coin;
 import org.bitcoinj.base.Monetary;
 import org.bitcoinj.base.utils.Fiat;
 import org.bitcoinj.base.utils.MonetaryFormat;
+import wallet.Constants;
+import wallet.R;
+import wallet.util.GenericUtils;
+import wallet.util.MonetarySpannable;
 
 import java.util.Objects;
 

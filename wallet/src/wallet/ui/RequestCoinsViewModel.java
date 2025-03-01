@@ -26,6 +26,12 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import org.bitcoinj.base.Address;
+import org.bitcoinj.base.Coin;
+import org.bitcoinj.base.ScriptType;
+import org.bitcoinj.protocols.payments.PaymentProtocol;
+import org.bitcoinj.uri.BitcoinURI;
+import org.bitcoinj.wallet.Wallet;
 import wallet.Constants;
 import wallet.WalletApplication;
 import wallet.data.AbstractWalletLiveData;
@@ -33,12 +39,6 @@ import wallet.data.ConfigOwnNameLiveData;
 import wallet.data.SelectedExchangeRateLiveData;
 import wallet.util.Bluetooth;
 import wallet.util.Qr;
-import org.bitcoinj.base.Address;
-import org.bitcoinj.base.Coin;
-import org.bitcoinj.protocols.payments.PaymentProtocol;
-import org.bitcoinj.base.ScriptType;
-import org.bitcoinj.uri.BitcoinURI;
-import org.bitcoinj.wallet.Wallet;
 
 /**
  * @author Andreas Schildbach

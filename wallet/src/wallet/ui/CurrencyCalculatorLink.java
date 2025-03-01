@@ -19,11 +19,11 @@ package wallet.ui;
 
 import android.view.View;
 import androidx.annotation.Nullable;
+import org.bitcoinj.base.Coin;
+import org.bitcoinj.base.utils.Fiat;
+import org.bitcoinj.utils.ExchangeRate;
 import wallet.Constants;
 import wallet.ui.CurrencyAmountView.Listener;
-import org.bitcoinj.base.Coin;
-import org.bitcoinj.utils.ExchangeRate;
-import org.bitcoinj.base.utils.Fiat;
 
 import java.util.Objects;
 

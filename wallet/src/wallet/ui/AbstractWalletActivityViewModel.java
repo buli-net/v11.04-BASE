@@ -22,10 +22,6 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.Observer;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-import wallet.WalletApplication;
-import wallet.data.BlockchainServiceLiveData;
-import wallet.data.WalletLiveData;
-import wallet.service.BlockchainService;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionBroadcast;
 import org.bitcoinj.core.VerificationException;
@@ -33,6 +29,10 @@ import org.bitcoinj.utils.Threading;
 import org.bitcoinj.wallet.Wallet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wallet.WalletApplication;
+import wallet.data.BlockchainServiceLiveData;
+import wallet.data.WalletLiveData;
+import wallet.service.BlockchainService;
 
 /**
  * @author Andreas Schildbach

@@ -33,6 +33,11 @@ import android.text.format.DateUtils;
 import androidx.annotation.WorkerThread;
 import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.LifecycleService;
+import org.bitcoinj.core.Transaction;
+import org.bitcoinj.core.VerificationException;
+import org.bitcoinj.wallet.Wallet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wallet.Constants;
 import wallet.R;
 import wallet.WalletApplication;
@@ -40,11 +45,6 @@ import wallet.data.BlockchainServiceLiveData;
 import wallet.data.WalletLiveData;
 import wallet.util.CrashReporter;
 import wallet.util.Toast;
-import org.bitcoinj.core.Transaction;
-import org.bitcoinj.core.VerificationException;
-import org.bitcoinj.wallet.Wallet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 

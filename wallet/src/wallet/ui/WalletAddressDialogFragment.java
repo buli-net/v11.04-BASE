@@ -30,12 +30,12 @@ import androidx.core.app.ShareCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
-import wallet.Constants;
-import wallet.R;
-import wallet.util.WalletUtils;
 import org.bitcoinj.base.Address;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wallet.Constants;
+import wallet.R;
+import wallet.util.WalletUtils;
 
 /**
  * @author Andreas Schildbach

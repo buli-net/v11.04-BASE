@@ -17,8 +17,8 @@
 
 package wallet.data;
 
-import wallet.WalletApplication;
 import org.bitcoinj.wallet.Wallet;
+import wallet.WalletApplication;
 
 /**
  * @author Andreas Schildbach

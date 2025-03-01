@@ -19,17 +19,17 @@ package wallet.ui.send;
 
 import android.os.Handler;
 import android.os.Looper;
-import wallet.Constants;
 import org.bitcoinj.base.Coin;
-import org.bitcoinj.crypto.ECKey;
 import org.bitcoinj.core.InsufficientMoneyException;
 import org.bitcoinj.core.Transaction;
+import org.bitcoinj.crypto.ECKey;
 import org.bitcoinj.wallet.SendRequest;
 import org.bitcoinj.wallet.Wallet;
-import org.bitcoinj.wallet.Wallet.TransactionCompletionException;
 import org.bitcoinj.wallet.Wallet.CouldNotAdjustDownwards;
+import org.bitcoinj.wallet.Wallet.TransactionCompletionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wallet.Constants;
 
 /**
  * @author Andreas Schildbach

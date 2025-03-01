@@ -28,12 +28,12 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import androidx.annotation.Nullable;
+import org.bitcoinj.core.VersionMessage;
 import wallet.R;
 import wallet.WalletApplication;
 import wallet.ui.DialogBuilder;
 import wallet.util.Installer;
 import wallet.util.WalletUtils;
-import org.bitcoinj.core.VersionMessage;
 
 import java.io.IOException;
 

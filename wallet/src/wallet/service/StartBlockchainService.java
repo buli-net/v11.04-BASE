@@ -26,11 +26,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.PowerManager;
 import android.text.format.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wallet.Configuration;
 import wallet.Constants;
 import wallet.WalletApplication;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Andreas Schildbach

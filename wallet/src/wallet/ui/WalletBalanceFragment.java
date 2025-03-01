@@ -31,6 +31,9 @@ import android.widget.TextView;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import org.bitcoinj.base.BitcoinNetwork;
+import org.bitcoinj.base.Coin;
+import org.bitcoinj.base.utils.Fiat;
 import wallet.Configuration;
 import wallet.Constants;
 import wallet.R;
@@ -39,9 +42,6 @@ import wallet.exchangerate.ExchangeRateEntry;
 import wallet.service.BlockchainState;
 import wallet.ui.send.FeeCategory;
 import wallet.ui.send.SendCoinsActivity;
-import org.bitcoinj.base.Coin;
-import org.bitcoinj.base.BitcoinNetwork;
-import org.bitcoinj.base.utils.Fiat;
 
 /**
  * @author Andreas Schildbach

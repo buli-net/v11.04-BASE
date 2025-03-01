@@ -21,15 +21,15 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.lifecycle.ViewModelProvider;
+import org.bitcoinj.core.Transaction;
+import org.bitcoinj.core.VerificationException;
+import org.bitcoinj.crypto.EncodedPrivateKey;
 import wallet.Constants;
 import wallet.data.PaymentIntent;
 import wallet.ui.InputParser.StringInputParser;
 import wallet.ui.scan.ScanActivity;
 import wallet.ui.send.SendCoinsActivity;
 import wallet.ui.send.SweepWalletActivity;
-import org.bitcoinj.crypto.EncodedPrivateKey;
-import org.bitcoinj.core.Transaction;
-import org.bitcoinj.core.VerificationException;
 
 /**
  * @author Andreas Schildbach

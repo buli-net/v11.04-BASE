@@ -21,13 +21,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import androidx.annotation.Nullable;
 import com.google.common.io.BaseEncoding;
-import wallet.Constants;
-import wallet.util.Bluetooth;
-import wallet.util.GenericUtils;
-import wallet.util.WalletUtils;
 import org.bitcoinj.base.Address;
-import org.bitcoinj.base.exceptions.AddressFormatException;
 import org.bitcoinj.base.Coin;
+import org.bitcoinj.base.exceptions.AddressFormatException;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.protocols.payments.PaymentProtocol;
 import org.bitcoinj.protocols.payments.PaymentProtocolException;
@@ -39,6 +35,10 @@ import org.bitcoinj.uri.BitcoinURI;
 import org.bitcoinj.wallet.SendRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wallet.Constants;
+import wallet.util.Bluetooth;
+import wallet.util.GenericUtils;
+import wallet.util.WalletUtils;
 
 import java.util.Arrays;
 

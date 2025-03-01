@@ -31,12 +31,12 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wallet.Configuration;
 import wallet.Constants;
 import wallet.R;
 import wallet.util.Installer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Andreas Schildbach

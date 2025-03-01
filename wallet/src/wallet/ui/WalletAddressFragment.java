@@ -32,11 +32,11 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
-import wallet.R;
-import wallet.util.Nfc;
 import org.bitcoinj.base.Address;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wallet.R;
+import wallet.util.Nfc;
 
 /**
  * @author Andreas Schildbach

@@ -29,11 +29,11 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.core.app.ShareCompat;
 import androidx.core.content.FileProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wallet.Constants;
 import wallet.R;
 import wallet.util.CrashReporter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;

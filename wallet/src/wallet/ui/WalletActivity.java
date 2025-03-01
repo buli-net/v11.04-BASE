@@ -51,6 +51,10 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import com.google.common.primitives.Floats;
+import org.bitcoinj.base.ScriptType;
+import org.bitcoinj.core.Transaction;
+import org.bitcoinj.core.VerificationException;
+import org.bitcoinj.crypto.EncodedPrivateKey;
 import wallet.Configuration;
 import wallet.Constants;
 import wallet.R;
@@ -69,10 +73,6 @@ import wallet.ui.send.SweepWalletActivity;
 import wallet.util.CrashReporter;
 import wallet.util.Nfc;
 import wallet.util.OnFirstPreDraw;
-import org.bitcoinj.crypto.EncodedPrivateKey;
-import org.bitcoinj.core.Transaction;
-import org.bitcoinj.core.VerificationException;
-import org.bitcoinj.base.ScriptType;
 
 /**
  * @author Andreas Schildbach

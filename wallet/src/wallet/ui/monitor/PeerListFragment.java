@@ -31,9 +31,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.common.net.HostAndPort;
+import org.bitcoinj.core.Peer;
 import wallet.R;
 import wallet.ui.AbstractWalletActivity;
-import org.bitcoinj.core.Peer;
 
 import java.util.List;
 

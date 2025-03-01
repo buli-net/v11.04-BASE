@@ -25,8 +25,8 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverter;
 import androidx.room.TypeConverters;
 import org.bitcoinj.base.Coin;
-import org.bitcoinj.utils.ExchangeRate;
 import org.bitcoinj.base.utils.Fiat;
+import org.bitcoinj.utils.ExchangeRate;
 
 import java.util.Date;
 

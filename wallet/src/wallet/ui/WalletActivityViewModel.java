@@ -21,12 +21,12 @@ import android.app.Application;
 import android.os.AsyncTask;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
+import org.bitcoinj.base.ScriptType;
+import org.bitcoinj.wallet.Wallet;
 import wallet.Constants;
 import wallet.WalletApplication;
 import wallet.data.AbstractWalletLiveData;
 import wallet.util.OnFirstPreDraw;
-import org.bitcoinj.base.ScriptType;
-import org.bitcoinj.wallet.Wallet;
 
 /**
  * @author Andreas Schildbach

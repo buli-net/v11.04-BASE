@@ -19,8 +19,8 @@ package wallet.ui.send;
 
 import android.os.Handler;
 import android.os.Looper;
-import org.bitcoinj.crypto.ECKey;
 import org.bitcoinj.crypto.BIP38PrivateKey;
+import org.bitcoinj.crypto.ECKey;
 
 /**
  * @author Andreas Schildbach

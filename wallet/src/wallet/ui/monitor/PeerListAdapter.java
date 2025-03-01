@@ -34,11 +34,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 import com.google.common.net.HostAndPort;
-import wallet.Constants;
-import wallet.R;
 import org.bitcoinj.core.Peer;
 import org.bitcoinj.core.PeerAddress;
 import org.bitcoinj.core.VersionMessage;
+import wallet.Constants;
+import wallet.R;
 
 import java.net.InetAddress;
 import java.util.ArrayList;

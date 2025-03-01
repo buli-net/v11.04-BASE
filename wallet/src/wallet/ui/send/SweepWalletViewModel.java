@@ -20,12 +20,12 @@ package wallet.ui.send;
 import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
+import org.bitcoinj.crypto.EncodedPrivateKey;
+import org.bitcoinj.wallet.Wallet;
 import wallet.WalletApplication;
 import wallet.data.DynamicFeeLiveData;
 import wallet.data.TransactionLiveData;
 import wallet.ui.DialogEvent;
-import org.bitcoinj.crypto.EncodedPrivateKey;
-import org.bitcoinj.wallet.Wallet;
 
 /**
  * @author Andreas Schildbach

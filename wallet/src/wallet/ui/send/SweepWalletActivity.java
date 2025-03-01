@@ -27,10 +27,10 @@ import androidx.activity.SystemBarStyle;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import org.bitcoinj.crypto.EncodedPrivateKey;
 import wallet.R;
 import wallet.service.BlockchainService;
 import wallet.ui.AbstractWalletActivity;
-import org.bitcoinj.crypto.EncodedPrivateKey;
 
 /**
  * @author Andreas Schildbach

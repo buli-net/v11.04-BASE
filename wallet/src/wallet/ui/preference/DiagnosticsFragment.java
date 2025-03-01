@@ -22,17 +22,17 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
+import org.bitcoinj.base.ScriptType;
+import org.bitcoinj.crypto.DeterministicKey;
+import org.bitcoinj.wallet.DeterministicKeyChain;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wallet.Configuration;
 import wallet.Constants;
 import wallet.R;
 import wallet.WalletApplication;
 import wallet.service.BlockchainService;
 import wallet.ui.DialogBuilder;
-import org.bitcoinj.crypto.DeterministicKey;
-import org.bitcoinj.base.ScriptType;
-import org.bitcoinj.wallet.DeterministicKeyChain;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Locale;
 

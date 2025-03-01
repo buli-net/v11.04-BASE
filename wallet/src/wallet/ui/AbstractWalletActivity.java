@@ -24,11 +24,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import androidx.fragment.app.FragmentActivity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wallet.R;
 import wallet.WalletApplication;
 import wallet.util.Toast;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Andreas Schildbach

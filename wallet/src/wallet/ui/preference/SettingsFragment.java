@@ -42,13 +42,13 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import androidx.core.content.ContextCompat;
 import com.google.common.net.HostAndPort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wallet.Configuration;
 import wallet.Constants;
 import wallet.R;
 import wallet.WalletApplication;
 import wallet.util.Bluetooth;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.util.Locale;

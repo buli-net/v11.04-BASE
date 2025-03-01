@@ -19,13 +19,13 @@ package wallet.ui.send;
 
 import android.os.Handler;
 import android.os.Looper;
-import wallet.Constants;
+import org.bitcoinj.crypto.AesKey;
 import org.bitcoinj.crypto.KeyCrypter;
 import org.bitcoinj.crypto.KeyCrypterScrypt;
 import org.bitcoinj.wallet.Wallet;
-import org.bitcoinj.crypto.AesKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wallet.Constants;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;

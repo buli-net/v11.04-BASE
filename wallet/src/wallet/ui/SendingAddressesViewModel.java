@@ -23,14 +23,14 @@ import android.os.AsyncTask;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import org.bitcoinj.base.Address;
+import org.bitcoinj.base.LegacyAddress;
+import org.bitcoinj.crypto.ECKey;
+import org.bitcoinj.wallet.Wallet;
 import wallet.Constants;
 import wallet.WalletApplication;
 import wallet.addressbook.AddressBookEntry;
 import wallet.data.AbstractWalletLiveData;
-import org.bitcoinj.base.Address;
-import org.bitcoinj.crypto.ECKey;
-import org.bitcoinj.base.LegacyAddress;
-import org.bitcoinj.wallet.Wallet;
 
 import java.util.HashSet;
 import java.util.List;

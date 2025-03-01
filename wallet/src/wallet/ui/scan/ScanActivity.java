@@ -58,12 +58,12 @@ import com.google.zxing.Result;
 import com.google.zxing.ResultPointCallback;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wallet.R;
 import wallet.ui.AbstractWalletActivity;
 import wallet.ui.DialogBuilder;
 import wallet.ui.Event;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.EnumMap;
 import java.util.Map;

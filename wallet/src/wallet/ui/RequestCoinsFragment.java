@@ -56,6 +56,11 @@ import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
+import org.bitcoinj.base.Address;
+import org.bitcoinj.base.ScriptType;
+import org.bitcoinj.protocols.payments.PaymentProtocol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wallet.Configuration;
 import wallet.Constants;
 import wallet.R;
@@ -65,11 +70,6 @@ import wallet.ui.send.SendCoinsActivity;
 import wallet.util.Bluetooth;
 import wallet.util.Nfc;
 import wallet.util.Toast;
-import org.bitcoinj.base.Address;
-import org.bitcoinj.protocols.payments.PaymentProtocol;
-import org.bitcoinj.base.ScriptType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Andreas Schildbach

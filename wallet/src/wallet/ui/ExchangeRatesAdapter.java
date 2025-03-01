@@ -35,14 +35,14 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
+import org.bitcoinj.base.BitcoinNetwork;
+import org.bitcoinj.base.Coin;
+import org.bitcoinj.base.utils.Fiat;
+import org.bitcoinj.utils.ExchangeRate;
 import wallet.Constants;
 import wallet.R;
 import wallet.exchangerate.ExchangeRateEntry;
 import wallet.service.BlockchainState;
-import org.bitcoinj.base.Coin;
-import org.bitcoinj.base.BitcoinNetwork;
-import org.bitcoinj.utils.ExchangeRate;
-import org.bitcoinj.base.utils.Fiat;
 
 import java.util.ArrayList;
 import java.util.EnumSet;

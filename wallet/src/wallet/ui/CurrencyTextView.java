@@ -25,11 +25,11 @@ import android.text.style.ScaleXSpan;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
+import org.bitcoinj.base.Monetary;
+import org.bitcoinj.base.utils.MonetaryFormat;
 import wallet.Constants;
 import wallet.R;
 import wallet.util.MonetarySpannable;
-import org.bitcoinj.base.Monetary;
-import org.bitcoinj.base.utils.MonetaryFormat;
 
 /**
  * @author Andreas Schildbach

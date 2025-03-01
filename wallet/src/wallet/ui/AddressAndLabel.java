@@ -21,10 +21,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import androidx.annotation.Nullable;
 import com.google.common.base.Objects;
-import wallet.Constants;
 import org.bitcoinj.base.Address;
 import org.bitcoinj.base.exceptions.AddressFormatException;
 import org.bitcoinj.core.NetworkParameters;
+import wallet.Constants;
 
 /**
  * @author Andreas Schildbach

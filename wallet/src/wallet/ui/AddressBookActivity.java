@@ -40,15 +40,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
+import org.bitcoinj.base.Address;
+import org.bitcoinj.core.Transaction;
+import org.bitcoinj.core.VerificationException;
+import org.bitcoinj.wallet.Wallet;
 import wallet.R;
 import wallet.data.PaymentIntent;
 import wallet.ui.scan.ScanActivity;
 import wallet.util.ViewPagerTabs;
 import wallet.util.ZoomOutPageTransformer;
-import org.bitcoinj.base.Address;
-import org.bitcoinj.core.Transaction;
-import org.bitcoinj.core.VerificationException;
-import org.bitcoinj.wallet.Wallet;
 
 /**
  * @author Andreas Schildbach

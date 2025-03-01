@@ -36,13 +36,13 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
+import org.bitcoinj.base.Address;
+import org.bitcoinj.crypto.ECKey;
+import org.bitcoinj.wallet.Wallet;
 import wallet.Constants;
 import wallet.R;
 import wallet.addressbook.AddressBookEntry;
 import wallet.util.WalletUtils;
-import org.bitcoinj.base.Address;
-import org.bitcoinj.crypto.ECKey;
-import org.bitcoinj.wallet.Wallet;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;

@@ -33,6 +33,9 @@ import androidx.core.view.MenuProvider;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
+import org.bitcoinj.base.Coin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wallet.Constants;
 import wallet.R;
 import wallet.data.PaymentIntent;
@@ -40,9 +43,6 @@ import wallet.service.BlockchainService;
 import wallet.ui.AbstractWalletActivity;
 import wallet.ui.Event;
 import wallet.ui.HelpDialogFragment;
-import org.bitcoinj.base.Coin;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Andreas Schildbach

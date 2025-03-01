@@ -23,9 +23,9 @@ import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import androidx.annotation.Nullable;
-import wallet.Constants;
 import org.bitcoinj.base.Monetary;
 import org.bitcoinj.base.utils.MonetaryFormat;
+import wallet.Constants;
 
 import java.util.regex.Matcher;
 

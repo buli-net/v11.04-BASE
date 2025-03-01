@@ -19,10 +19,10 @@ package wallet.data;
 
 import android.os.Handler;
 import androidx.lifecycle.Observer;
+import org.bitcoinj.wallet.Wallet;
 import wallet.WalletApplication;
 import wallet.WalletApplication.OnWalletLoadedListener;
 import wallet.ui.Event;
-import org.bitcoinj.wallet.Wallet;
 
 /**
  * @author Andreas Schildbach

@@ -25,11 +25,6 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import wallet.Constants;
-import wallet.WalletApplication;
-import wallet.data.AbstractWalletLiveData;
-import wallet.data.ConfigOwnNameLiveData;
-import wallet.util.Qr;
 import org.bitcoinj.base.Address;
 import org.bitcoinj.base.Coin;
 import org.bitcoinj.base.LegacyAddress;
@@ -41,6 +36,11 @@ import org.bitcoinj.wallet.listeners.WalletChangeEventListener;
 import org.bitcoinj.wallet.listeners.WalletCoinsReceivedEventListener;
 import org.bitcoinj.wallet.listeners.WalletCoinsSentEventListener;
 import org.bitcoinj.wallet.listeners.WalletReorganizeEventListener;
+import wallet.Constants;
+import wallet.WalletApplication;
+import wallet.data.AbstractWalletLiveData;
+import wallet.data.ConfigOwnNameLiveData;
+import wallet.util.Qr;
 
 import java.util.Locale;
 

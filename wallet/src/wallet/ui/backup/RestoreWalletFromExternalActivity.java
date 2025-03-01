@@ -18,9 +18,9 @@
 package wallet.ui.backup;
 
 import android.os.Bundle;
-import wallet.ui.AbstractWalletActivity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wallet.ui.AbstractWalletActivity;
 
 /**
  * @author Andreas Schildbach

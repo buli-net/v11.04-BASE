@@ -29,6 +29,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
+import org.bitcoinj.base.Address;
+import org.bitcoinj.wallet.Wallet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wallet.Constants;
 import wallet.R;
 import wallet.WalletApplication;
@@ -36,10 +40,6 @@ import wallet.addressbook.AddressBookDao;
 import wallet.addressbook.AddressBookDatabase;
 import wallet.addressbook.AddressBookEntry;
 import wallet.util.WalletUtils;
-import org.bitcoinj.base.Address;
-import org.bitcoinj.wallet.Wallet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Andreas Schildbach

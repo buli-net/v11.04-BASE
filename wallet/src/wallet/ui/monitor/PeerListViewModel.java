@@ -23,10 +23,10 @@ import android.os.Handler;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import org.bitcoinj.core.Peer;
 import wallet.WalletApplication;
 import wallet.data.BlockchainServiceLiveData;
 import wallet.service.BlockchainService;
-import org.bitcoinj.core.Peer;
 
 import java.net.InetAddress;
 import java.util.HashMap;

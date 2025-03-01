@@ -39,6 +39,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import org.bitcoinj.base.Address;
+import org.bitcoinj.uri.BitcoinURI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wallet.Constants;
 import wallet.R;
 import wallet.addressbook.AddressBookDao;
@@ -47,10 +51,6 @@ import wallet.data.PaymentIntent;
 import wallet.ui.send.SendCoinsActivity;
 import wallet.util.Qr;
 import wallet.util.Toast;
-import org.bitcoinj.base.Address;
-import org.bitcoinj.uri.BitcoinURI;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Andreas Schildbach

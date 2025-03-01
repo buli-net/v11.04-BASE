@@ -44,6 +44,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
+import org.bitcoinj.base.Address;
+import org.bitcoinj.base.Sha256Hash;
+import org.bitcoinj.core.Transaction;
+import org.bitcoinj.wallet.Wallet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wallet.Configuration;
 import wallet.Constants;
 import wallet.R;
@@ -54,12 +60,6 @@ import wallet.ui.TransactionsAdapter.WarningType;
 import wallet.ui.send.RaiseFeeDialogFragment;
 import wallet.util.Qr;
 import wallet.util.WalletUtils;
-import org.bitcoinj.base.Address;
-import org.bitcoinj.base.Sha256Hash;
-import org.bitcoinj.core.Transaction;
-import org.bitcoinj.wallet.Wallet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Andreas Schildbach

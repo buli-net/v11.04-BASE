@@ -27,11 +27,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import androidx.core.app.ShareCompat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wallet.R;
 import wallet.ui.DialogBuilder;
 import wallet.util.Qr;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Andreas Schildbach

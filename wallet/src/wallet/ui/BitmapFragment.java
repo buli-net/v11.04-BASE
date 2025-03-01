@@ -27,9 +27,9 @@ import android.view.Window;
 import android.widget.ImageView;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
-import wallet.R;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wallet.R;
 
 /**
  * @author Andreas Schildbach

@@ -19,9 +19,9 @@ package wallet.data;
 
 import android.content.SharedPreferences;
 import androidx.lifecycle.LiveData;
+import org.bitcoinj.base.utils.MonetaryFormat;
 import wallet.Configuration;
 import wallet.WalletApplication;
-import org.bitcoinj.base.utils.MonetaryFormat;
 
 /**
  * @author Andreas Schildbach

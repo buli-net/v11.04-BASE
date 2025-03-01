@@ -20,9 +20,6 @@ package wallet.data;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.AsyncTask;
-import wallet.Configuration;
-import wallet.Constants;
-import wallet.WalletApplication;
 import org.bitcoinj.base.Coin;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.utils.Threading;
@@ -32,6 +29,9 @@ import org.bitcoinj.wallet.listeners.WalletChangeEventListener;
 import org.bitcoinj.wallet.listeners.WalletCoinsReceivedEventListener;
 import org.bitcoinj.wallet.listeners.WalletCoinsSentEventListener;
 import org.bitcoinj.wallet.listeners.WalletReorganizeEventListener;
+import wallet.Configuration;
+import wallet.Constants;
+import wallet.WalletApplication;
 
 /**
  * @author Andreas Schildbach

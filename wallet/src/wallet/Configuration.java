@@ -25,12 +25,12 @@ import android.text.format.DateUtils;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.net.HostAndPort;
-import wallet.util.Formats;
 import org.bitcoinj.base.BitcoinNetwork;
 import org.bitcoinj.base.Coin;
 import org.bitcoinj.base.utils.MonetaryFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wallet.util.Formats;
 
 import java.util.Currency;
 import java.util.HashSet;

@@ -22,9 +22,9 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Handler;
 import androidx.lifecycle.LiveData;
-import wallet.WalletApplication;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionConfidence;
+import wallet.WalletApplication;
 
 /**
  * @author Andreas Schildbach
