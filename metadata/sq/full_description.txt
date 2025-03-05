@@ -18,8 +18,8 @@
 Bitcoin Wallet është <b>kod i hapur</b> dhe <b>softuer i lirë</b>. Licenca: GPLv3
 https://www.gnu.org/licenses/gpl-3.0.en.html
 
-Kodi jonë burimor është i hapur në GitHub:
-https://github.com/bitcoin-wallet/bitcoin-wallet
+Kodi jonë burimor është i hapur në GitLab:
+https://gitlab.com/bitcoin-wallet/bitcoin-wallet
 
 Të gjitha përkthimet menagjohen nga Transifex:
 https://explore.transifex.com/bitcoin-wallet/bitcoin-wallet/

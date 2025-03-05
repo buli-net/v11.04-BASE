@@ -18,8 +18,8 @@
 Bitcoin Wallet 既是<b>開放源碼</b>也是<b>自由軟體</b>。授權條款: GPLv3
 https://www.gnu.org/licenses/gpl-3.0.en.html
 
-我們的原始碼位在 GitHub:
-https://github.com/bitcoin-wallet/bitcoin-wallet
+我們的原始碼位在 GitLab:
+https://gitlab.com/bitcoin-wallet/bitcoin-wallet
 
 所有的翻譯工作都用 Transifex 管理:
 https://explore.transifex.com/bitcoin-wallet/bitcoin-wallet/

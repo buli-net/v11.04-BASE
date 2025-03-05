@@ -17,8 +17,8 @@
 محفظة البتكوين <b>تطبيق حر</b> و <b>مفتوح المصدر</b>. تحت رخصة : GPLv3
 https://www.gnu.org/licenses/gpl-3.0.ar.html
 
-الكود المصدري للبرنامج متوافر على GitHub:
-https://github.com/bitcoin-wallet/bitcoin-wallet
+الكود المصدري للبرنامج متوافر على GitLab:
+https://gitlab.com/bitcoin-wallet/bitcoin-wallet
 
 كل الترجمات مدارة عبر Transifex:
 https://explore.transifex.com/bitcoin-wallet/bitcoin-wallet/

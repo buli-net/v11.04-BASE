@@ -17,8 +17,8 @@
 bitcoin वॉलेट <b> खुला स्रोत </ b> और <b> मुफ्त सॉफ्टवेयर है । लाइसेंस: GPLv3
 https://www.gnu.org/licenses/gpl-3.0.en.html
 
-हमारे स्रोत कोड GitHub पर उपलब्ध है:
-https://github.com/bitcoin-wallet/bitcoin-wallet
+हमारे स्रोत कोड GitLab पर उपलब्ध है:
+https://gitlab.com/bitcoin-wallet/bitcoin-wallet
 
 सभी अनुवाद Transifex के माध्यम से प्रबंधित कर रहे हैं:
 https://explore.transifex.com/bitcoin-wallet/bitcoin-wallet/

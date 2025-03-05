@@ -20,8 +20,8 @@
 Bitcoin Wallet به صورت کد باز و مجانی‌ تحت لیسانس: GPLv3
 https://www.gnu.org/licenses/gpl-3.0.en.html
 
-کد این برنامه به صورت باز در GitHub قابل دسترسی‌ است.
-https://github.com/bitcoin-wallet/bitcoin-wallet
+کد این برنامه به صورت باز در GitLab قابل دسترسی‌ است.
+https://gitlab.com/bitcoin-wallet/bitcoin-wallet
 
 همهٔ ترجمها توسط Transifex مدیریت شده.
 https://explore.transifex.com/bitcoin-wallet/bitcoin-wallet/

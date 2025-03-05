@@ -10,7 +10,7 @@ TÍNH NĂNG:
 • Tiện ích dành riêng cho Bitcoin.
 
 Nếu bạn có ý tưởng đóng góp cho Bitcoin Wallet, hãy truy cập vào trang web
-https://github.com/bitcoin-wallet/bitcoin-wallet
+https://gitlab.com/bitcoin-wallet/bitcoin-wallet
 
 Giấy phép: GPLv3
 Sử dụng với sự cẩn trọng của riêng bạn!

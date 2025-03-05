@@ -18,8 +18,8 @@
 La Cartera de Bitcoin és <b>codi obert</b> i <b>programari lliure</b>. Llicència: GPLv3
 https://www.gnu.org/licenses/gpl-3.0.ca.html
 
-El nostre codi està disponible a GitHub:
-https://github.com/bitcoin-wallet/bitcoin-wallet
+El nostre codi està disponible a GitLab:
+https://gitlab.com/bitcoin-wallet/bitcoin-wallet
 
 Totes les traduccions estan gestionades a través de Transifex:
 https://explore.transifex.com/bitcoin-wallet/bitcoin-wallet/

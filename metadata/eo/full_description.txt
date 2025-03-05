@@ -11,7 +11,7 @@ TRAJTOJ:
 • Aplikaĵa fenestraĵo por Bitmona saldo.
 
 Se vi volas kontribui al Bitcoin Wallet, la projekto lokas ĉe
-https://github.com/bitcoin-wallet/bitcoin-wallet
+https://gitlab.com/bitcoin-wallet/bitcoin-wallet
 
 Licenco: GPLv3
 Uzu je via propra risko!

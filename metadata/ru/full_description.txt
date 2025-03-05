@@ -20,8 +20,8 @@
 Bitcoin Wallet это <b>распространяется с исходным кодом</b> как <b>свободное ПО</b>. На условиях лицензии: GPLv3
 https://www.gnu.org/licenses/gpl-3.0.ru.html
 
-Исходный код доступен на GitHub:
-https://github.com/bitcoin-wallet/bitcoin-wallet
+Исходный код доступен на GitLab:
+https://gitlab.com/bitcoin-wallet/bitcoin-wallet
 
 Все переводы сделаны через Transifex:
 https://explore.transifex.com/bitcoin-wallet/bitcoin-wallet/

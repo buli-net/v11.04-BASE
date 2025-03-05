@@ -11,7 +11,7 @@ FUNKCIE:
 • Widget s celkovým zostatkom.
 
 Ak chcete prispieť do projektu Bitcoin Wallet nájdete ho na adrese
-https://github.com/bitcoin-wallet/bitcoin-wallet
+https://gitlab.com/bitcoin-wallet/bitcoin-wallet
 
 Licencia: GPLv3
 Použitie len na vlastné riziko!
