@@ -11,6 +11,14 @@ configurations {
     all*.exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
 }
 
+//clone bitcoinj
+
+configurations.all {
+    exclude group: 'androidx.annotation'
+}   
+
+//end
+
 dependencies {
     implementation 'androidx.annotation:annotation:1.10.0'
     implementation 'androidx.core:core:1.18.0'
