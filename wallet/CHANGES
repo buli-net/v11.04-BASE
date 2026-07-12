@@ -4,6 +4,16 @@
 
 * - 12/07/2026
 
+
++ Active layout hide at file wallet/res/values/layouts.xml
+
+    - wallet_actions_top edit false > true
+    - show_local_balance edit false > true
+    - show_wallet_address_dialog_hint edit false > true
+    - address_book_two_panes edit false > true
+    - network_monitor_two_panes edit false > true
+-----------------------------------------------------------------------
+
 + Fix theme ui setting bug light/dark
 
 - wallet/AndroidManifest.xml [ add line 179, <!-- line 180->181 --> ]
