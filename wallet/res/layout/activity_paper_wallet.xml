@@ -21,7 +21,6 @@
             android:lineSpacingExtra="2dp"
             android:layout_marginBottom="16dp" />
 
-        <!-- Tiêu đề 2 cột -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -50,7 +49,6 @@
                 android:textColor="?android:attr/textColorPrimary" />
         </LinearLayout>
 
-        <!-- 2 QR -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -78,7 +76,6 @@
                 android:padding="8dp" />
         </LinearLayout>
 
-        <!-- Địa chỉ dưới QR - cho phép xuống 3 dòng -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -120,7 +117,7 @@
                 android:breakStrategy="balanced" />
         </LinearLayout>
 
-        <!-- 6 NÚT 1 HÀNG BÁM THEO QR - ĐÃ NỚI RỘNG KHUNG -->
+        <!-- 6 ImageButton với icon -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -135,47 +132,38 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="3dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center">
 
-                <Button
+                <ImageButton
                     android:id="@+id/paper_wallet_copy_address"
-                    style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="44dp"
                     android:layout_weight="1"
-                    android:minHeight="48dp"
-                    android:maxLines="2"
-                    android:gravity="center"
-                    android:paddingHorizontal="6dp"
-                    android:text="@string/paper_wallet_copy"
-                    android:textAllCaps="false"
-                    android:textSize="12sp" />
+                    android:src="@android:drawable/ic_menu_copy"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:scaleType="centerInside"
+                    android:contentDescription="@string/paper_wallet_copy" />
 
-                <Button
+                <ImageButton
                     android:id="@+id/paper_wallet_public_format"
-                    style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="44dp"
                     android:layout_weight="1"
-                    android:minHeight="48dp"
-                    android:gravity="center"
-                    android:paddingHorizontal="6dp"
-                    android:text="@string/paper_wallet_public_format_bech32"
-                    android:textAllCaps="false"
-                    android:textSize="12sp" />
+                    android:src="@android:drawable/ic_menu_rotate"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:scaleType="centerInside"
+                    android:contentDescription="@string/paper_wallet_public_format_bech32" />
 
-                <Button
+                <ImageButton
                     android:id="@+id/paper_wallet_toggle_address"
-                    style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="44dp"
                     android:layout_weight="1"
-                    android:minHeight="48dp"
-                    android:gravity="center"
-                    android:paddingHorizontal="6dp"
-                    android:text="@string/paper_wallet_hide"
-                    android:textAllCaps="false"
-                    android:textSize="12sp" />
+                    android:src="@android:drawable/ic_menu_view"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:scaleType="centerInside"
+                    android:contentDescription="@string/paper_wallet_hide" />
             </LinearLayout>
 
             <LinearLayout
@@ -183,48 +171,38 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="3dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center">
 
-                <Button
+                <ImageButton
                     android:id="@+id/paper_wallet_copy_privkey"
-                    style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="44dp"
                     android:layout_weight="1"
-                    android:minHeight="48dp"
-                    android:maxLines="2"
-                    android:gravity="center"
-                    android:paddingHorizontal="6dp"
-                    android:text="@string/paper_wallet_copy"
-                    android:textAllCaps="false"
-                    android:textSize="12sp" />
+                    android:src="@android:drawable/ic_menu_copy"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:scaleType="centerInside"
+                    android:contentDescription="@string/paper_wallet_copy" />
 
-                <Button
+                <ImageButton
                     android:id="@+id/paper_wallet_privkey_format"
-                    style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="44dp"
                     android:layout_weight="1"
-                    android:minHeight="48dp"
-                    android:gravity="center"
-                    android:paddingHorizontal="6dp"
-                    android:text="@string/paper_wallet_private_format_wif"
-                    android:textAllCaps="false"
-                    android:textSize="12sp" />
+                    android:src="@android:drawable/ic_menu_rotate"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:scaleType="centerInside"
+                    android:contentDescription="@string/paper_wallet_private_format_wif" />
 
-                <Button
+                <ImageButton
                     android:id="@+id/paper_wallet_toggle_key"
-                    style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="44dp"
                     android:layout_weight="1"
-                    android:minHeight="48dp"
-                    android:maxLines="2"
-                    android:gravity="center"
-                    android:paddingHorizontal="4dp"
-                    android:text="@string/paper_wallet_hide_key"
-                    android:textAllCaps="false"
-                    android:textSize="12sp" />
+                    android:src="@android:drawable/ic_menu_close_clear_cancel"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:scaleType="centerInside"
+                    android:contentDescription="@string/paper_wallet_hide_key" />
             </LinearLayout>
         </LinearLayout>
 
@@ -235,7 +213,6 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="12dp" />
 
-        <!-- BIP38 -->
         <CheckBox
             android:id="@+id/paper_wallet_encrypt_toggle"
             android:layout_width="wrap_content"
@@ -292,47 +269,53 @@
             android:layout_height="48dp"
             android:text="@string/paper_wallet_generate_new" />
 
+        <!-- 4 ImageButton dưới cùng -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="8dp"
+            android:gravity="center">
 
-            <Button
+            <ImageButton
                 android:id="@+id/paper_wallet_save"
-                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="44dp"
-                android:text="@string/paper_wallet_save"
-                android:textAllCaps="false" />
+                android:layout_weight="1"
+                android:src="@android:drawable/ic_menu_save"
+                android:background="?android:attr/selectableItemBackground"
+                android:scaleType="centerInside"
+                android:contentDescription="@string/paper_wallet_save" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/paper_wallet_share"
-                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="44dp"
-                android:text="@string/paper_wallet_share"
-                android:textAllCaps="false" />
+                android:layout_weight="1"
+                android:src="@android:drawable/ic_menu_share"
+                android:background="?android:attr/selectableItemBackground"
+                android:scaleType="centerInside"
+                android:contentDescription="@string/paper_wallet_share" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/paper_wallet_print"
-                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="44dp"
-                android:text="@string/paper_wallet_print"
-                android:textAllCaps="false" />
+                android:layout_weight="1"
+                android:src="@android:drawable/ic_menu_print"
+                android:background="?android:attr/selectableItemBackground"
+                android:scaleType="centerInside"
+                android:contentDescription="@string/paper_wallet_print" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/paper_wallet_export_txt"
-                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="44dp"
-                android:text="@string/paper_wallet_export_txt"
-                android:textAllCaps="false" />
+                android:layout_weight="1"
+                android:src="@android:drawable/ic_menu_edit"
+                android:background="?android:attr/selectableItemBackground"
+                android:scaleType="centerInside"
+                android:contentDescription="@string/paper_wallet_export_txt" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
