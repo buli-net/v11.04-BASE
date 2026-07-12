@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/windowBackground">
@@ -35,8 +36,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/paper_wallet_public_label"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="?android:attr/textColorPrimary" />
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
                 android:id="@+id/paper_wallet_key_label"
@@ -45,8 +45,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/paper_wallet_private_label"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="?android:attr/textColorPrimary" />
+                android:textAppearance="?android:attr/textAppearanceMedium" />
         </LinearLayout>
 
         <LinearLayout
@@ -94,7 +93,6 @@
                 android:gravity="center"
                 android:maxLines="3"
                 android:textIsSelectable="true"
-                android:textColor="?android:attr/textColorPrimary"
                 android:textSize="12sp" />
 
             <TextView
@@ -107,7 +105,6 @@
                 android:gravity="center"
                 android:maxLines="3"
                 android:textIsSelectable="true"
-                android:textColor="?android:attr/textColorPrimary"
                 android:textSize="12sp" />
         </LinearLayout>
 
@@ -129,38 +126,35 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <ImageButton
+                <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/paper_wallet_copy_address"
                     android:layout_width="0dp"
                     android:layout_height="44dp"
                     android:layout_weight="1"
                     android:background="?android:attr/selectableItemBackground"
                     android:contentDescription="@string/paper_wallet_copy"
-                    android:src="@drawable/ic_copy"
-                    android:tint="?android:attr/textColorSecondary"
-                    android:tintMode="src_in" />
+                    app:srcCompat="@drawable/ic_copy"
+                    app:tint="?android:attr/textColorSecondary" />
 
-                <ImageButton
+                <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/paper_wallet_public_format"
                     android:layout_width="0dp"
                     android:layout_height="44dp"
                     android:layout_weight="1"
                     android:background="?android:attr/selectableItemBackground"
                     android:contentDescription="@string/paper_wallet_public_format_bech32"
-                    android:src="@drawable/ic_swap"
-                    android:tint="?android:attr/textColorSecondary"
-                    android:tintMode="src_in" />
+                    app:srcCompat="@drawable/ic_swap"
+                    app:tint="?android:attr/textColorSecondary" />
 
-                <ImageButton
+                <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/paper_wallet_toggle_address"
                     android:layout_width="0dp"
                     android:layout_height="44dp"
                     android:layout_weight="1"
                     android:background="?android:attr/selectableItemBackground"
                     android:contentDescription="@string/paper_wallet_hide"
-                    android:src="@drawable/ic_eye"
-                    android:tint="?android:attr/textColorSecondary"
-                    android:tintMode="src_in" />
+                    app:srcCompat="@drawable/ic_eye"
+                    app:tint="?android:attr/textColorSecondary" />
             </LinearLayout>
 
             <LinearLayout
@@ -171,61 +165,56 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <ImageButton
+                <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/paper_wallet_copy_privkey"
                     android:layout_width="0dp"
                     android:layout_height="44dp"
                     android:layout_weight="1"
                     android:background="?android:attr/selectableItemBackground"
                     android:contentDescription="@string/paper_wallet_copy"
-                    android:src="@drawable/ic_copy"
-                    android:tint="?android:attr/textColorSecondary"
-                    android:tintMode="src_in" />
+                    app:srcCompat="@drawable/ic_copy"
+                    app:tint="?android:attr/textColorSecondary" />
 
-                <ImageButton
+                <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/paper_wallet_privkey_format"
                     android:layout_width="0dp"
                     android:layout_height="44dp"
                     android:layout_weight="1"
                     android:background="?android:attr/selectableItemBackground"
                     android:contentDescription="@string/paper_wallet_private_format_wif"
-                    android:src="@drawable/ic_swap"
-                    android:tint="?android:attr/textColorSecondary"
-                    android:tintMode="src_in" />
+                    app:srcCompat="@drawable/ic_swap"
+                    app:tint="?android:attr/textColorSecondary" />
 
-                <ImageButton
+                <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/paper_wallet_toggle_key"
                     android:layout_width="0dp"
                     android:layout_height="44dp"
                     android:layout_weight="1"
                     android:background="?android:attr/selectableItemBackground"
                     android:contentDescription="@string/paper_wallet_hide_key"
-                    android:src="@drawable/ic_eye_off"
-                    android:tint="?android:attr/textColorSecondary"
-                    android:tintMode="src_in" />
+                    app:srcCompat="@drawable/ic_eye_off"
+                    app:tint="?android:attr/textColorSecondary" />
             </LinearLayout>
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="16dp"
             android:layout_marginBottom="12dp"
+            android:layout_marginTop="16dp"
             android:background="?android:attr/listDivider" />
 
         <CheckBox
             android:id="@+id/paper_wallet_encrypt_toggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/paper_wallet_encrypt_bip38"
-            android:textColor="?android:attr/textColorPrimary" />
+            android:text="@string/paper_wallet_encrypt_bip38" />
 
         <CheckBox
             android:id="@+id/paper_wallet_show_pass"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/paper_wallet_show"
-            android:textColor="?android:attr/textColorPrimary"
             android:visibility="gone" />
 
         <EditText
@@ -252,14 +241,13 @@
             android:layout_height="wrap_content"
             android:text="@string/paper_wallet_bip38_hint"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="?android:attr/textColorSecondary"
             android:visibility="gone" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="16dp"
             android:layout_marginBottom="12dp"
+            android:layout_marginTop="16dp"
             android:background="?android:attr/listDivider" />
 
         <Button
@@ -268,7 +256,6 @@
             android:layout_height="48dp"
             android:drawableLeft="@drawable/ic_swap"
             android:drawablePadding="8dp"
-            android:drawableTint="?android:attr/textColorPrimary"
             android:gravity="center"
             android:text="@string/paper_wallet_generate_new"
             android:textAllCaps="false" />
@@ -279,49 +266,45 @@
             android:layout_marginTop="12dp"
             android:orientation="horizontal">
 
-            <ImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/paper_wallet_save"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:background="?android:attr/selectableItemBackground"
                 android:contentDescription="@string/paper_wallet_save"
-                android:src="@drawable/ic_copy"
-                android:tint="?android:attr/textColorSecondary"
-                android:tintMode="src_in" />
+                app:srcCompat="@drawable/ic_copy"
+                app:tint="?android:attr/textColorSecondary" />
 
-            <ImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/paper_wallet_share"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:background="?android:attr/selectableItemBackground"
                 android:contentDescription="@string/paper_wallet_share"
-                android:src="@drawable/ic_swap"
-                android:tint="?android:attr/textColorSecondary"
-                android:tintMode="src_in" />
+                app:srcCompat="@drawable/ic_swap"
+                app:tint="?android:attr/textColorSecondary" />
 
-            <ImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/paper_wallet_print"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:background="?android:attr/selectableItemBackground"
                 android:contentDescription="@string/paper_wallet_print"
-                android:src="@drawable/ic_eye"
-                android:tint="?android:attr/textColorSecondary"
-                android:tintMode="src_in" />
+                app:srcCompat="@drawable/ic_eye"
+                app:tint="?android:attr/textColorSecondary" />
 
-            <ImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/paper_wallet_export_txt"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:background="?android:attr/selectableItemBackground"
                 android:contentDescription="@string/paper_wallet_export_txt"
-                android:src="@drawable/ic_copy"
-                android:tint="?android:attr/textColorSecondary"
-                android:tintMode="src_in" />
+                app:srcCompat="@drawable/ic_copy"
+                app:tint="?android:attr/textColorSecondary" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
