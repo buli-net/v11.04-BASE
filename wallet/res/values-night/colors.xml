@@ -8,6 +8,9 @@
     <color name="fg_value_negative">#fff0616a</color>
     <color name="fg_network_significant">#ffeceff4</color>
     <color name="fg_network_less_significant">#cceceff4</color>
+    <!-- fix theme setting -->
+    <color name="action_white">#ffffffff</color>
+    <!-- end -->
 
     <!-- background -->
     <color name="bg_level3">#ff384050</color>
