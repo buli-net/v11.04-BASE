@@ -42,8 +42,10 @@
 - wallet/src/wallet/Constants.java [ // line 180, add code line 181]
 
 --------------------------------------------------------------------------
-
-
++ update binary url
+- wallet/src/wallet/Constants.java
+  . // line 206
+  . Add code line 207
 
 
 
