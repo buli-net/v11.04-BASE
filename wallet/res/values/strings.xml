@@ -379,4 +379,68 @@
     <string name="error_parse">Parse error: %s</string>
     <string name="error_http">HTTP error %1$s:\n%2$s</string>
     <string name="error_bluetooth">Bluetooth error: %1$s</string>
+
+    <!-- Paper Wallet Activity -->
+    <string name="paper_wallet_activity_title">Create paper wallet</string>
+    <string name="paper_wallet_print_title">Paper Wallet</string>
+    
+    <!-- Labels -->
+    <string name="paper_wallet_warning">Anyone with the private key can spend. Store offline.</string>
+    <string name="paper_wallet_public_label">Public</string>
+    <string name="paper_wallet_private_label">Private</string>
+
+    <!-- Buttons -->
+    <string name="paper_wallet_copy">Copy</string>
+    <string name="paper_wallet_show">Show</string>
+    <string name="paper_wallet_hide">Hide</string>
+    <string name="paper_wallet_show_key">Show</string>
+    <string name="paper_wallet_hide_key">Hide</string>
+    <string name="paper_wallet_generate_new">Generate new</string>
+    <string name="paper_wallet_save">Save</string>
+    <string name="paper_wallet_share">Share</string>
+    <string name="paper_wallet_print">Print</string>
+    <string name="paper_wallet_export_txt">Export TXT</string>
+
+    <!-- Public formats -->
+    <string name="paper_wallet_public_format_bech32">BECH32</string>
+    <string name="paper_wallet_public_format_legacy">P2PKH</string>
+    <string name="paper_wallet_public_format_p2sh">P2SH</string>
+    <string name="paper_wallet_public_format_hex">HEX</string>
+
+    <!-- Private formats -->
+    <string name="paper_wallet_private_format_wif">WIF</string>
+    <string name="paper_wallet_private_format_hex">HEX</string>
+    <string name="paper_wallet_private_format_bip38">BIP38</string>
+
+    <!-- BIP38 -->
+    <string name="paper_wallet_encrypt_bip38">Encrypt with BIP38</string>
+    <string name="paper_wallet_passphrase">Passphrase</string>
+    <string name="paper_wallet_passphrase_confirm">Confirm passphrase</string>
+    <string name="paper_wallet_bip38_hint">If you lose the passphrase, funds are lost. Only wallets supporting BIP38 can sweep this.</string>
+
+    <!-- Toasts / Messages -->
+    <string name="paper_wallet_generated">New paper wallet generated</string>
+    <string name="paper_wallet_encrypting_bip38">Encrypting BIP38...</string>
+    <string name="paper_wallet_bip38_ready">Paper wallet BIP38 ready</string>
+    <string name="paper_wallet_bip38_failed">BIP38 encryption failed: %s</string>
+    <string name="paper_wallet_passphrase_empty">Enter a BIP38 passphrase</string>
+    <string name="paper_wallet_passphrase_mismatch">Passphrases do not match</string>
+    <string name="paper_wallet_copied">%s copied</string>
+    <string name="paper_wallet_public_format_toast">Public: %s</string>
+    <string name="paper_wallet_private_format_toast">Private: %s</string>
+
+    <!-- Save/Share/Export -->
+    <string name="paper_wallet_saved">Saved to Pictures/PaperWallet/%s</string>
+    <string name="paper_wallet_exported">Exported to Documents/PaperWallet/%s</string>
+    <string name="paper_wallet_save_failed">Save failed: %s</string>
+    <string name="paper_wallet_export_failed">Export failed: %s</string>
+    <string name="paper_wallet_share_failed">Share failed: %s</string>
+    <string name="paper_wallet_print_failed">Print failed: %s</string>
+
+    <!-- Print/Export -->
+    <string name="paper_wallet_hidden">HIDDEN</string>
+    <string name="paper_wallet_public_type">Public type: %s</string>
+
+    <!-- end add create paper wallet -->
+    
 </resources>
