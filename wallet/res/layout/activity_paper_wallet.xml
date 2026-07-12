@@ -106,7 +106,7 @@
                 android:textSize="12sp" />
         </LinearLayout>
 
-        <!-- 6 nút với icon bên trái -->
+        <!-- 6 BUTTON VỚI ICON ANDROID HỆ THỐNG -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -230,7 +230,6 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="12dp" />
 
-        <!-- BIP38 -->
         <CheckBox
             android:id="@+id/paper_wallet_encrypt_toggle"
             android:layout_width="wrap_content"
@@ -286,7 +285,6 @@
             android:layout_height="48dp"
             android:text="@string/paper_wallet_generate_new" />
 
-        <!-- 4 nút dưới với icon -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
