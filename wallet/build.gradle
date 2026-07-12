@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'androidsvgdrawable'
+    id 'com.google.protobuf' version '0.8.10'//
 }
 
 configurations {
@@ -38,11 +39,32 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar']) // vendor - setup jar libs in repo
     //implementation 'org.bouncycastle:bcprov-jdk18on:1.83'
     // implementation 'net.jcip:jcip-annotations:1.0'
-    
+    implementation 'com.google.protobuf:protobuf-javalite:3.21.12'
 
 
 
 }
+
+
+// ---- PROTOBUF CONFIG - clone bitcoinj----
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.21.12'
+    }
+
+   generateProtoTasks { //for javalite
+        all().each { task ->
+    task.builtins {
+  java { option 'lite' }
+           }
+        }
+    }
+} 
+//end
+
+
+
+
 
 android {
     compileSdkVersion 'android-34'
