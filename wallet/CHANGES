@@ -5,6 +5,24 @@
 * - 12/07/2026
 
 
++ Add Create paper wallet
+
+- Create file wallet/res/layout/paper_wallet_print.xml
+- Create file wallet/res/layout/activity_paper_wallet.xml
+- Create file wallet/src/wallet/ui/PaperWalletActivity.java
+- Create file wallet/src/wallet/java/androidx/print/PrintHelper.java
+- Create file wallet/src/wallet/util/Bip38Helper.java
+
+- Add code file wallet/res/xml/file_provider.xml [ add code line 9-->13 ]
+- Add code file wallet/AndroidManifest.xml [add code line 92-->99]
+- Add code file wallet/res/values/strings.xml [add code line 383 --> 446]
+- Add code file wallet/src/wallet/ui/WalletActivity.java [ add code line 306--> 310]
+- Add code file wallet/res/menu/wallet_options.xml [add code line 71-->76]
+
+=====================================================================
+----------------------------------------------------------------------
+
+
 + Active layout hide at file wallet/res/values/layouts.xml
 
     - wallet_actions_top edit false > true
