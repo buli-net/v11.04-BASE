@@ -11,11 +11,12 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Warning text (giữ nguyên, cần string paper_wallet_warning) -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="@string/paper_wallet_warning"
+            android:text="⚠️ Cảnh báo: giữ private key an toàn"   <!-- thay text cứng để khỏi phụ thuộc string -->
             android:textSize="12sp"
             android:textColor="#8A000000" />
 
@@ -31,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/paper_wallet_public_label"
+                android:text="Địa chỉ công khai"
                 android:textSize="16sp" />
 
             <TextView
@@ -40,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/paper_wallet_private_label"
+                android:text="Khóa riêng tư"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -58,7 +59,8 @@
                 android:layout_marginRight="8dp"
                 android:layout_weight="1"
                 android:background="#ffffff"
-                android:padding="8dp" />
+                android:padding="8dp"
+                android:src="@android:drawable/ic_menu_camera" />   <!-- thay tạm -->
 
             <ImageView
                 android:id="@+id/paper_wallet_qr_key"
@@ -67,7 +69,8 @@
                 android:layout_marginLeft="8dp"
                 android:layout_weight="1"
                 android:background="#ffffff"
-                android:padding="8dp" />
+                android:padding="8dp"
+                android:src="@android:drawable/ic_menu_camera" />
         </LinearLayout>
 
         <LinearLayout
@@ -86,7 +89,8 @@
                 android:fontFamily="monospace"
                 android:gravity="center"
                 android:textIsSelectable="true"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:text="1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa" />
 
             <TextView
                 android:id="@+id/paper_wallet_key"
@@ -97,7 +101,8 @@
                 android:fontFamily="monospace"
                 android:gravity="center"
                 android:textIsSelectable="true"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:text="L5BfD5YJ2M8E1g7..." />
         </LinearLayout>
 
         <LinearLayout
@@ -121,7 +126,7 @@
                     android:layout_height="44dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/ic_copy"
+                    android:src="@android:drawable/ic_menu_copy"      <!-- copy -->
                     android:tint="#FF757575" />
 
                 <ImageButton
@@ -130,7 +135,7 @@
                     android:layout_height="44dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/ic_swap"
+                    android:src="@android:drawable/ic_menu_rotate"    <!-- swap (xoay) -->
                     android:tint="#FF757575" />
 
                 <ImageButton
@@ -139,7 +144,7 @@
                     android:layout_height="44dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/ic_eye"
+                    android:src="@android:drawable/ic_menu_view"      <!-- eye (xem) -->
                     android:tint="#FF757575" />
             </LinearLayout>
 
@@ -157,7 +162,7 @@
                     android:layout_height="44dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/ic_copy"
+                    android:src="@android:drawable/ic_menu_copy"
                     android:tint="#FF757575" />
 
                 <ImageButton
@@ -166,7 +171,7 @@
                     android:layout_height="44dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/ic_swap"
+                    android:src="@android:drawable/ic_menu_rotate"
                     android:tint="#FF757575" />
 
                 <ImageButton
@@ -175,7 +180,7 @@
                     android:layout_height="44dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/ic_eye_off"
+                    android:src="@android:drawable/ic_menu_close_clear_cancel"  <!-- eye off -->
                     android:tint="#FF757575" />
             </LinearLayout>
         </LinearLayout>
@@ -191,20 +196,20 @@
             android:id="@+id/paper_wallet_encrypt_toggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/paper_wallet_encrypt_bip38" />
+            android:text="Mã hóa BIP38" />
 
         <CheckBox
             android:id="@+id/paper_wallet_show_pass"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/paper_wallet_show"
+            android:text="Hiện mật khẩu"
             android:visibility="gone" />
 
         <EditText
             android:id="@+id/paper_wallet_passphrase"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/paper_wallet_passphrase"
+            android:hint="Nhập mật khẩu"
             android:inputType="textPassword"
             android:enabled="false"
             android:visibility="gone" />
@@ -213,7 +218,7 @@
             android:id="@+id/paper_wallet_passphrase_confirm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/paper_wallet_passphrase_confirm"
+            android:hint="Xác nhận mật khẩu"
             android:inputType="textPassword"
             android:enabled="false"
             android:visibility="gone" />
@@ -222,7 +227,7 @@
             android:id="@+id/paper_wallet_bip38_hint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/paper_wallet_bip38_hint"
+            android:text="Chú thích BIP38: nhập mật khẩu mạnh"
             android:textSize="12sp"
             android:visibility="gone" />
 
@@ -237,7 +242,7 @@
             android:id="@+id/paper_wallet_generate"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:text="@string/paper_wallet_generate_new"
+            android:text="Tạo ví mới"
             android:textAllCaps="false"
             android:gravity="center" />
 
@@ -253,7 +258,7 @@
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:src="@drawable/ic_save"
+                android:src="@android:drawable/ic_menu_save"
                 android:tint="#FF757575" />
 
             <ImageButton
@@ -262,7 +267,7 @@
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:src="@drawable/ic_share"
+                android:src="@android:drawable/ic_menu_share"
                 android:tint="#FF757575" />
 
             <ImageButton
@@ -271,7 +276,7 @@
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:src="@drawable/ic_print"
+                android:src="@android:drawable/ic_menu_print"
                 android:tint="#FF757575" />
 
             <ImageButton
@@ -280,7 +285,7 @@
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:src="@drawable/ic_export_txt"
+                android:src="@android:drawable/ic_menu_edit"
                 android:tint="#FF757575" />
         </LinearLayout>
     </LinearLayout>
