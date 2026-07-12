@@ -21,6 +21,7 @@
             android:lineSpacingExtra="2dp"
             android:layout_marginBottom="16dp" />
 
+        <!-- Tiêu đề 2 cột -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -49,6 +50,7 @@
                 android:textColor="?android:attr/textColorPrimary" />
         </LinearLayout>
 
+        <!-- 2 QR -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -64,8 +66,7 @@
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
                 android:background="#ffffff"
-                android:padding="8dp"
-                android:src="@null" />
+                android:padding="8dp" />
 
             <ImageView
                 android:id="@+id/paper_wallet_qr_key"
@@ -74,10 +75,10 @@
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
                 android:background="#ffffff"
-                android:padding="8dp"
-                android:src="@null" />
+                android:padding="8dp" />
         </LinearLayout>
 
+        <!-- Địa chỉ dưới QR - cho phép xuống 3 dòng -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -119,6 +120,7 @@
                 android:breakStrategy="balanced" />
         </LinearLayout>
 
+        <!-- 6 NÚT 1 HÀNG BÁM THEO QR - ĐÃ NỚI RỘNG KHUNG -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -147,9 +149,7 @@
                     android:paddingHorizontal="6dp"
                     android:text="@string/paper_wallet_copy"
                     android:textAllCaps="false"
-                    android:textSize="12sp"
-                    android:drawableLeft="@android:drawable/ic_menu_copy"
-                    android:drawablePadding="6dp" />
+                    android:textSize="12sp" />
 
                 <Button
                     android:id="@+id/paper_wallet_public_format"
@@ -162,9 +162,7 @@
                     android:paddingHorizontal="6dp"
                     android:text="@string/paper_wallet_public_format_bech32"
                     android:textAllCaps="false"
-                    android:textSize="12sp"
-                    android:drawableLeft="@android:drawable/ic_menu_rotate"
-                    android:drawablePadding="6dp" />
+                    android:textSize="12sp" />
 
                 <Button
                     android:id="@+id/paper_wallet_toggle_address"
@@ -177,9 +175,7 @@
                     android:paddingHorizontal="6dp"
                     android:text="@string/paper_wallet_hide"
                     android:textAllCaps="false"
-                    android:textSize="12sp"
-                    android:drawableLeft="@android:drawable/ic_menu_view"
-                    android:drawablePadding="6dp" />
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -201,9 +197,7 @@
                     android:paddingHorizontal="6dp"
                     android:text="@string/paper_wallet_copy"
                     android:textAllCaps="false"
-                    android:textSize="12sp"
-                    android:drawableLeft="@android:drawable/ic_menu_copy"
-                    android:drawablePadding="6dp" />
+                    android:textSize="12sp" />
 
                 <Button
                     android:id="@+id/paper_wallet_privkey_format"
@@ -216,9 +210,7 @@
                     android:paddingHorizontal="6dp"
                     android:text="@string/paper_wallet_private_format_wif"
                     android:textAllCaps="false"
-                    android:textSize="12sp"
-                    android:drawableLeft="@android:drawable/ic_menu_rotate"
-                    android:drawablePadding="6dp" />
+                    android:textSize="12sp" />
 
                 <Button
                     android:id="@+id/paper_wallet_toggle_key"
@@ -232,9 +224,7 @@
                     android:paddingHorizontal="4dp"
                     android:text="@string/paper_wallet_hide_key"
                     android:textAllCaps="false"
-                    android:textSize="12sp"
-                    android:drawableLeft="@android:drawable/ic_menu_close_clear_cancel"
-                    android:drawablePadding="6dp" />
+                    android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -245,6 +235,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="12dp" />
 
+        <!-- BIP38 -->
         <CheckBox
             android:id="@+id/paper_wallet_encrypt_toggle"
             android:layout_width="wrap_content"
@@ -314,9 +305,7 @@
                 android:layout_weight="1"
                 android:layout_height="44dp"
                 android:text="@string/paper_wallet_save"
-                android:textAllCaps="false"
-                android:drawableLeft="@android:drawable/ic_menu_save"
-                android:drawablePadding="6dp" />
+                android:textAllCaps="false" />
 
             <Button
                 android:id="@+id/paper_wallet_share"
@@ -325,9 +314,7 @@
                 android:layout_weight="1"
                 android:layout_height="44dp"
                 android:text="@string/paper_wallet_share"
-                android:textAllCaps="false"
-                android:drawableLeft="@android:drawable/ic_menu_share"
-                android:drawablePadding="6dp" />
+                android:textAllCaps="false" />
 
             <Button
                 android:id="@+id/paper_wallet_print"
@@ -336,9 +323,7 @@
                 android:layout_weight="1"
                 android:layout_height="44dp"
                 android:text="@string/paper_wallet_print"
-                android:textAllCaps="false"
-                android:drawableLeft="@android:drawable/ic_menu_print"
-                android:drawablePadding="6dp" />
+                android:textAllCaps="false" />
 
             <Button
                 android:id="@+id/paper_wallet_export_txt"
@@ -347,9 +332,7 @@
                 android:layout_weight="1"
                 android:layout_height="44dp"
                 android:text="@string/paper_wallet_export_txt"
-                android:textAllCaps="false"
-                android:drawableLeft="@android:drawable/ic_menu_edit"
-                android:drawablePadding="6dp" />
+                android:textAllCaps="false" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
