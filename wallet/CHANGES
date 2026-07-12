@@ -1,3 +1,42 @@
+
+
+=====================================================================
+
+* - 12/07/2026
+
++ Fix theme ui setting bug light/dark
+
+- wallet/AndroidManifest.xml [ add line 195, <!-- line 196->197 --> ]
+- wallet/res/values-night/styles.xml [ add code line 56->87 ]
+- wallet/res/values/styles.xml [ add code line 130->161 ]
+- wallet/res/values/colors.xml [ add code line 20 --> 22 ]
+- wallet/res/values-night/colors.xml [ add code line 11-->13 ]
+
+------------------------------------------------------------------
+
++ update link check version wallet.schildbach.de/version -> buli-net.github.io/version
+
+- wallet/src/wallet/Constants.java [ // line 153. add code line 154 ]
+- wallet/res/xml/network_security_config.xml [ // line 14. add code line 15 ]
+- wallet/AndroidManifest.xml [ // line 70. add code line 71 ]
+-----------------------------------------------------------------------
+
++ update link check fees wallet.schildbach.de/fees ->. buli-net.github.io/fees
+
+- wallet/src/wallet/Constants.java [ // line 157. add code line 158 ]
+
+-------------------------------------------------------------------------
+
++ update email report: bitcoin.wallet.developers@gmail.com --> hvlrcb@gmail.com
+
+- wallet/src/wallet/Constants.java [ // line 180, add code line 181]
+
+--------------------------------------------------------------------------
+
+
+
+
+
 v11.01-v11.04
 
 * Regular check for critical updates can be disabled in the settings.
