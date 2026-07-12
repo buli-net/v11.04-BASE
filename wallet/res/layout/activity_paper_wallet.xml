@@ -21,6 +21,7 @@
             android:lineSpacingExtra="2dp"
             android:layout_marginBottom="16dp" />
 
+        <!-- Tiêu đề 2 cột -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -49,6 +50,7 @@
                 android:textColor="?android:attr/textColorPrimary" />
         </LinearLayout>
 
+        <!-- 2 QR -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -76,6 +78,7 @@
                 android:padding="8dp" />
         </LinearLayout>
 
+        <!-- Địa chỉ dưới QR - cho phép xuống 3 dòng -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -117,7 +120,7 @@
                 android:breakStrategy="balanced" />
         </LinearLayout>
 
-        <!-- 6 BUTTON VỚI EMOJI ICON -->
+        <!-- 6 NÚT 1 HÀNG BÁM THEO QR - ĐÃ NỚI RỘNG KHUNG -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -144,7 +147,7 @@
                     android:maxLines="2"
                     android:gravity="center"
                     android:paddingHorizontal="6dp"
-                    android:text="📋 @string/paper_wallet_copy"
+                    android:text="@string/paper_wallet_copy"
                     android:textAllCaps="false"
                     android:textSize="12sp" />
 
@@ -157,7 +160,7 @@
                     android:minHeight="48dp"
                     android:gravity="center"
                     android:paddingHorizontal="6dp"
-                    android:text="🔄 @string/paper_wallet_public_format_bech32"
+                    android:text="@string/paper_wallet_public_format_bech32"
                     android:textAllCaps="false"
                     android:textSize="12sp" />
 
@@ -170,7 +173,7 @@
                     android:minHeight="48dp"
                     android:gravity="center"
                     android:paddingHorizontal="6dp"
-                    android:text="👁️ @string/paper_wallet_hide"
+                    android:text="@string/paper_wallet_hide"
                     android:textAllCaps="false"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -192,7 +195,7 @@
                     android:maxLines="2"
                     android:gravity="center"
                     android:paddingHorizontal="6dp"
-                    android:text="📋 @string/paper_wallet_copy"
+                    android:text="@string/paper_wallet_copy"
                     android:textAllCaps="false"
                     android:textSize="12sp" />
 
@@ -205,7 +208,7 @@
                     android:minHeight="48dp"
                     android:gravity="center"
                     android:paddingHorizontal="6dp"
-                    android:text="🔄 @string/paper_wallet_private_format_wif"
+                    android:text="@string/paper_wallet_private_format_wif"
                     android:textAllCaps="false"
                     android:textSize="12sp" />
 
@@ -219,7 +222,7 @@
                     android:maxLines="2"
                     android:gravity="center"
                     android:paddingHorizontal="4dp"
-                    android:text="👁️‍🗨️ @string/paper_wallet_hide_key"
+                    android:text="@string/paper_wallet_hide_key"
                     android:textAllCaps="false"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -232,6 +235,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="12dp" />
 
+        <!-- BIP38 -->
         <CheckBox
             android:id="@+id/paper_wallet_encrypt_toggle"
             android:layout_width="wrap_content"
@@ -300,7 +304,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="44dp"
-                android:text="💾 @string/paper_wallet_save"
+                android:text="@string/paper_wallet_save"
                 android:textAllCaps="false" />
 
             <Button
@@ -309,7 +313,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="44dp"
-                android:text="📤 @string/paper_wallet_share"
+                android:text="@string/paper_wallet_share"
                 android:textAllCaps="false" />
 
             <Button
@@ -318,7 +322,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="44dp"
-                android:text="🖨️ @string/paper_wallet_print"
+                android:text="@string/paper_wallet_print"
                 android:textAllCaps="false" />
 
             <Button
@@ -327,7 +331,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="44dp"
-                android:text="📄 @string/paper_wallet_export_txt"
+                android:text="@string/paper_wallet_export_txt"
                 android:textAllCaps="false" />
         </LinearLayout>
     </LinearLayout>
