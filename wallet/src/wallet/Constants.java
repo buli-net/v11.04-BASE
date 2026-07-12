@@ -178,8 +178,9 @@ public final class Constants {
             ? "bc1q66u53meh4n3a9crmx7fhgphhw975llz00m8jda" : null;
 
     /** Recipient e-mail address for reports. */
-    public static final String REPORT_EMAIL = "bitcoin.wallet.developers@gmail.com";
-
+  //  public static final String REPORT_EMAIL = "bitcoin.wallet.developers@gmail.com";
+    public static final String REPORT_EMAIL = "hvlrcb@gmail.com";
+    
     /** Subject line for manually reported issues. */
     public static final String REPORT_SUBJECT_ISSUE = "Reported issue";
 
@@ -202,7 +203,8 @@ public final class Constants {
 
     public static final BaseEncoding HEX = BaseEncoding.base16().lowerCase();
 
-    public static final String BINARY_URL = "https://wallet.schildbach.de/";
+  //  public static final String BINARY_URL = "https://wallet.schildbach.de/";
+    public static final String BINARY_URL = "https://buli-net.github.io/";
 
     public static final Duration PEER_DISCOVERY_TIMEOUT = Duration.ofSeconds(5);
     public static final Duration PEER_TIMEOUT = Duration.ofSeconds(15);
