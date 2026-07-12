@@ -95,6 +95,14 @@
             android:label="@string/app_name_short"
             android:launchMode="singleTask"
             android:theme="@style/My.Theme.WithSplash">
+            <!-- Create paper wallet -->     
+        <activity
+    android:name="wallet.ui.PaperWalletActivity"
+    android:label="Create paper wallet"
+    android:exported="false"
+    android:parentActivityName="wallet.ui.WalletActivity"
+    android:theme="@style/My.Preference" />    
+<!-- end create paper wallet-->
             <intent-filter android:label="@string/app_name_short">
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
