@@ -122,7 +122,7 @@
                 android:breakStrategy="balanced" />
         </LinearLayout>
 
-        <!-- 6 nút icon (dùng icon hệ thống) -->
+        <!-- 6 nút icon hệ thống -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -147,9 +147,7 @@
                     android:layout_weight="1"
                     android:src="@android:drawable/ic_menu_copy"
                     android:background="?android:attr/selectableItemBackground"
-                    android:scaleType="centerInside"
-                    android:tint="?android:attr/textColorPrimary"
-                    android:contentDescription="@string/paper_wallet_copy" />
+                    android:scaleType="centerInside" />
 
                 <ImageButton
                     android:id="@+id/paper_wallet_public_format"
@@ -158,9 +156,7 @@
                     android:layout_weight="1"
                     android:src="@android:drawable/ic_menu_rotate"
                     android:background="?android:attr/selectableItemBackground"
-                    android:scaleType="centerInside"
-                    android:tint="?android:attr/textColorPrimary"
-                    android:contentDescription="@string/paper_wallet_public_format_bech32" />
+                    android:scaleType="centerInside" />
 
                 <ImageButton
                     android:id="@+id/paper_wallet_toggle_address"
@@ -169,9 +165,7 @@
                     android:layout_weight="1"
                     android:src="@android:drawable/ic_menu_view"
                     android:background="?android:attr/selectableItemBackground"
-                    android:scaleType="centerInside"
-                    android:tint="?android:attr/textColorPrimary"
-                    android:contentDescription="@string/paper_wallet_hide" />
+                    android:scaleType="centerInside" />
             </LinearLayout>
 
             <LinearLayout
@@ -189,9 +183,7 @@
                     android:layout_weight="1"
                     android:src="@android:drawable/ic_menu_copy"
                     android:background="?android:attr/selectableItemBackground"
-                    android:scaleType="centerInside"
-                    android:tint="?android:attr/textColorPrimary"
-                    android:contentDescription="@string/paper_wallet_copy" />
+                    android:scaleType="centerInside" />
 
                 <ImageButton
                     android:id="@+id/paper_wallet_privkey_format"
@@ -200,9 +192,7 @@
                     android:layout_weight="1"
                     android:src="@android:drawable/ic_menu_rotate"
                     android:background="?android:attr/selectableItemBackground"
-                    android:scaleType="centerInside"
-                    android:tint="?android:attr/textColorPrimary"
-                    android:contentDescription="@string/paper_wallet_private_format_wif" />
+                    android:scaleType="centerInside" />
 
                 <ImageButton
                     android:id="@+id/paper_wallet_toggle_key"
@@ -211,9 +201,7 @@
                     android:layout_weight="1"
                     android:src="@android:drawable/ic_menu_close_clear_cancel"
                     android:background="?android:attr/selectableItemBackground"
-                    android:scaleType="centerInside"
-                    android:tint="?android:attr/textColorPrimary"
-                    android:contentDescription="@string/paper_wallet_hide_key" />
+                    android:scaleType="centerInside" />
             </LinearLayout>
         </LinearLayout>
 
@@ -275,14 +263,13 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="12dp" />
 
-        <!-- Nút Generate -->
         <Button
             android:id="@+id/paper_wallet_generate"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="@string/paper_wallet_generate_new" />
 
-        <!-- 4 nút icon hệ thống -->
+        <!-- 4 nút icon dưới cùng -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -297,9 +284,7 @@
                 android:layout_weight="1"
                 android:src="@android:drawable/ic_menu_save"
                 android:background="?android:attr/selectableItemBackground"
-                android:scaleType="centerInside"
-                android:tint="?android:attr/textColorPrimary"
-                android:contentDescription="@string/paper_wallet_save" />
+                android:scaleType="centerInside" />
 
             <ImageButton
                 android:id="@+id/paper_wallet_share"
@@ -308,9 +293,7 @@
                 android:layout_weight="1"
                 android:src="@android:drawable/ic_menu_share"
                 android:background="?android:attr/selectableItemBackground"
-                android:scaleType="centerInside"
-                android:tint="?android:attr/textColorPrimary"
-                android:contentDescription="@string/paper_wallet_share" />
+                android:scaleType="centerInside" />
 
             <ImageButton
                 android:id="@+id/paper_wallet_print"
@@ -319,9 +302,7 @@
                 android:layout_weight="1"
                 android:src="@android:drawable/ic_menu_print"
                 android:background="?android:attr/selectableItemBackground"
-                android:scaleType="centerInside"
-                android:tint="?android:attr/textColorPrimary"
-                android:contentDescription="@string/paper_wallet_print" />
+                android:scaleType="centerInside" />
 
             <ImageButton
                 android:id="@+id/paper_wallet_export_txt"
@@ -330,9 +311,7 @@
                 android:layout_weight="1"
                 android:src="@android:drawable/ic_menu_edit"
                 android:background="?android:attr/selectableItemBackground"
-                android:scaleType="centerInside"
-                android:tint="?android:attr/textColorPrimary"
-                android:contentDescription="@string/paper_wallet_export_txt" />
+                android:scaleType="centerInside" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
