@@ -38,9 +38,9 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
    
     implementation fileTree(dir: 'libs', include: ['*.jar']) // vendor - setup jar libs in repo
-    //implementation 'org.bouncycastle:bcprov-jdk18on:1.83'
+    // implementation 'org.bouncycastle:bcprov-jdk18on:1.83'
     // implementation 'net.jcip:jcip-annotations:1.0'
-    implementation 'com.google.protobuf:protobuf-javalite:3.21.12'
+    // implementation 'com.google.protobuf:protobuf-javalite:3.21.12'
 
 
 
