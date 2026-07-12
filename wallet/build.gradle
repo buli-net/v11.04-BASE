@@ -9,6 +9,7 @@ configurations {
     all*.exclude group: 'androidx.viewpager', module: 'viewpager'
     all*.exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
     all*.exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+    all*.exclude group: 'org.slf4j', module: 'slf4j-api'//
 }
 
 //clone bitcoinj
