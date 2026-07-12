@@ -248,9 +248,7 @@
             android:textAllCaps="false"
             android:drawableStart="@drawable/ic_refresh"
             android:drawablePadding="8dp"
-            android:gravity="center"
-            android:drawableTint="?android:attr/textColorSecondary"
-            android:drawableTintMode="src_in" />
+            android:gravity="center" />
 
         <LinearLayout
             android:layout_width="match_parent"
