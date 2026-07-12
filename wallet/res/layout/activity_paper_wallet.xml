@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Paper Wallet - bố trí 2 cột gọn -->
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -13,7 +12,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Warning -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,7 +21,7 @@
             android:lineSpacingExtra="2dp"
             android:layout_marginBottom="16dp" />
 
-        <!-- 2 cột Public | Private -->
+        <!-- ===== Tiêu đề 2 cột bám QR ===== -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -31,158 +29,201 @@
             android:weightSum="2"
             android:baselineAligned="false">
 
-            <!-- Cột Public -->
+            <TextView
+                android:id="@+id/paper_wallet_public_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/paper_wallet_public_label"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/paper_wallet_key_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/paper_wallet_private_label"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </LinearLayout>
+
+        <!-- ===== 2 QR bám theo 2 cột ===== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_marginTop="10dp"
+            android:baselineAligned="false">
+
+            <ImageView
+                android:id="@+id/paper_wallet_qr_address"
+                android:layout_width="0dp"
+                android:layout_height="160dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:background="#ffffff"
+                android:padding="8dp" />
+
+            <ImageView
+                android:id="@+id/paper_wallet_qr_key"
+                android:layout_width="0dp"
+                android:layout_height="160dp"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:background="#ffffff"
+                android:padding="8dp" />
+        </LinearLayout>
+
+        <!-- ===== Địa chỉ ví dưới QR - dạng như hình 2, cho phép xuống 3 dòng ===== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_marginTop="10dp"
+            android:baselineAligned="false">
+
+            <TextView
+                android:id="@+id/paper_wallet_address"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                android:textIsSelectable="true"
+                android:fontFamily="monospace"
+                android:textSize="12sp"
+                android:letterSpacing="-0.01"
+                android:lineSpacingExtra="2dp"
+                android:maxLines="3"
+                android:breakStrategy="balanced" />
+
+            <TextView
+                android:id="@+id/paper_wallet_key"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:gravity="center"
+                android:textIsSelectable="true"
+                android:fontFamily="monospace"
+                android:textSize="12sp"
+                android:letterSpacing="-0.01"
+                android:lineSpacingExtra="2dp"
+                android:maxLines="3"
+                android:breakStrategy="balanced" />
+        </LinearLayout>
+
+        <!-- ===== 6 NÚT 1 HÀNG NHƯNG BÁM THEO QR ===== -->
+        <!-- Mẹo: 1 hàng ngoài weightSum=2, trong có 2 cụm weight=1, mỗi cụm chứa 3 nút -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_marginTop="6dp"
+            android:baselineAligned="false">
+
+            <!-- Cụm trái bám QR trái -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical"
                 android:layout_marginEnd="6dp"
-                android:gravity="center_horizontal">
-
-                <TextView
-                    android:id="@+id/paper_wallet_public_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/paper_wallet_public_label"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="?android:attr/textColorPrimary" />
-
-                <ImageView
-                    android:id="@+id/paper_wallet_qr_address"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_marginTop="10dp"
-                    android:background="#ffffff"
-                    android:padding="6dp" />
-
-                <TextView
-                    android:id="@+id/paper_wallet_address"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textIsSelectable="true"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:gravity="center"
-                    android:textSize="13sp"
-                    android:fontFamily="monospace"
-                    android:letterSpacing="-0.01"
-                    android:lineSpacingExtra="2dp"
-                    android:layout_marginTop="10dp"
-                    android:paddingHorizontal="4dp" />
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/paper_wallet_copy_address"
                     style="?android:attr/buttonBarButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="42dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
                     android:text="@string/paper_wallet_copy"
-                    android:textAllCaps="false" />
+                    android:textAllCaps="false"
+                    android:textSize="12sp" />
 
                 <Button
                     android:id="@+id/paper_wallet_public_format"
                     style="?android:attr/buttonBarButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="42dp"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
                     android:text="@string/paper_wallet_public_format_bech32"
-                    android:textAllCaps="false" />
+                    android:textAllCaps="false"
+                    android:textSize="12sp" />
 
                 <Button
                     android:id="@+id/paper_wallet_toggle_address"
                     style="?android:attr/buttonBarButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="42dp"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
                     android:text="@string/paper_wallet_hide"
-                    android:textAllCaps="false" />
+                    android:textAllCaps="false"
+                    android:textSize="12sp" />
             </LinearLayout>
 
-            <!-- Cột Private -->
+            <!-- Cụm phải bám QR phải -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical"
                 android:layout_marginStart="6dp"
-                android:gravity="center_horizontal">
-
-                <TextView
-                    android:id="@+id/paper_wallet_key_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/paper_wallet_private_label"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="?android:attr/textColorPrimary" />
-
-                <ImageView
-                    android:id="@+id/paper_wallet_qr_key"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_marginTop="10dp"
-                    android:background="#ffffff"
-                    android:padding="6dp" />
-
-                <TextView
-                    android:id="@+id/paper_wallet_key"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textIsSelectable="true"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:gravity="center"
-                    android:textSize="13sp"
-                    android:fontFamily="monospace"
-                    android:letterSpacing="-0.01"
-                    android:lineSpacingExtra="2dp"
-                    android:layout_marginTop="10dp"
-                    android:paddingHorizontal="4dp" />
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/paper_wallet_copy_privkey"
                     style="?android:attr/buttonBarButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="42dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
                     android:text="@string/paper_wallet_copy"
-                    android:textAllCaps="false" />
+                    android:textAllCaps="false"
+                    android:textSize="12sp" />
 
                 <Button
                     android:id="@+id/paper_wallet_privkey_format"
                     style="?android:attr/buttonBarButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="42dp"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
                     android:text="@string/paper_wallet_private_format_wif"
-                    android:textAllCaps="false" />
+                    android:textAllCaps="false"
+                    android:textSize="12sp" />
 
                 <Button
                     android:id="@+id/paper_wallet_toggle_key"
                     style="?android:attr/buttonBarButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="42dp"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
                     android:text="@string/paper_wallet_hide_key"
-                    android:textAllCaps="false" />
+                    android:textAllCaps="false"
+                    android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
 
-        <!-- ========== BIP38 ========== -->
+        <!-- BIP38 -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="?android:attr/listDivider"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="12dp" />
 
         <CheckBox
             android:id="@+id/paper_wallet_encrypt_toggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/paper_wallet_encrypt_bip38"
-            android:textColor="?android:attr/textColorPrimary" />
+            android:text="@string/paper_wallet_encrypt_bip38" />
 
         <CheckBox
             android:id="@+id/paper_wallet_show_pass"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/paper_wallet_show"
-            android:textColor="?android:attr/textColorPrimary"
             android:visibility="gone" />
 
         <EditText
@@ -209,7 +250,6 @@
             android:layout_height="wrap_content"
             android:text="@string/paper_wallet_bip38_hint"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="?android:attr/textColorSecondary"
             android:visibility="gone" />
 
         <View
@@ -219,7 +259,6 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="12dp" />
 
-        <!-- ========== Actions ========== -->
         <Button
             android:id="@+id/paper_wallet_generate"
             android:layout_width="match_parent"
@@ -268,6 +307,5 @@
                 android:text="@string/paper_wallet_export_txt"
                 android:textAllCaps="false" />
         </LinearLayout>
-
     </LinearLayout>
 </ScrollView>
