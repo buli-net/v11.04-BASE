@@ -171,11 +171,13 @@
             android:label="@string/network_monitor_activity_title"
             android:theme="@style/My.Theme" />
 
+        <!-- fix theme sreen settings ui -->
         <activity
             android:name="wallet.ui.preference.PreferenceActivity"
             android:label="@string/preferences_activity_title"
-            android:theme="@android:style/Theme.Material.Light.DarkActionBar" />
-
+            android:theme="@style/My.Preference" />
+         <!--   android:theme="@android:style/Theme.Material.Light.DarkActionBar" />
+         -->
         <activity
             android:name="wallet.ui.backup.BackupWalletActivity"
             android:configChanges="orientation|keyboard|keyboardHidden"
