@@ -3,20 +3,20 @@
     <string name="help_wallet">
 <![CDATA[
 		<p>
-			Phía trên bên trái màn hình hiển thị số dư của bạn bằng Bitcoin và một loại tiền tệ quốc gia được chọn.
-			Nhấn để đến danh sách các loại tiền tệ, và nhấn vào một loại tiền tệ để chọn làm mặc định.
+			Phần trên bên trái màn hình hiển thị số dư của bạn bằng Bitcoin và một loại tiền tệ quốc gia đã chọn.
+			Nhấn để vào danh sách các loại tiền tệ, và nhấn vào một loại tiền để chọn làm mặc định.
 		</p>
 		<p>
-			Mã QR ở phía trên bên phải chứa địa chỉ Bitcoin hiện tại của bạn và có thể được người gửi quét.
+			Mã QR ở góc trên bên phải chứa địa chỉ bitcoin hiện tại của bạn và có thể được người thanh toán sử dụng để quét.
 			Nhấn vào mã QR để xem phiên bản lớn hơn.
 		</p>
 		<p>
-			Phần dưới của màn hình là danh sách giao dịch của bạn.
-			Ban đầu nó trống và sẽ dần hiển thị khi bạn nhận và gửi thanh toán.
-			Các giao dịch nhận sẽ được đánh dấu màu xanh lá, các giao dịch gửi màu đỏ.
+			Phần dưới màn hình là danh sách các giao dịch của bạn.
+			Ban đầu nó trống và sẽ được điền dần khi bạn nhận và gửi thanh toán.
+			Các khoản nhận sẽ được đánh dấu màu xanh lá và các khoản gửi màu đỏ.
 		</p>
 		<p>
-			Bạn có thể gửi hoặc yêu cầu Bitcoin bằng cách nhấn các nút trên thanh hành động.
+			Bạn có thể gửi hoặc yêu cầu coin bằng cách nhấn vào các nút trên thanh hành động.
 			Nhiều tùy chọn hơn có sẵn trong menu tùy chọn.
 		</p>
 	]]>
@@ -24,47 +24,47 @@
     <string name="help_request_coins">
 <![CDATA[
 		<p>
-			Sử dụng hộp thoại này, bạn có thể yêu cầu Bitcoin từ người gửi.
-			Người gửi nên đã cài đặt một ví Bitcoin.
+			Sử dụng hộp thoại này, bạn có thể yêu cầu coin từ người thanh toán.
+			Người thanh toán nên đã cài đặt ví Bitcoin.
 		</p>
 		<p>
-			Trước tiên, bạn có thể nhập số lượng Bitcoin cần yêu cầu.
+			Đầu tiên, bạn có thể nhập số lượng Bitcoin muốn yêu cầu.
 		</p>
 		<p>
-			Sau đó, bạn có thể để người gửi quét mã QR được tạo ra.
-			Hoặc, bạn có thể gửi yêu cầu của mình đến người khác qua nút chia sẻ trên thanh hành động.
+			Sau đó, bạn hoặc để người thanh toán quét mã QR được tạo ra.
+			Hoặc, bạn có thể gửi yêu cầu của mình đến một người ở xa bằng nút chia sẻ trên thanh hành động.
 			Nếu cả hai điện thoại đều bật NFC, bạn cũng có thể chạm chúng vào nhau.
 		</p>
 		<p>
-			Dù bằng cách nào, người gửi sẽ thấy một hộp thoại gửi Bitcoin với tất cả các trường đã được điền sẵn.
-			Nếu người gửi đồng ý, họ có thể thực hiện thanh toán một cách dễ dàng.
+			Dù bằng cách nào, người thanh toán sẽ được hiển thị một hộp thoại để gửi coin với tất cả các trường đã được điền sẵn.
+			Nếu người thanh toán đồng ý, họ có thể thực hiện thanh toán một cách dễ dàng.
 		</p>
 	]]>
     </string>
     <string name="help_send_coins">
 <![CDATA[
 		<p>
-			Bạn đã bắt đầu quá trình gửi Bitcoin.
+			Bạn đã bắt đầu quá trình gửi coin.
 		</p>
 		<p>
-			Trước tiên, bạn nhập địa chỉ Bitcoin cần gửi đến.
-			Địa chỉ sẽ tự động hoàn thành từ các mục đã biết trong sổ địa chỉ của bạn.
+			Đầu tiên, bạn nhập địa chỉ Bitcoin cần thanh toán.
+			Địa chỉ sẽ tự động hoàn tất từ các mục đã biết trong sổ địa chỉ của bạn.
 			Bạn cũng có thể quét mã QR do người nhận cung cấp bằng cách nhấn nút camera.
 		</p>
 		<p>
-			Tiếp theo, bạn nhập số tiền cần gửi.
+			Tiếp theo, bạn nhập số tiền cần thanh toán.
 		</p>
 		<p>
-			Cuối cùng, bạn phải nhập mã PIN chi tiêu nếu đã được thiết lập trước đó.
+			Cuối cùng, mã PIN chi tiêu phải được nhập nếu đã được thiết lập trước đó.
 		</p>
 		<p>
-			Bạn có thể tạo một giao dịch khi đang ngoại tuyến.
-			Nó sẽ được gửi khi Ví Bitcoin được khởi động lại lần tiếp theo.
-			Nếu bạn muốn giao dịch được xử lý nhanh nhất có thể, hãy đảm bảo bạn có kết nối tốt (ví dụ: qua WLAN).
+			Bạn có thể thực hiện thanh toán khi đang ngoại tuyến.
+			Nó sẽ được gửi khi khởi động lại Ví Bitcoin lần tiếp theo.
+			Nếu bạn muốn một thanh toán được xử lý nhanh nhất có thể, hãy đảm bảo bạn được kết nối tốt (ví dụ: qua WLAN).
 		</p>
 		<p>
 			Lưu ý:
-			Các giao dịch là không thể đảo ngược!
+			Các khoản thanh toán là không thể đảo ngược!
 			Luôn kiểm tra địa chỉ nhận.
 		</p>
 	]]>
@@ -76,25 +76,25 @@
 		</p>
 		<p>
 			Bitcoin được lưu trữ trên thiết bị.
-			<b>Nếu bạn làm mất thiết bị, bạn sẽ mất Bitcoin của mình.</b>
+			<b>Nếu bạn mất thiết bị, bạn sẽ mất Bitcoin.</b>
 		</p>
 		<p>
-			Điều này có nghĩa là bạn cần <b>sao lưu ví</b> của mình!
+			Điều này có nghĩa bạn cần <b>sao lưu ví</b> của mình!
 			Hãy sử dụng tính năng sao lưu trong ứng dụng thay vì ứng dụng sao lưu của bên thứ ba.
 			Giữ bản sao lưu của bạn an toàn và nhớ mật khẩu.
 		</p>
 		<p>
-			<b>Trước khi gỡ cài đặt</b> (hoặc xóa dữ liệu ứng dụng / lau thiết bị), <b>hãy chuyển Bitcoin của bạn sang ví khác</b>.
+			<b>Trước khi gỡ cài đặt</b> (hoặc xóa dữ liệu ứng dụng/xóa sạch thiết bị), <b>hãy chuyển Bitcoin của bạn sang ví khác</b>.
 			Số Bitcoin còn lại sẽ bị mất.
 		</p>
 		<p>
-			<b>Các giao dịch là không thể đảo ngược</b>.
-			Nếu bạn gửi Bitcoin vào hư không, gần như không có cách nào để lấy lại.
+			<b>Các khoản thanh toán là không thể đảo ngược</b>.
+			Nếu bạn gửi Bitcoin vào hư không, hầu như không có cách nào để lấy lại chúng.
 		</p>
 		<p>
 			<b>Hãy bảo vệ thiết bị di động của bạn!</b>
 			Không root thiết bị.
-			Chỉ cài đặt ứng dụng mà bạn hoàn toàn tin tưởng.
+			Chỉ cài đặt các ứng dụng mà bạn hoàn toàn tin tưởng.
 			Các ứng dụng độc hại có thể cố gắng đánh cắp ví của bạn.
 		</p>
 		<p>
@@ -109,14 +109,14 @@
             <b>Ghi chú kỹ thuật:</b>
         </p>
         <p>
-            Là một ví SPV/nhẹ, Ví Bitcoin theo dõi chuỗi có nhiều bằng chứng công việc nhất (đôi khi còn gọi là \"chuỗi dài nhất\", \"chuỗi thắng\" hoặc \"blockchain Bitcoin\").
-            Bạn sẽ chỉ nhận được các giao dịch đến và có thể thực hiện thanh toán trên chuỗi đó.
-            Không có bảo đảm nào về Bitcoin trên các chuỗi thiểu số, tức các chuỗi có ít bằng chứng công việc hơn.
+            Là một ví SPV/nhẹ, Ví Bitcoin tuân theo chuỗi có bằng chứng công việc nhiều nhất (đôi khi còn được gọi là \"chuỗi dài nhất\", \"chuỗi chiến thắng\" hoặc \"chuỗi khối Bitcoin\").
+            Bạn sẽ chỉ nhận được các khoản thanh toán đến và có thể chi tiêu trên chuỗi đó.
+            Không có bảo đảm nào về Bitcoin trên các chuỗi thiểu số, tức là các chuỗi có ít bằng chứng công việc hơn.
         </p>
         <p>
-            Trong quá khứ, các chuỗi thiểu số luôn nhanh chóng trở nên không còn liên quan.
-            Nếu bạn vẫn muốn theo dõi một chuỗi thiểu số, bạn nên sử dụng tính năng \"đồng nghiệp tin cậy\" để chỉ kết nối với một bitcoind thực thi chuỗi bạn mong muốn.
-            Nếu mạng giữa ví và đồng nghiệp tin cậy không đáng tin cậy, hãy sử dụng VPN để xác thực kết nối đó.
+            Trong quá khứ, các chuỗi thiểu số luôn trở nên không còn liên quan rất nhanh.
+            Nếu bạn vẫn muốn theo dõi một chuỗi thiểu số, bạn nên sử dụng tính năng \"đối tác tin cậy\" để chỉ kết nối với một triển khai bitcoind thực thi chuỗi bạn mong muốn.
+            Nếu mạng giữa ví của bạn và đối tác tin cậy không đáng tin cậy, hãy sử dụng VPN để xác thực kết nối đó.
         </p>
     ]]>
     </string>
