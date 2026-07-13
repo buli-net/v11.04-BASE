@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/paper_wallet_options_refresh"
+        android:icon="@drawable/ic_refresh_white_24dp"
+        android:title="Tạo mới"
+        android:showAsAction="always" />
+
+</menu>
