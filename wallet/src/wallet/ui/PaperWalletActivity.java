@@ -43,7 +43,7 @@ import wallet.Constants;
 import wallet.R;
 import wallet.util.Qr;
 import wallet.util.Bip38Helper;
-
+import android.view.Menu;
 /**
  * Paper Wallet creation activity.
  *
@@ -546,7 +546,7 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         }
     }
 
-    @Override
+ /*   @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
@@ -554,7 +554,26 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+*/
+        @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        getMenuInflater().inflate(R.menu.paper_wallet_options, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
+            return true;
+        } else if (id == R.id.paper_wallet_options_refresh) {
+            generateNew(); // chính là hàm nút TẠO MỚI của bạn
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    ///////
     @Override
     protected void onDestroy() {
         super.onDestroy();
