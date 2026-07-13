@@ -13,14 +13,14 @@
         android:icon="@drawable/ic_save_white_24dp"
         android:title="@string/paper_wallet_save"
         android:titleCondensed="@string/paper_wallet_save"
-        android:showAsAction="always|withText" />
+        android:showAsAction="ifRoom|withText" />
 
     <item
         android:id="@+id/paper_wallet_options_share"
         android:icon="@drawable/ic_share_white_24dp"
         android:title="@string/paper_wallet_share"
         android:titleCondensed="@string/paper_wallet_share"
-        android:showAsAction="always|withText" />
+        android:showAsAction="ifRoom|withText" />
 
     <item
         android:id="@+id/paper_wallet_options_print"
