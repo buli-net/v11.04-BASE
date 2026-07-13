@@ -396,8 +396,8 @@
     <string name="paper_wallet_copy">Sao chép</string>
     <string name="paper_wallet_show">Hiện</string>
     <string name="paper_wallet_hide">Ẩn</string>
-    <string name="paper_wallet_show_key">Hiện khóa</string>
-    <string name="paper_wallet_hide_key">Ẩn khóa</string>
+    <string name="paper_wallet_show_key">Hiện</string>
+    <string name="paper_wallet_hide_key">Ẩn</string>
     <string name="paper_wallet_generate_new">Tạo mới</string>
     <string name="paper_wallet_save">Lưu</string>
     <string name="paper_wallet_share">Chia sẻ</string>
