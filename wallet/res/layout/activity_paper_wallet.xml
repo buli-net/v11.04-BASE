@@ -120,7 +120,7 @@
                 android:breakStrategy="balanced" />
         </LinearLayout>
 
-        <!-- 6 NÚT ICON - DÙNG ĐÚNG ICON MÀY YÊU CẦU: ic_refresh_white_24dp -->
+        <!-- 6 NÚT ICON - FIX CHÍNH THỨC, KHÔNG CẮT, KHÔNG VĂNG APP -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -145,10 +145,10 @@
                     android:layout_height="48dp"
                     android:layout_weight="1"
                     android:minHeight="48dp"
-                    android:paddingHorizontal="6dp"
-                    android:drawableTop="@drawable/ic_refresh_white_24dp"
-                    android:drawableTint="#00796B"
                     android:gravity="center"
+                    android:paddingHorizontal="6dp"
+                    android:drawableTop="@drawable/ic_copy_white_24dp"
+                    android:drawableTint="#00796B"
                     android:text=""
                     android:contentDescription="@string/paper_wallet_copy" />
 
@@ -159,12 +159,12 @@
                     android:layout_height="48dp"
                     android:layout_weight="1"
                     android:minHeight="48dp"
-                    android:paddingHorizontal="6dp"
-                    android:drawableTop="@drawable/ic_refresh_white_24dp"
-                    android:drawableTint="#00796B"
                     android:gravity="center"
+                    android:paddingHorizontal="6dp"
+                    android:drawableTop="@drawable/ic_qr_white_24dp"
+                    android:drawableTint="#00796B"
                     android:text=""
-                    android:contentDescription="@string/paper_wallet_public_format_bech32" />
+                    android:contentDescription="BECH32" />
 
                 <Button
                     android:id="@+id/paper_wallet_toggle_address"
@@ -173,10 +173,10 @@
                     android:layout_height="48dp"
                     android:layout_weight="1"
                     android:minHeight="48dp"
-                    android:paddingHorizontal="6dp"
-                    android:drawableTop="@drawable/ic_refresh_white_24dp"
-                    android:drawableTint="#00796B"
                     android:gravity="center"
+                    android:paddingHorizontal="6dp"
+                    android:drawableTop="@drawable/ic_eye_off_white_24dp"
+                    android:drawableTint="#00796B"
                     android:text=""
                     android:contentDescription="@string/paper_wallet_hide" />
             </LinearLayout>
@@ -196,10 +196,10 @@
                     android:layout_height="48dp"
                     android:layout_weight="1"
                     android:minHeight="48dp"
-                    android:paddingHorizontal="6dp"
-                    android:drawableTop="@drawable/ic_refresh_white_24dp"
-                    android:drawableTint="#00796B"
                     android:gravity="center"
+                    android:paddingHorizontal="6dp"
+                    android:drawableTop="@drawable/ic_copy_white_24dp"
+                    android:drawableTint="#00796B"
                     android:text=""
                     android:contentDescription="@string/paper_wallet_copy" />
 
@@ -210,12 +210,12 @@
                     android:layout_height="48dp"
                     android:layout_weight="1"
                     android:minHeight="48dp"
-                    android:paddingHorizontal="6dp"
-                    android:drawableTop="@drawable/ic_refresh_white_24dp"
-                    android:drawableTint="#00796B"
                     android:gravity="center"
+                    android:paddingHorizontal="6dp"
+                    android:drawableTop="@drawable/ic_key_white_24dp"
+                    android:drawableTint="#00796B"
                     android:text=""
-                    android:contentDescription="@string/paper_wallet_private_format_wif" />
+                    android:contentDescription="WIF" />
 
                 <Button
                     android:id="@+id/paper_wallet_toggle_key"
@@ -224,10 +224,10 @@
                     android:layout_height="48dp"
                     android:layout_weight="1"
                     android:minHeight="48dp"
-                    android:paddingHorizontal="4dp"
-                    android:drawableTop="@drawable/ic_refresh_white_24dp"
-                    android:drawableTint="#00796B"
                     android:gravity="center"
+                    android:paddingHorizontal="4dp"
+                    android:drawableTop="@drawable/ic_eye_off_white_24dp"
+                    android:drawableTint="#00796B"
                     android:text=""
                     android:contentDescription="@string/paper_wallet_hide_key" />
             </LinearLayout>
