@@ -5,30 +5,35 @@
         android:id="@+id/paper_wallet_options_refresh"
         android:icon="@drawable/ic_refresh_white_24dp"
         android:title="@string/paper_wallet_generate_new"
-        android:showAsAction="ifRoom" />
+        android:titleCondensed="@string/paper_wallet_generate_new"
+        android:showAsAction="always|withText" />
 
     <item
         android:id="@+id/paper_wallet_options_save"
         android:icon="@drawable/ic_save_white_24dp"
         android:title="@string/paper_wallet_save"
-        android:showAsAction="ifRoom" />
+        android:titleCondensed="@string/paper_wallet_save"
+        android:showAsAction="always|withText" />
 
     <item
         android:id="@+id/paper_wallet_options_share"
         android:icon="@drawable/ic_share_white_24dp"
         android:title="@string/paper_wallet_share"
-        android:showAsAction="ifRoom" />
+        android:titleCondensed="@string/paper_wallet_share"
+        android:showAsAction="always|withText" />
 
     <item
         android:id="@+id/paper_wallet_options_print"
         android:icon="@drawable/ic_print_white_24dp"
         android:title="@string/paper_wallet_print"
-        android:showAsAction="ifRoom" />
+        android:titleCondensed="@string/paper_wallet_print"
+        android:showAsAction="ifRoom|withText" />
 
     <item
         android:id="@+id/paper_wallet_options_export"
         android:icon="@drawable/ic_export_txt_white_24dp"
         android:title="@string/paper_wallet_export_txt"
-        android:showAsAction="ifRoom" />
+        android:titleCondensed="@string/paper_wallet_export_txt"
+        android:showAsAction="ifRoom|withText" />
 
 </menu>
