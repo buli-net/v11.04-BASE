@@ -556,23 +556,29 @@ public class PaperWalletActivity extends AbstractWalletActivity {
     }
 */
         @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
-        getMenuInflater().inflate(R.menu.paper_wallet_options, menu);
-        return true;
-    }
+public boolean onCreateOptionsMenu(final Menu menu) {
+    getMenuInflater().inflate(R.menu.paper_wallet_options, menu);
+    return true;
+}
 
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            finish();
-            return true;
-        } else if (id == R.id.paper_wallet_options_refresh) {
-            generateNew(); // chính là hàm nút TẠO MỚI của bạn
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+@Override
+public boolean onOptionsItemSelected(final MenuItem item) {
+    int id = item.getItemId();
+    if (id == android.R.id.home) {
+        finish(); return true;
+    } else if (id == R.id.paper_wallet_options_refresh) {
+        generateNew(); return true;
+    } else if (id == R.id.paper_wallet_options_save) {
+        savePaperWallet(); return true;
+    } else if (id == R.id.paper_wallet_options_share) {
+        sharePaperWallet(); return true;
+    } else if (id == R.id.paper_wallet_options_print) {
+        printPaperWallet(); return true;
+    } else if (id == R.id.paper_wallet_options_export) {
+        exportWalletTxt(); return true;
     }
+    return super.onOptionsItemSelected(item);
+}
     ///////
     @Override
     protected void onDestroy() {
