@@ -120,7 +120,7 @@
                 android:breakStrategy="balanced" />
         </LinearLayout>
 
-        <!-- 6 NÚT 1 HÀNG BÁM THEO QR - ĐÃ NỚI RỘNG KHUNG -->
+        <!-- 6 NÚT ICON - DÙNG ĐÚNG ICON MÀY YÊU CẦU: ic_refresh_white_24dp -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -135,47 +135,50 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="3dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center">
 
                 <Button
                     android:id="@+id/paper_wallet_copy_address"
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_weight="1"
                     android:minHeight="48dp"
-                    android:maxLines="2"
-                    android:gravity="center"
                     android:paddingHorizontal="6dp"
-                    android:text="@string/paper_wallet_copy"
-                    android:textAllCaps="false"
-                    android:textSize="12sp" />
+                    android:drawableTop="@drawable/ic_refresh_white_24dp"
+                    android:drawableTint="#00796B"
+                    android:gravity="center"
+                    android:text=""
+                    android:contentDescription="@string/paper_wallet_copy" />
 
                 <Button
                     android:id="@+id/paper_wallet_public_format"
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_weight="1"
                     android:minHeight="48dp"
-                    android:gravity="center"
                     android:paddingHorizontal="6dp"
-                    android:text="@string/paper_wallet_public_format_bech32"
-                    android:textAllCaps="false"
-                    android:textSize="12sp" />
+                    android:drawableTop="@drawable/ic_refresh_white_24dp"
+                    android:drawableTint="#00796B"
+                    android:gravity="center"
+                    android:text=""
+                    android:contentDescription="@string/paper_wallet_public_format_bech32" />
 
                 <Button
                     android:id="@+id/paper_wallet_toggle_address"
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_weight="1"
                     android:minHeight="48dp"
-                    android:gravity="center"
                     android:paddingHorizontal="6dp"
-                    android:text="@string/paper_wallet_hide"
-                    android:textAllCaps="false"
-                    android:textSize="12sp" />
+                    android:drawableTop="@drawable/ic_refresh_white_24dp"
+                    android:drawableTint="#00796B"
+                    android:gravity="center"
+                    android:text=""
+                    android:contentDescription="@string/paper_wallet_hide" />
             </LinearLayout>
 
             <LinearLayout
@@ -183,48 +186,50 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="3dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center">
 
                 <Button
                     android:id="@+id/paper_wallet_copy_privkey"
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_weight="1"
                     android:minHeight="48dp"
-                    android:maxLines="2"
-                    android:gravity="center"
                     android:paddingHorizontal="6dp"
-                    android:text="@string/paper_wallet_copy"
-                    android:textAllCaps="false"
-                    android:textSize="12sp" />
+                    android:drawableTop="@drawable/ic_refresh_white_24dp"
+                    android:drawableTint="#00796B"
+                    android:gravity="center"
+                    android:text=""
+                    android:contentDescription="@string/paper_wallet_copy" />
 
                 <Button
                     android:id="@+id/paper_wallet_privkey_format"
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_weight="1"
                     android:minHeight="48dp"
-                    android:gravity="center"
                     android:paddingHorizontal="6dp"
-                    android:text="@string/paper_wallet_private_format_wif"
-                    android:textAllCaps="false"
-                    android:textSize="12sp" />
+                    android:drawableTop="@drawable/ic_refresh_white_24dp"
+                    android:drawableTint="#00796B"
+                    android:gravity="center"
+                    android:text=""
+                    android:contentDescription="@string/paper_wallet_private_format_wif" />
 
                 <Button
                     android:id="@+id/paper_wallet_toggle_key"
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_weight="1"
                     android:minHeight="48dp"
-                    android:maxLines="2"
-                    android:gravity="center"
                     android:paddingHorizontal="4dp"
-                    android:text="@string/paper_wallet_hide_key"
-                    android:textAllCaps="false"
-                    android:textSize="12sp" />
+                    android:drawableTop="@drawable/ic_refresh_white_24dp"
+                    android:drawableTint="#00796B"
+                    android:gravity="center"
+                    android:text=""
+                    android:contentDescription="@string/paper_wallet_hide_key" />
             </LinearLayout>
         </LinearLayout>
 
