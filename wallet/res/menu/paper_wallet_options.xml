@@ -5,7 +5,7 @@
         android:id="@+id/paper_wallet_options_refresh"
         android:icon="@drawable/ic_refresh_white_24dp"
         android:title="Tạo mới"
-        android:showAsAction="ifRoom" />
+        android:showAsAction="always" />
 
     <item
         android:id="@+id/paper_wallet_options_save"
