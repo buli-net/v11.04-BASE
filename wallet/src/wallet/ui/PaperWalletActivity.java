@@ -443,19 +443,32 @@ public class PaperWalletActivity extends AbstractWalletActivity {
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.paper_wallet_options, menu);
-        android.content.Context abCtx = getActionBar() != null ? getActionBar().getThemedContext() : this;
-        android.util.TypedValue tv = new android.util.TypedValue();
-        boolean found = abCtx.getTheme().resolveAttribute(android.R.attr.actionMenuTextColor, tv, true);
-        if (!found) {
-            abCtx.getTheme().resolveAttribute(android.R.attr.textColorPrimary, tv, true);
-        }
-        int actionBarTextColor = tv.data;
+        // Chữ lấy màu từ icon, không set cứng
         for (int i = 0; i < menu.size(); i++) {
             MenuItem item = menu.getItem(i);
+            android.graphics.drawable.Drawable icon = item.getIcon();
+            if (icon == null) continue;
+            int iconColor = 0;
+            try {
+                int w = icon.getIntrinsicWidth() > 0 ? icon.getIntrinsicWidth() : 24;
+                int h = icon.getIntrinsicHeight() > 0 ? icon.getIntrinsicHeight() : 24;
+                Bitmap bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(bmp);
+                icon.setBounds(0, 0, w, h);
+                icon.draw(canvas);
+                // lấy điểm giữa icon, chỗ có màu đặc nhất
+                iconColor = bmp.getPixel(w/2, h/2);
+                // quét thêm vài điểm nếu giữa trong suốt
+                if ((iconColor >>> 24) < 50) {
+                    iconColor = bmp.getPixel(w/4, h/4);
+                }
+                bmp.recycle();
+            } catch (Exception ignored) {}
+            if ((iconColor >>> 24) == 0) continue;
             CharSequence title = item.getTitle();
             if (title != null) {
                 android.text.SpannableString colored = new android.text.SpannableString(title);
-                colored.setSpan(new android.text.style.ForegroundColorSpan(actionBarTextColor), 0, colored.length(), 0);
+                colored.setSpan(new android.text.style.ForegroundColorSpan(iconColor), 0, colored.length(), 0);
                 item.setTitle(colored);
             }
         }
