@@ -20,6 +20,13 @@
 - Create file wallet/res/drawable/ic_share_white_24dp.xml
 
 
+- Create file wallet/res/drawable/ic_copy_24dp.xml
+- Create file wallet/res/drawable/ic_eye_off_24dp.xml
+- Create file wallet/res/drawable/ic_eye_on_24dp.xml
+- Create file wallet/res/drawable/ic_key_wif_24dp.xml
+- Create file wallet/res/drawable/ic_qr_bech32_24dp.xml
+
+
 
 - Add code file wallet/build.gradle [ add code line 37 ]
 - Add code file wallet/res/xml/file_provider.xml [ add code line 9-->13 ]
