@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/paper_wallet_options_refresh"
         android:icon="@drawable/ic_refresh_white_24dp"
         android:title="@string/paper_wallet_generate_new"
         android:titleCondensed="@string/paper_wallet_generate_new"
+        android:iconTint="?android:attr/textColorPrimaryInverse"
+        app:iconTint="?android:attr/textColorPrimaryInverse"
         android:showAsAction="always|withText" />
 
     <item
@@ -13,6 +16,8 @@
         android:icon="@drawable/ic_save_white_24dp"
         android:title="@string/paper_wallet_save"
         android:titleCondensed="@string/paper_wallet_save"
+        android:iconTint="?android:attr/textColorPrimaryInverse"
+        app:iconTint="?android:attr/textColorPrimaryInverse"
         android:showAsAction="ifRoom|withText" />
 
     <item
@@ -20,6 +25,8 @@
         android:icon="@drawable/ic_share_white_24dp"
         android:title="@string/paper_wallet_share"
         android:titleCondensed="@string/paper_wallet_share"
+        android:iconTint="?android:attr/textColorPrimaryInverse"
+        app:iconTint="?android:attr/textColorPrimaryInverse"
         android:showAsAction="ifRoom|withText" />
 
     <item
@@ -27,6 +34,8 @@
         android:icon="@drawable/ic_print_white_24dp"
         android:title="@string/paper_wallet_print"
         android:titleCondensed="@string/paper_wallet_print"
+        android:iconTint="?android:attr/textColorPrimaryInverse"
+        app:iconTint="?android:attr/textColorPrimaryInverse"
         android:showAsAction="ifRoom|withText" />
 
     <item
@@ -34,6 +43,8 @@
         android:icon="@drawable/ic_export_txt_white_24dp"
         android:title="@string/paper_wallet_export_txt"
         android:titleCondensed="@string/paper_wallet_export_txt"
+        android:iconTint="?android:attr/textColorPrimaryInverse"
+        app:iconTint="?android:attr/textColorPrimaryInverse"
         android:showAsAction="ifRoom|withText" />
 
 </menu>
