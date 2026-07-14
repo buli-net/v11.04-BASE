@@ -416,7 +416,7 @@
     <string name="paper_wallet_encrypt_bip38">Encrypt with BIP38</string>
     <string name="paper_wallet_passphrase">Passphrase</string>
     <string name="paper_wallet_passphrase_confirm">Confirm passphrase</string>
-    <string name="paper_wallet_bip38_hint">If you lose the passphrase, funds are lost. Only wallets supporting BIP38 can sweep this.</string>
+    <string name="paper_wallet_bip38_hint">If you lose the passphrase, funds are lost.</string>
 
     <!-- Toasts / Messages -->
     <string name="paper_wallet_generated">New paper wallet generated</string>
