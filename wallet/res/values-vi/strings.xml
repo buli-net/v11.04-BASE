@@ -419,7 +419,7 @@
     <string name="paper_wallet_encrypt_bip38">Mã hóa với BIP38</string>
     <string name="paper_wallet_passphrase">Cụm mật khẩu</string>
     <string name="paper_wallet_passphrase_confirm">Xác nhận cụm mật khẩu</string>
-    <string name="paper_wallet_bip38_hint">Nếu bạn quên cụm mật khẩu, số tiền sẽ bị mất. Chỉ các ví hỗ trợ BIP38 mới có thể quét ví này.</string>
+    <string name="paper_wallet_bip38_hint">Nếu bạn quên cụm mật khẩu, số tiền sẽ bị mất.</string>
 
     <!-- Toasts / Messages -->
     <string name="paper_wallet_generated">Đã tạo ví giấy mới</string>
