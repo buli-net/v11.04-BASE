@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewParent;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -446,52 +447,53 @@ public class PaperWalletActivity extends AbstractWalletActivity {
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.paper_wallet_options, menu);
-        int white = Color.WHITE;
-        // CHỈ mục nào có icon mới nằm trên bar -> trắng, mục trong 3 chấm không có icon -> để nguyên
-        for (int i = 0; i < menu.size(); i++) {
-            MenuItem item = menu.getItem(i);
-            if (item.getIcon() != null) {
-                CharSequence title = item.getTitle();
-                if (title != null) {
-                    android.text.SpannableString s = new android.text.SpannableString(title);
-                    s.setSpan(new android.text.style.ForegroundColorSpan(white), 0, s.length(), 0);
-                    item.setTitle(s);
-                }
-            }
-        }
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        int white = Color.WHITE;
-        View decor = getWindow().getDecorView();
+        // AUTO: chỉ trắng chữ đang nằm thật trên bar, không đụng popup 3 chấm
+        final int white = Color.WHITE;
+        final View decor = getWindow().getDecorView();
         decor.post(() -> {
-            for (int i = 0; i < menu.size(); i++) {
-                MenuItem mi = menu.getItem(i);
-                if (mi.getIcon() == null) continue; // bỏ qua 3 chấm
-                String raw = mi.getTitle() != null ? mi.getTitle().toString() : "";
-                if (raw.isEmpty()) continue;
-                ArrayList<View> out = new ArrayList<>();
-                decor.findViewsWithText(out, raw, View.FIND_VIEWS_WITH_TEXT);
-                for (View v : out) {
-                    if (v instanceof TextView) {
-                        ViewParent p = v.getParent();
-                        while (p != null) {
-                            String cname = p.getClass().getSimpleName();
-                            if (cname.contains("ActionMenuView") || cname.contains("ActionMenuItemView")) {
-                                ((TextView) v).setTextColor(white);
-                                break;
-                            }
-                            if (cname.contains("ListView") || cname.contains("Popup") || cname.contains("MenuView")) break;
-                            if (p instanceof View) p = ((View) p).getParent();
-                            else break;
-                        }
+            ArrayList<View> actionMenuViews = new ArrayList<>();
+            findViewsByClass(decor, "ActionMenuView", actionMenuViews);
+            for (View amv : actionMenuViews) {
+                if (!(amv instanceof ViewGroup)) continue;
+                ViewGroup vg = (ViewGroup) amv;
+                for (int i = 0; i < vg.getChildCount(); i++) {
+                    View itemView = vg.getChildAt(i);
+                    if (itemView.getClass().getSimpleName().contains("ActionMenuItemView")) {
+                        // tìm TextView con
+                        findAndWhiteText(itemView, white);
                     }
                 }
             }
         });
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    private void findAndWhiteText(View root, int color) {
+        if (root instanceof TextView) {
+            ((TextView) root).setTextColor(color);
+            return;
+        }
+        if (root instanceof ViewGroup) {
+            ViewGroup vg = (ViewGroup) root;
+            for (int i = 0; i < vg.getChildCount(); i++) {
+                findAndWhiteText(vg.getChildAt(i), color);
+            }
+        }
+    }
+
+    private void findViewsByClass(View root, String className, ArrayList<View> out) {
+        if (root.getClass().getSimpleName().contains(className)) out.add(root);
+        if (root instanceof ViewGroup) {
+            ViewGroup vg = (ViewGroup) root;
+            for (int i = 0; i < vg.getChildCount(); i++) {
+                findViewsByClass(vg.getChildAt(i), className, out);
+            }
+        }
     }
 
     @Override
