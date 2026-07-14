@@ -51,6 +51,7 @@
         </LinearLayout>
 
         <!-- 2 QR codes -->
+<!-- 2 QR codes -->
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -58,45 +59,53 @@
     android:weightSum="2"
     android:background="@android:color/transparent"
     android:layout_marginTop="10dp"
-    android:baselineAligned="false">
+    android:gravity="center">
 
     <!-- Public -->
-    <FrameLayout
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_gravity="center"
-        android:layout_marginEnd="8dp"
-        android:background="@android:color/white"
-        android:padding="4dp">
+        android:gravity="center"
+        android:background="@android:color/transparent">
 
-        <ImageView
-            android:id="@+id/paper_wallet_qr_address"
-            android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:adjustViewBounds="false"
-            android:scaleType="fitCenter"
-            android:background="@android:color/white" />
-    </FrameLayout>
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:padding="4dp">
+
+            <ImageView
+                android:id="@+id/paper_wallet_qr_address"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:scaleType="fitXY"
+                android:background="@android:color/white" />
+        </FrameLayout>
+    </LinearLayout>
 
     <!-- Private -->
-    <FrameLayout
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_gravity="center"
-        android:layout_marginStart="8dp"
-        android:background="@android:color/white"
-        android:padding="4dp">
+        android:gravity="center"
+        android:background="@android:color/transparent">
 
-        <ImageView
-            android:id="@+id/paper_wallet_qr_key"
-            android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:adjustViewBounds="false"
-            android:scaleType="fitCenter"
-            android:background="@android:color/white" />
-    </FrameLayout>
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:padding="4dp">
+
+            <ImageView
+                android:id="@+id/paper_wallet_qr_key"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:scaleType="fitXY"
+                android:background="@android:color/white" />
+        </FrameLayout>
+    </LinearLayout>
 
 </LinearLayout>
 
