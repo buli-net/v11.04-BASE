@@ -443,8 +443,9 @@ public class PaperWalletActivity extends AbstractWalletActivity {
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.paper_wallet_options, menu);
+        android.content.Context abCtx = getActionBar() != null ? getActionBar().getThemedContext() : this;
         android.util.TypedValue tv = new android.util.TypedValue();
-        getTheme().resolveAttribute(android.R.attr.textColorPrimaryInverse, tv, true);
+        abCtx.getTheme().resolveAttribute(android.R.attr.textColorPrimary, tv, true);
         int actionBarTextColor = tv.data;
         for (int i = 0; i < menu.size(); i++) {
             MenuItem item = menu.getItem(i);
