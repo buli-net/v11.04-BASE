@@ -453,20 +453,26 @@ public class PaperWalletActivity extends AbstractWalletActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         final View decor = getWindow().getDecorView();
-        decor.post(() -> {
-            ArrayList<View> actionMenuViews = new ArrayList<>();
-            findViewsByClass(decor, "ActionMenuView", actionMenuViews);
-            for (View amv : actionMenuViews) {
-                if (!(amv instanceof ViewGroup)) continue;
-                ViewGroup vg = (ViewGroup) amv;
-                for (int i = 0; i < vg.getChildCount(); i++) {
-                    View itemView = vg.getChildAt(i);
-                    if (itemView.getClass().getSimpleName().contains("ActionMenuItemView")) {
-                        followIconColor(itemView);
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                ArrayList<View> actionMenuViews = new ArrayList<>();
+                findViewsByClass(decor, "ActionMenuView", actionMenuViews);
+                for (View amv : actionMenuViews) {
+                    if (!(amv instanceof ViewGroup)) continue;
+                    ViewGroup vg = (ViewGroup) amv;
+                    for (int i = 0; i < vg.getChildCount(); i++) {
+                        View itemView = vg.getChildAt(i);
+                        if (itemView.getClass().getSimpleName().contains("ActionMenuItemView")) {
+                            followIconColor(itemView);
+                        }
                     }
                 }
             }
-        });
+        };
+        decor.post(r);
+        decor.postDelayed(r, 100);
+        decor.postDelayed(r, 300);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -482,15 +488,16 @@ public class PaperWalletActivity extends AbstractWalletActivity {
             if (c instanceof ViewGroup) followIconColor(c);
         }
         if (iconView != null && textView != null) {
-            int color = Color.WHITE;
+            int iconColor = Color.WHITE;
             if (iconView.getImageTintList() != null) {
-                int tint = iconView.getImageTintList().getDefaultColor();
-                if (tint != Color.BLACK) {
-                    color = tint;
+                int t = iconView.getImageTintList().getDefaultColor();
+                if (t != Color.BLACK && t != 0) {
+                    iconColor = t;
                 }
             }
-            iconView.setImageTintList(ColorStateList.valueOf(color));
-            textView.setTextColor(color);
+            iconView.setImageTintList(ColorStateList.valueOf(iconColor));
+            textView.setTextColor(iconColor);
+            textView.setAlpha(1f);
         }
     }
 
