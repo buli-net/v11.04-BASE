@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -443,32 +444,17 @@ public class PaperWalletActivity extends AbstractWalletActivity {
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.paper_wallet_options, menu);
-        // Chữ lấy màu từ icon, không set cứng
+        // FIX CỨNG: chữ cùng màu với icon trắng
+        int white = Color.WHITE;
         for (int i = 0; i < menu.size(); i++) {
             MenuItem item = menu.getItem(i);
-            android.graphics.drawable.Drawable icon = item.getIcon();
-            if (icon == null) continue;
-            int iconColor = 0;
-            try {
-                int w = icon.getIntrinsicWidth() > 0 ? icon.getIntrinsicWidth() : 24;
-                int h = icon.getIntrinsicHeight() > 0 ? icon.getIntrinsicHeight() : 24;
-                Bitmap bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-                Canvas canvas = new Canvas(bmp);
-                icon.setBounds(0, 0, w, h);
-                icon.draw(canvas);
-                // lấy điểm giữa icon, chỗ có màu đặc nhất
-                iconColor = bmp.getPixel(w/2, h/2);
-                // quét thêm vài điểm nếu giữa trong suốt
-                if ((iconColor >>> 24) < 50) {
-                    iconColor = bmp.getPixel(w/4, h/4);
-                }
-                bmp.recycle();
-            } catch (Exception ignored) {}
-            if ((iconColor >>> 24) == 0) continue;
+            if (item.getIcon() != null) {
+                item.getIcon().mutate().setTint(white);
+            }
             CharSequence title = item.getTitle();
             if (title != null) {
                 android.text.SpannableString colored = new android.text.SpannableString(title);
-                colored.setSpan(new android.text.style.ForegroundColorSpan(iconColor), 0, colored.length(), 0);
+                colored.setSpan(new android.text.style.ForegroundColorSpan(white), 0, colored.length(), 0);
                 item.setTitle(colored);
             }
         }
