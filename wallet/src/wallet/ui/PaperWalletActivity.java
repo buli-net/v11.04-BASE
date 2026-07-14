@@ -444,13 +444,10 @@ public class PaperWalletActivity extends AbstractWalletActivity {
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.paper_wallet_options, menu);
-        // FIX CỨNG: chữ cùng màu với icon trắng
+        // FIX CỨNG CHỮ TRẮNG THEO ICON - KHÔNG ĐỤNG ICON
         int white = Color.WHITE;
         for (int i = 0; i < menu.size(); i++) {
             MenuItem item = menu.getItem(i);
-            if (item.getIcon() != null) {
-                item.getIcon().mutate().setTint(white);
-            }
             CharSequence title = item.getTitle();
             if (title != null) {
                 android.text.SpannableString colored = new android.text.SpannableString(title);
@@ -458,6 +455,21 @@ public class PaperWalletActivity extends AbstractWalletActivity {
                 item.setTitle(colored);
             }
         }
+        // Ép TextView thật trong ActionBar trắng luôn
+        getWindow().getDecorView().post(() -> {
+            try {
+                android.view.View decor = getWindow().getDecorView();
+                java.util.ArrayList<android.view.View> out = new java.util.ArrayList<>();
+                for (int i = 0; i < menu.size(); i++) {
+                    decor.findViewsWithText(out, menu.getItem(i).getTitle().toString(), android.view.View.FIND_VIEWS_WITH_TEXT);
+                }
+                for (android.view.View v : out) {
+                    if (v instanceof TextView) {
+                        ((TextView) v).setTextColor(white);
+                    }
+                }
+            } catch (Exception ignored) {}
+        });
         return true;
     }
 
