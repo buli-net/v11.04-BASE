@@ -446,15 +446,17 @@ public class PaperWalletActivity extends AbstractWalletActivity {
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.paper_wallet_options, menu);
-        // FIX GENERIC: trắng hết tất cả item, 5 mục hay 10 mục sau này cũng trắng
         int white = Color.WHITE;
+        // CHỈ mục nào có icon mới nằm trên bar -> trắng, mục trong 3 chấm không có icon -> để nguyên
         for (int i = 0; i < menu.size(); i++) {
             MenuItem item = menu.getItem(i);
-            CharSequence title = item.getTitle();
-            if (title != null) {
-                android.text.SpannableString s = new android.text.SpannableString(title);
-                s.setSpan(new android.text.style.ForegroundColorSpan(white), 0, s.length(), 0);
-                item.setTitle(s);
+            if (item.getIcon() != null) {
+                CharSequence title = item.getTitle();
+                if (title != null) {
+                    android.text.SpannableString s = new android.text.SpannableString(title);
+                    s.setSpan(new android.text.style.ForegroundColorSpan(white), 0, s.length(), 0);
+                    item.setTitle(s);
+                }
             }
         }
         return true;
@@ -462,26 +464,26 @@ public class PaperWalletActivity extends AbstractWalletActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        // áp dụng cho cả overflow (3 chấm) - generic
         int white = Color.WHITE;
         View decor = getWindow().getDecorView();
         decor.post(() -> {
             for (int i = 0; i < menu.size(); i++) {
                 MenuItem mi = menu.getItem(i);
+                if (mi.getIcon() == null) continue; // bỏ qua 3 chấm
                 String raw = mi.getTitle() != null ? mi.getTitle().toString() : "";
                 if (raw.isEmpty()) continue;
                 ArrayList<View> out = new ArrayList<>();
                 decor.findViewsWithText(out, raw, View.FIND_VIEWS_WITH_TEXT);
                 for (View v : out) {
                     if (v instanceof TextView) {
-                        // chỉ đổi khi là con của ActionBar / Toolbar / Popup
                         ViewParent p = v.getParent();
                         while (p != null) {
-                            String name = p.getClass().getName();
-                            if (name.contains("ActionMenu") || name.contains("Toolbar") || name.contains("ListMenu") || name.contains("MenuPopup") || name.contains("Popup")) {
+                            String cname = p.getClass().getSimpleName();
+                            if (cname.contains("ActionMenuView") || cname.contains("ActionMenuItemView")) {
                                 ((TextView) v).setTextColor(white);
                                 break;
                             }
+                            if (cname.contains("ListView") || cname.contains("Popup") || cname.contains("MenuView")) break;
                             if (p instanceof View) p = ((View) p).getParent();
                             else break;
                         }
