@@ -17,6 +17,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewParent;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -451,6 +452,8 @@ public class PaperWalletActivity extends AbstractWalletActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        // AUTO: chỉ trắng chữ đang nằm thật trên bar, không đụng popup 3 chấm
+        final int white = Color.WHITE;
         final View decor = getWindow().getDecorView();
         decor.post(() -> {
             ArrayList<View> actionMenuViews = new ArrayList<>();
@@ -461,7 +464,8 @@ public class PaperWalletActivity extends AbstractWalletActivity {
                 for (int i = 0; i < vg.getChildCount(); i++) {
                     View itemView = vg.getChildAt(i);
                     if (itemView.getClass().getSimpleName().contains("ActionMenuItemView")) {
-                        followIconColor(itemView);
+                        // tìm TextView con
+                        findAndWhiteText(itemView, white);
                     }
                 }
             }
@@ -469,23 +473,16 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         return super.onPrepareOptionsMenu(menu);
     }
 
-    private void followIconColor(View itemView) {
-        if (!(itemView instanceof ViewGroup)) return;
-        ViewGroup vg = (ViewGroup) itemView;
-        ImageView iconView = null;
-        TextView textView = null;
-        for (int i = 0; i < vg.getChildCount(); i++) {
-            View c = vg.getChildAt(i);
-            if (c instanceof ImageView) iconView = (ImageView) c;
-            if (c instanceof TextView) textView = (TextView) c;
-            if (c instanceof ViewGroup) followIconColor(c);
+    private void findAndWhiteText(View root, int color) {
+        if (root instanceof TextView) {
+            ((TextView) root).setTextColor(color);
+            return;
         }
-        if (iconView != null && textView != null) {
-            int color = Color.WHITE;
-            if (iconView.getImageTintList() != null) {
-                color = iconView.getImageTintList().getDefaultColor();
+        if (root instanceof ViewGroup) {
+            ViewGroup vg = (ViewGroup) root;
+            for (int i = 0; i < vg.getChildCount(); i++) {
+                findAndWhiteText(vg.getChildAt(i), color);
             }
-            textView.setTextColor(color);
         }
     }
 
