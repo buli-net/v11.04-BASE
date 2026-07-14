@@ -5,7 +5,6 @@ import android.content.ClipboardManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -462,7 +461,7 @@ public class PaperWalletActivity extends AbstractWalletActivity {
                 for (int i = 0; i < vg.getChildCount(); i++) {
                     View itemView = vg.getChildAt(i);
                     if (itemView.getClass().getSimpleName().contains("ActionMenuItemView")) {
-                        syncTextColorWithIcon(itemView);
+                        followIconColor(itemView);
                     }
                 }
             }
@@ -470,7 +469,7 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         return super.onPrepareOptionsMenu(menu);
     }
 
-    private void syncTextColorWithIcon(View itemView) {
+    private void followIconColor(View itemView) {
         if (!(itemView instanceof ViewGroup)) return;
         ViewGroup vg = (ViewGroup) itemView;
         ImageView iconView = null;
@@ -478,49 +477,13 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         for (int i = 0; i < vg.getChildCount(); i++) {
             View c = vg.getChildAt(i);
             if (c instanceof ImageView) iconView = (ImageView) c;
-            else if (c instanceof TextView) textView = (TextView) c;
-            else if (c instanceof ViewGroup) {
-                // đệ quy trong item
-                syncTextColorWithIcon(c);
-            }
+            if (c instanceof TextView) textView = (TextView) c;
+            if (c instanceof ViewGroup) followIconColor(c);
         }
         if (iconView != null && textView != null) {
             int color = Color.WHITE;
-            ColorStateList tint = iconView.getImageTintList();
-            if (tint != null) {
-                color = tint.getDefaultColor();
-            } else {
-                // fallback lấy màu hiện tại của icon drawable hoặc text gốc
-                // nếu icon trắng thì lấy trắng, icon đen thì lấy đen
-                try {
-                    if (iconView.getDrawable() != null) {
-                        // lấy màu từ filter nếu có, không thì dùng trắng
-                        color = textView.getCurrentTextColor();
-                        if (color == 0) color = Color.WHITE;
-                        // Nếu icon đang set colorFilter trắng, text cũng trắng
-                        // Để an toàn: nếu actionBar đang dark thì trắng, light thì đen
-                        // Nhưng ưu tiên tint
-                    }
-                } catch (Exception ignored) {}
-            }
-            // Nếu không có tint thì lấy màu title mặc định của ActionBar (trắng theo icon)
-            if (tint == null) {
-                // Lấy màu icon thực tế: nếu icon drawable màu trắng thì text trắng
-                color = Color.WHITE;
-                // Nếu sau này mày đổi icon thành đen trong xml, iconView sẽ đen, thì lấy màu đen
-                // check bằng cách đọc tag hoặc thử getColorFilter
-                // Đơn giản: nếu icon là vector đen thì ImageView sẽ không có tint, nhưng drawable sẽ đen
-                // thì ta lấy textColorPrimaryInverse làm fallback, nó luôn theo icon
-                try {
-                    android.util.TypedValue tv = new android.util.TypedValue();
-                    getTheme().resolveAttribute(android.R.attr.textColorPrimaryInverse, tv, true);
-                    if (tv.data != 0) {
-                        // nếu icon hiện tại đang trắng thì dùng trắng, không thì dùng màu theme
-                        // Ở đây ta ưu tiên lấy màu của iconView: nếu iconView.getDrawable() màu tối thì text tối
-                        // Cách đơn giản nhất: lấy current text color của toolbar đã set theo icon
-                        color = Color.WHITE; // mặc định theo icon hiện tại của mày
-                    }
-                } catch (Exception ignored) {}
+            if (iconView.getImageTintList() != null) {
+                color = iconView.getImageTintList().getDefaultColor();
             }
             textView.setTextColor(color);
         }
