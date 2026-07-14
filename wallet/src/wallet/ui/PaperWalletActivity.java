@@ -17,6 +17,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -38,6 +39,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -444,33 +446,50 @@ public class PaperWalletActivity extends AbstractWalletActivity {
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.paper_wallet_options, menu);
-        // FIX CỨNG CHỮ TRẮNG THEO ICON - KHÔNG ĐỤNG ICON
+        // FIX GENERIC: trắng hết tất cả item, 5 mục hay 10 mục sau này cũng trắng
         int white = Color.WHITE;
         for (int i = 0; i < menu.size(); i++) {
             MenuItem item = menu.getItem(i);
             CharSequence title = item.getTitle();
             if (title != null) {
-                android.text.SpannableString colored = new android.text.SpannableString(title);
-                colored.setSpan(new android.text.style.ForegroundColorSpan(white), 0, colored.length(), 0);
-                item.setTitle(colored);
+                android.text.SpannableString s = new android.text.SpannableString(title);
+                s.setSpan(new android.text.style.ForegroundColorSpan(white), 0, s.length(), 0);
+                item.setTitle(s);
             }
         }
-        // Ép TextView thật trong ActionBar trắng luôn
-        getWindow().getDecorView().post(() -> {
-            try {
-                android.view.View decor = getWindow().getDecorView();
-                java.util.ArrayList<android.view.View> out = new java.util.ArrayList<>();
-                for (int i = 0; i < menu.size(); i++) {
-                    decor.findViewsWithText(out, menu.getItem(i).getTitle().toString(), android.view.View.FIND_VIEWS_WITH_TEXT);
-                }
-                for (android.view.View v : out) {
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // áp dụng cho cả overflow (3 chấm) - generic
+        int white = Color.WHITE;
+        View decor = getWindow().getDecorView();
+        decor.post(() -> {
+            for (int i = 0; i < menu.size(); i++) {
+                MenuItem mi = menu.getItem(i);
+                String raw = mi.getTitle() != null ? mi.getTitle().toString() : "";
+                if (raw.isEmpty()) continue;
+                ArrayList<View> out = new ArrayList<>();
+                decor.findViewsWithText(out, raw, View.FIND_VIEWS_WITH_TEXT);
+                for (View v : out) {
                     if (v instanceof TextView) {
-                        ((TextView) v).setTextColor(white);
+                        // chỉ đổi khi là con của ActionBar / Toolbar / Popup
+                        ViewParent p = v.getParent();
+                        while (p != null) {
+                            String name = p.getClass().getName();
+                            if (name.contains("ActionMenu") || name.contains("Toolbar") || name.contains("ListMenu") || name.contains("MenuPopup") || name.contains("Popup")) {
+                                ((TextView) v).setTextColor(white);
+                                break;
+                            }
+                            if (p instanceof View) p = ((View) p).getParent();
+                            else break;
+                        }
                     }
                 }
-            } catch (Exception ignored) {}
+            }
         });
-        return true;
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
