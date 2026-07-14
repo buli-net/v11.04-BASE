@@ -252,7 +252,7 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         if (publicVisible) {
             addressView.setText(displayKey);
             toggleAddressBtn.setText(R.string.paper_wallet_hide);
-            toggleAddressBtn.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_eye_off_white_24dp, 0, 0);
+            toggleAddressBtn.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_eye_off_24dp, 0, 0);
             if (publicFormatBtn!= null) {
                 publicFormatBtn.setText(publicHexMode? R.string.paper_wallet_public_format_hex : R.string.paper_wallet_public_format_bech32);
             }
@@ -262,7 +262,7 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         } else {
             addressView.setText("••••••••••••••••••••••••");
             toggleAddressBtn.setText(R.string.paper_wallet_show);
-            toggleAddressBtn.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_eye_on_white_24dp, 0, 0);
+            toggleAddressBtn.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_eye_on_24dp, 0, 0);
             if (publicLabelView!= null) publicLabelView.setText(base);
             if (qrAddressView!= null) qrAddressView.setImageBitmap(null);
         }
@@ -283,7 +283,7 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         if (keyVisible) {
             privKeyView.setText(displayKey);
             toggleKeyButton.setText(R.string.paper_wallet_hide_key);
-            toggleKeyButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_eye_off_white_24dp, 0, 0);
+            toggleKeyButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_eye_off_24dp, 0, 0);
             if (privKeyFormatBtn!= null) {
                 privKeyFormatBtn.setEnabled(!bip38Mode);
                 privKeyFormatBtn.setText(bip38Mode? R.string.paper_wallet_private_format_bip38 : (privKeyHexMode? R.string.paper_wallet_private_format_hex : R.string.paper_wallet_private_format_wif));
@@ -295,7 +295,7 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         } else {
             privKeyView.setText("••••••••••••••••••••••••");
             toggleKeyButton.setText(R.string.paper_wallet_show_key);
-            toggleKeyButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_eye_on_white_24dp, 0, 0);
+            toggleKeyButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_eye_on_24dp, 0, 0);
             if (privKeyLabelView!= null) privKeyLabelView.setText(base);
             if (qrKeyView!= null) qrKeyView.setImageBitmap(null);
         }
