@@ -59,23 +59,39 @@
             android:layout_marginTop="10dp"
             android:baselineAligned="false">
 
-            <ImageView
-                android:id="@+id/paper_wallet_qr_address"
-                android:layout_width="0dp"
-                android:layout_height="160dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="8dp"
-                android:background="#ffffff"
-                android:padding="8dp" />
+            <!-- Public -->
+<FrameLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@android:color/white"
+    android:padding="4dp">
 
-            <ImageView
-                android:id="@+id/paper_wallet_qr_key"
-                android:layout_width="0dp"
-                android:layout_height="160dp"
-                android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                android:background="#ffffff"
-                android:padding="8dp" />
+    <ImageView
+        android:id="@+id/paper_wallet_qr_address"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:adjustViewBounds="false"
+        android:scaleType="fitXY"
+        android:background="@android:color/white" />
+</FrameLayout>
+
+<!-- Private -->
+<FrameLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@android:color/white"
+    android:padding="4dp">
+
+    <ImageView
+        android:id="@+id/paper_wallet_qr_key"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:adjustViewBounds="false"
+        android:scaleType="fitXY"
+        android:background="@android:color/white" />
+</FrameLayout>
         </LinearLayout>
 
         <!-- Addresses below QR - allow up to 3 lines -->
