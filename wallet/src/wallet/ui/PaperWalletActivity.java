@@ -5,7 +5,6 @@ import android.content.ClipboardManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -18,6 +17,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewParent;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -88,7 +88,7 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_paper_wallet);
 
-        if (getActionBar() != null)
+        if (getActionBar()!= null)
             getActionBar().setDisplayHomeAsUpEnabled(true);
 
         setTitle(R.string.paper_wallet_activity_title);
@@ -107,15 +107,15 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         passConfirmView = findViewById(R.id.paper_wallet_passphrase_confirm);
         bip38HintView = findViewById(R.id.paper_wallet_bip38_hint);
 
-        if (qrAddressView != null) qrAddressView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        if (qrKeyView != null) qrKeyView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        if (qrAddressView!= null) qrAddressView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        if (qrKeyView!= null) qrKeyView.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
         findViewById(R.id.paper_wallet_copy_address).setOnClickListener(v -> {
             String key = publicHexMode ? currentPubKeyHex : currentAddress;
             copyText(getString(R.string.paper_wallet_public_label), key);
         });
         findViewById(R.id.paper_wallet_copy_privkey).setOnClickListener(v -> {
-            String key = bip38Mode ? currentPrivKeyBip38 : (privKeyHexMode ? currentPrivKeyHex : currentPrivKeyWif);
+            String key = bip38Mode? currentPrivKeyBip38 : (privKeyHexMode? currentPrivKeyHex : currentPrivKeyWif);
             copyText(getString(R.string.paper_wallet_private_label), key);
         });
 
@@ -126,7 +126,7 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         toggleAddressBtn.setOnClickListener(v -> togglePublicVisibility());
 
         publicFormatBtn = findViewById(R.id.paper_wallet_public_format);
-        if (publicFormatBtn != null) {
+        if (publicFormatBtn!= null) {
             publicFormatBtn.setOnClickListener(v -> togglePublicFormat());
         }
 
@@ -134,12 +134,12 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         toggleKeyButton.setOnClickListener(v -> toggleKeyVisibility());
 
         privKeyFormatBtn = findViewById(R.id.paper_wallet_privkey_format);
-        if (privKeyFormatBtn != null) {
+        if (privKeyFormatBtn!= null) {
             privKeyFormatBtn.setOnClickListener(v -> togglePrivKeyFormat());
         }
 
         encryptToggle.setOnCheckedChangeListener((b, checked) -> {
-            int vis = checked ? View.VISIBLE : View.GONE;
+            int vis = checked? View.VISIBLE : View.GONE;
             showPassToggle.setVisibility(vis);
             passView.setVisibility(vis);
             passView.setEnabled(checked);
@@ -179,9 +179,9 @@ public class PaperWalletActivity extends AbstractWalletActivity {
 
     private void generateNew() {
         final Network network = getNetwork();
-        final boolean doBip38 = encryptToggle != null && encryptToggle.isChecked();
-        String p1 = passView != null ? passView.getText().toString() : "";
-        String p2 = passConfirmView != null ? passConfirmView.getText().toString() : "";
+        final boolean doBip38 = encryptToggle!= null && encryptToggle.isChecked();
+        String p1 = passView!= null? passView.getText().toString() : "";
+        String p2 = passConfirmView!= null? passConfirmView.getText().toString() : "";
 
         if (doBip38) {
             if (p1.isEmpty()) {
@@ -253,18 +253,18 @@ public class PaperWalletActivity extends AbstractWalletActivity {
             addressView.setText(displayKey);
             toggleAddressBtn.setText(R.string.paper_wallet_hide);
             toggleAddressBtn.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_eye_off_white_24dp, 0, 0);
-            if (publicFormatBtn != null) {
-                publicFormatBtn.setText(publicHexMode ? R.string.paper_wallet_public_format_hex : R.string.paper_wallet_public_format_bech32);
+            if (publicFormatBtn!= null) {
+                publicFormatBtn.setText(publicHexMode? R.string.paper_wallet_public_format_hex : R.string.paper_wallet_public_format_bech32);
             }
-            if (publicLabelView != null) publicLabelView.setText(base + suffix);
-            if (qrAddressView != null && !displayKey.isEmpty()) qrAddressView.setImageBitmap(makeQr(displayKey));
-            else if (qrAddressView != null) qrAddressView.setImageBitmap(null);
+            if (publicLabelView!= null) publicLabelView.setText(base + suffix);
+            if (qrAddressView!= null &&!displayKey.isEmpty()) qrAddressView.setImageBitmap(makeQr(displayKey));
+            else if (qrAddressView!= null) qrAddressView.setImageBitmap(null);
         } else {
             addressView.setText("••••••••••••••••••••••••");
             toggleAddressBtn.setText(R.string.paper_wallet_show);
             toggleAddressBtn.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_eye_on_white_24dp, 0, 0);
-            if (publicLabelView != null) publicLabelView.setText(base);
-            if (qrAddressView != null) qrAddressView.setImageBitmap(null);
+            if (publicLabelView!= null) publicLabelView.setText(base);
+            if (qrAddressView!= null) qrAddressView.setImageBitmap(null);
         }
     }
 
@@ -272,57 +272,57 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         String base = getString(R.string.paper_wallet_private_label);
         String displayKey;
         String suffix;
-        if (bip38Mode && !currentPrivKeyBip38.isEmpty()) {
+        if (bip38Mode &&!currentPrivKeyBip38.isEmpty()) {
             displayKey = currentPrivKeyBip38;
             suffix = " (" + getString(R.string.paper_wallet_private_format_bip38) + ")";
         } else {
-            displayKey = privKeyHexMode ? currentPrivKeyHex : currentPrivKeyWif;
-            suffix = privKeyHexMode ? " (" + getString(R.string.paper_wallet_private_format_hex) + ")" : " (" + getString(R.string.paper_wallet_private_format_wif) + ")";
+            displayKey = privKeyHexMode? currentPrivKeyHex : currentPrivKeyWif;
+            suffix = privKeyHexMode? " (" + getString(R.string.paper_wallet_private_format_hex) + ")" : " (" + getString(R.string.paper_wallet_private_format_wif) + ")";
         }
 
         if (keyVisible) {
             privKeyView.setText(displayKey);
             toggleKeyButton.setText(R.string.paper_wallet_hide_key);
             toggleKeyButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_eye_off_white_24dp, 0, 0);
-            if (privKeyFormatBtn != null) {
+            if (privKeyFormatBtn!= null) {
                 privKeyFormatBtn.setEnabled(!bip38Mode);
-                privKeyFormatBtn.setText(bip38Mode ? R.string.paper_wallet_private_format_bip38 : (privKeyHexMode ? R.string.paper_wallet_private_format_hex : R.string.paper_wallet_private_format_wif));
-                privKeyFormatBtn.setAlpha(bip38Mode ? 0.5f : 1.0f);
+                privKeyFormatBtn.setText(bip38Mode? R.string.paper_wallet_private_format_bip38 : (privKeyHexMode? R.string.paper_wallet_private_format_hex : R.string.paper_wallet_private_format_wif));
+                privKeyFormatBtn.setAlpha(bip38Mode? 0.5f : 1.0f);
             }
-            if (privKeyLabelView != null) privKeyLabelView.setText(base + suffix);
-            if (qrKeyView != null && !displayKey.isEmpty()) qrKeyView.setImageBitmap(makeQr(displayKey));
-            else if (qrKeyView != null) qrKeyView.setImageBitmap(null);
+            if (privKeyLabelView!= null) privKeyLabelView.setText(base + suffix);
+            if (qrKeyView!= null &&!displayKey.isEmpty()) qrKeyView.setImageBitmap(makeQr(displayKey));
+            else if (qrKeyView!= null) qrKeyView.setImageBitmap(null);
         } else {
             privKeyView.setText("••••••••••••••••••••••••");
             toggleKeyButton.setText(R.string.paper_wallet_show_key);
             toggleKeyButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_eye_on_white_24dp, 0, 0);
-            if (privKeyLabelView != null) privKeyLabelView.setText(base);
-            if (qrKeyView != null) qrKeyView.setImageBitmap(null);
+            if (privKeyLabelView!= null) privKeyLabelView.setText(base);
+            if (qrKeyView!= null) qrKeyView.setImageBitmap(null);
         }
     }
 
     private void togglePublicVisibility() {
-        publicVisible = !publicVisible;
+        publicVisible =!publicVisible;
         updatePublicView();
     }
 
     private void togglePublicFormat() {
         if (!publicVisible) return;
-        publicHexMode = !publicHexMode;
+        publicHexMode =!publicHexMode;
         updatePublicView();
-        Toast.makeText(this, getString(R.string.paper_wallet_public_format_toast, publicHexMode ? "HEX" : "ADDRESS"), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.paper_wallet_public_format_toast, publicHexMode? "HEX" : "ADDRESS"), Toast.LENGTH_SHORT).show();
     }
 
     private void toggleKeyVisibility() {
-        keyVisible = !keyVisible;
+        keyVisible =!keyVisible;
         updatePrivKeyView();
     }
 
     private void togglePrivKeyFormat() {
         if (!keyVisible || bip38Mode) return;
-        privKeyHexMode = !privKeyHexMode;
+        privKeyHexMode =!privKeyHexMode;
         updatePrivKeyView();
-        Toast.makeText(this, getString(R.string.paper_wallet_private_format_toast, privKeyHexMode ? "HEX" : "WIF"), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.paper_wallet_private_format_toast, privKeyHexMode? "HEX" : "WIF"), Toast.LENGTH_SHORT).show();
     }
 
     private void copyText(String label, String text) {
@@ -346,13 +346,13 @@ public class PaperWalletActivity extends AbstractWalletActivity {
             ((ImageView) printView.findViewById(R.id.print_qr_key)).setImageBitmap(makeQr(privKeyForPrint));
         }
         TextView printPublicLabel = printView.findViewById(R.id.print_public_label);
-        if (printPublicLabel != null) {
-            String s = getString(R.string.paper_wallet_public_label) + (publicHexMode ? " (" + getString(R.string.paper_wallet_public_format_hex) + ")" : " (" + getString(R.string.paper_wallet_public_format_bech32) + ")");
+        if (printPublicLabel!= null) {
+            String s = getString(R.string.paper_wallet_public_label) + (publicHexMode? " (" + getString(R.string.paper_wallet_public_format_hex) + ")" : " (" + getString(R.string.paper_wallet_public_format_bech32) + ")");
             printPublicLabel.setText(s);
         }
         TextView printPrivLabel = printView.findViewById(R.id.print_privkey_label);
-        if (printPrivLabel != null) {
-            String s = getString(R.string.paper_wallet_private_label) + (bip38Mode ? " (" + getString(R.string.paper_wallet_private_format_bip38) + ")" : (privKeyHexMode ? " (" + getString(R.string.paper_wallet_private_format_hex) + ")" : " (" + getString(R.string.paper_wallet_private_format_wif) + ")"));
+        if (printPrivLabel!= null) {
+            String s = getString(R.string.paper_wallet_private_label) + (bip38Mode? " (" + getString(R.string.paper_wallet_private_format_bip38) + ")" : (privKeyHexMode? " (" + getString(R.string.paper_wallet_private_format_hex) + ")" : " (" + getString(R.string.paper_wallet_private_format_wif) + ")"));
             printPrivLabel.setText(s);
         }
         int widthSpec = View.MeasureSpec.makeMeasureSpec(720, View.MeasureSpec.EXACTLY);
@@ -396,13 +396,13 @@ public class PaperWalletActivity extends AbstractWalletActivity {
 
     private void exportWalletTxt() {
         try {
-            String typeName = publicHexMode ? getString(R.string.paper_wallet_public_format_hex) : (addressType == ScriptType.P2PKH ? getString(R.string.paper_wallet_public_format_legacy) : getString(R.string.paper_wallet_public_format_bech32));
+            String typeName = publicHexMode ? getString(R.string.paper_wallet_public_format_hex) : (addressType == ScriptType.P2PKH? getString(R.string.paper_wallet_public_format_legacy) : getString(R.string.paper_wallet_public_format_bech32));
             StringBuilder sb = new StringBuilder();
             sb.append(getString(R.string.paper_wallet_activity_title)).append("\n");
             sb.append(getString(R.string.paper_wallet_public_type, typeName)).append("\n");
             sb.append(getString(R.string.paper_wallet_public_label)).append(": ").append(publicVisible ? addressView.getText().toString() : getString(R.string.paper_wallet_hidden)).append("\n");
             sb.append(getString(R.string.paper_wallet_private_label)).append(": ").append(keyVisible ? privKeyView.getText().toString() : getString(R.string.paper_wallet_hidden)).append("\n");
-            if (bip38Mode && !currentPrivKeyBip38.isEmpty()) {
+            if (bip38Mode &&!currentPrivKeyBip38.isEmpty()) {
                 sb.append(getString(R.string.paper_wallet_bip38_hint)).append("\n");
             }
             String filename = "paperwallet_" + System.currentTimeMillis() + ".txt";
@@ -452,52 +452,37 @@ public class PaperWalletActivity extends AbstractWalletActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        // AUTO: chỉ trắng chữ đang nằm thật trên bar, không đụng popup 3 chấm
+        final int white = Color.WHITE;
         final View decor = getWindow().getDecorView();
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                ArrayList<View> actionMenuViews = new ArrayList<>();
-                findViewsByClass(decor, "ActionMenuView", actionMenuViews);
-                for (View amv : actionMenuViews) {
-                    if (!(amv instanceof ViewGroup)) continue;
-                    ViewGroup vg = (ViewGroup) amv;
-                    for (int i = 0; i < vg.getChildCount(); i++) {
-                        View itemView = vg.getChildAt(i);
-                        if (itemView.getClass().getSimpleName().contains("ActionMenuItemView")) {
-                            followIconColor(itemView);
-                        }
+        decor.post(() -> {
+            ArrayList<View> actionMenuViews = new ArrayList<>();
+            findViewsByClass(decor, "ActionMenuView", actionMenuViews);
+            for (View amv : actionMenuViews) {
+                if (!(amv instanceof ViewGroup)) continue;
+                ViewGroup vg = (ViewGroup) amv;
+                for (int i = 0; i < vg.getChildCount(); i++) {
+                    View itemView = vg.getChildAt(i);
+                    if (itemView.getClass().getSimpleName().contains("ActionMenuItemView")) {
+                        // tìm TextView con
+                        findAndWhiteText(itemView, white);
                     }
                 }
             }
-        };
-        decor.post(r);
-        decor.postDelayed(r, 100);
-        decor.postDelayed(r, 300);
+        });
         return super.onPrepareOptionsMenu(menu);
     }
 
-    private void followIconColor(View itemView) {
-        if (!(itemView instanceof ViewGroup)) return;
-        ViewGroup vg = (ViewGroup) itemView;
-        ImageView iconView = null;
-        TextView textView = null;
-        for (int i = 0; i < vg.getChildCount(); i++) {
-            View c = vg.getChildAt(i);
-            if (c instanceof ImageView) iconView = (ImageView) c;
-            if (c instanceof TextView) textView = (TextView) c;
-            if (c instanceof ViewGroup) followIconColor(c);
+    private void findAndWhiteText(View root, int color) {
+        if (root instanceof TextView) {
+            ((TextView) root).setTextColor(color);
+            return;
         }
-        if (iconView != null && textView != null) {
-            int iconColor = Color.WHITE;
-            if (iconView.getImageTintList() != null) {
-                int t = iconView.getImageTintList().getDefaultColor();
-                if (t != Color.BLACK && t != 0) {
-                    iconColor = t;
-                }
+        if (root instanceof ViewGroup) {
+            ViewGroup vg = (ViewGroup) root;
+            for (int i = 0; i < vg.getChildCount(); i++) {
+                findAndWhiteText(vg.getChildAt(i), color);
             }
-            iconView.setImageTintList(ColorStateList.valueOf(iconColor));
-            textView.setTextColor(iconColor);
-            textView.setAlpha(1f);
         }
     }
 
