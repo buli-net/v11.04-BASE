@@ -147,7 +147,7 @@
                     android:maxLines="2"
                     android:gravity="center"
                     android:paddingHorizontal="6dp"
-                    android:drawableTop="@drawable/ic_copy_white_24dp"
+                    android:drawableTop="@drawable/ic_copy_24dp"
                     android:text="@string/paper_wallet_copy"
                     android:textAllCaps="false"
                     android:textSize="12sp" />
@@ -161,7 +161,7 @@
                     android:minHeight="48dp"
                     android:gravity="center"
                     android:paddingHorizontal="6dp"
-                    android:drawableTop="@drawable/ic_qr_bech32_white_24dp"
+                    android:drawableTop="@drawable/ic_qr_bech32_24dp"
                     android:text="@string/paper_wallet_public_format_bech32"
                     android:textAllCaps="false"
                     android:textSize="12sp" />
@@ -175,7 +175,7 @@
                     android:minHeight="48dp"
                     android:gravity="center"
                     android:paddingHorizontal="6dp"
-                    android:drawableTop="@drawable/ic_eye_off_white_24dp"
+                    android:drawableTop="@drawable/ic_eye_off_24dp"
                     android:text="@string/paper_wallet_hide"
                     android:textAllCaps="false"
                     android:textSize="12sp" />
@@ -198,7 +198,7 @@
                     android:maxLines="2"
                     android:gravity="center"
                     android:paddingHorizontal="6dp"
-                    android:drawableTop="@drawable/ic_copy_white_24dp"
+                    android:drawableTop="@drawable/ic_copy_24dp"
                     android:text="@string/paper_wallet_copy"
                     android:textAllCaps="false"
                     android:textSize="12sp" />
@@ -212,7 +212,7 @@
                     android:minHeight="48dp"
                     android:gravity="center"
                     android:paddingHorizontal="6dp"
-                    android:drawableTop="@drawable/ic_key_wif_white_24dp"
+                    android:drawableTop="@drawable/ic_key_wif_24dp"
                     android:text="@string/paper_wallet_private_format_wif"
                     android:textAllCaps="false"
                     android:textSize="12sp" />
@@ -227,7 +227,7 @@
                     android:maxLines="2"
                     android:gravity="center"
                     android:paddingHorizontal="4dp"
-                    android:drawableTop="@drawable/ic_eye_off_white_24dp"
+                    android:drawableTop="@drawable/ic_eye_off_24dp"
                     android:text="@string/paper_wallet_hide_key"
                     android:textAllCaps="false"
                     android:textSize="12sp" />
