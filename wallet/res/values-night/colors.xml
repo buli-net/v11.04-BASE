@@ -25,4 +25,7 @@
     <color name="fg_password_strength_fair">#ffdfa870</color>
     <color name="fg_password_strength_good">#ffa0a8a0</color>
     <color name="fg_password_strength_strong">#ffa3e08c</color>
+
+    <!-- bg qr show transaction -->
+    <color name="qr_background">#FFFFFF</color>  <!-- white -->
 </resources>
