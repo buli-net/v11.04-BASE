@@ -1,7 +1,26 @@
 
 
 =====================================================================
+* - 16/07/2026
+------------------------------------------------------------------
 
++ Add button i show info transaction
+
+- Create file wallet/res/drawable/ic_info_white_24dp.xml
+- Create file wallet/src/wallet/ui/TransactionDetailsActivity.java
+- Create file wallet/res/layout/activity_transaction_details.xml
+- Create file wallet/res/values/colors_txdetails.xml
+- Create file wallet/res/values-night/colors_txdetails.xml
+- Create file wallet/res/drawable/bg_qr_white_rounded.xml
+
+- Add code file wallet/res/values/strings.xml [add code line 448 --> 524]
+- Add code file wallet/res/menu/wallet_transactions_context.xml [ add code line 11->18 ]
+- Add code file wallet/AndroidManifest.xml [ add code line 91-->97 ]
+- Add code file wallet/src/wallet/ui/WalletTransactionsFragment.java [ add code line 63-->65, 313-->319 ]
+- Add code file wallet/res/values/colors.xml [ add code line 52,53 ]
+- Add code file wallet/res/values-night/colors.xml [ add code line 29,30 ]
+
+=====================================================================
 * - 12/07/2026
 
 
@@ -30,7 +49,7 @@
 
 - Add code file wallet/build.gradle [ add code line 37 ]
 - Add code file wallet/res/xml/file_provider.xml [ add code line 9-->13 ]
-- Add code file wallet/AndroidManifest.xml [add code line 92-->99]
+- Add code file wallet/AndroidManifest.xml [add code line 98-->105]
 - Add code file wallet/res/values/strings.xml [add code line 383 --> 446]
 - Add code file wallet/src/wallet/ui/WalletActivity.java [ add code line 306--> 310]
 - Add code file wallet/res/menu/wallet_options.xml [add code line 71-->76]
