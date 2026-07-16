@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="tx_page_bg">#10121c</color>
+    <color name="tx_card_bg">#384050</color>
+    <color name="tx_text_primary">#e0e0e0</color>
+    <color name="tx_text_secondary">#9aa0aa</color>
+    <color name="tx_amount_sent">#ff6b6b</color>
+    <color name="tx_amount_recv">#5cd68a</color>
+    <color name="tx_status_ok">#5cd68a</color>
+    <color name="tx_status_pending">#ffb84d</color>
+    <color name="tx_status_building">#5aa9ff</color>
+</resources>
