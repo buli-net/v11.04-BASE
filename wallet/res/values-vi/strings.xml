@@ -382,7 +382,6 @@
 
 
    <!-- add create paper wallet -->
-    
     <!-- Paper Wallet Activity -->
     <string name="paper_wallet_activity_title">Tạo ví giấy</string>
     <string name="paper_wallet_print_title">Ví giấy</string>
@@ -445,5 +444,82 @@
     <string name="paper_wallet_public_type">Loại công khai: %s</string>
 
 <!-- end add create paper wallet -->
+    
+<!-- TransactionDetailsActivity -->
+    <!-- wallet/src/wallet/ui/TransactionDetailsActivity.java -->
+<string name="tx_details_title">Chi tiết giao dịch</string>
+<string name="tx_details_missing_txid">Thiếu txid</string>
+<string name="tx_details_wallet_not_ready">Ví chưa sẵn sàng</string>
+<string name="tx_details_transaction_not_found">Không tìm thấy giao dịch</string>
+<string name="tx_details_sent">Đã gửi</string>
+<string name="tx_details_received">Đã nhận</string>
+<string name="tx_details_status_pending">Đang chờ</string>
+<string name="tx_details_status_building">Đang xây dựng</string>
+<string name="tx_details_status_confirmed">Đã xác nhận</string>
+<string name="tx_details_unconfirmed">Chưa xác nhận</string>
+<string name="tx_details_confirmations_value">%1$d xác nhận · khối %2$d</string>
+<string name="tx_details_total_from">Tổng: %1$s BTC từ %2$d</string>
+<string name="tx_details_total_to">Tổng: %1$s BTC tới %2$d</string>
+<string name="tx_details_copied">Đã sao chép</string>
+<string name="tx_details_save">Lưu</string>
+<string name="tx_details_share">Chia sẻ</string>
+<string name="tx_details_explore">Khám phá</string>
+<string name="tx_details_save_failed">Lưu thất bại</string>
+<string name="tx_details_saved_to_pictures">Đã lưu vào Pictures/WalletQR</string>
+<string name="tx_details_save_failed_msg">Lưu thất bại: %s</string>
+<string name="tx_details_share_tx">Chia sẻ giao dịch</string>
+<string name="tx_details_no_browser">Không tìm thấy trình duyệt</string>
+	
+	 <!-- qr copy txt -->
+	
+<string name="qr_direction">Hướng</string>
+<string name="qr_amount">Số tiền</string>
+<string name="qr_sender_receiver">Người gửi / Người nhận</string>
+<string name="qr_from">Từ</string>
+<string name="qr_to">Đến</string>
+<string name="qr_tx_details">Chi tiết giao dịch</string>
+<string name="qr_status">Trạng thái</string>
+<string name="qr_fee">Phí</string>
+<string name="qr_size_weight">Kích thước / Trọng số</string>
+<string name="qr_confirmations">Xác nhận</string>
+<string name="qr_time">Thời gian</string>
+	
+<string name="qr_age">Tuổi</string>
+<string name="qr_ago">trước</string>
+<string name="qr_year">năm</string>
+<string name="qr_years">năm</string>
+<string name="qr_month">tháng</string>
+<string name="qr_months">tháng</string>
+<string name="qr_day">ngày</string>
+<string name="qr_days">ngày</string>
+<string name="qr_hour">giờ</string>
+<string name="qr_hours">giờ</string>
+<string name="qr_minute">phút</string>
+<string name="qr_minutes">phút</string>
+<string name="qr_second">giây</string>
+<string name="qr_seconds">giây</string>
+	
+<string name="qr_sent_details">Chi tiết đã gửi</string>
+<string name="qr_received_details">Chi tiết đã nhận</string>
+<string name="qr_txid">Mã giao dịch</string>
+	
+     <!-- wallet/res/layout/activity_transaction_details.xml -->
 
+<string name="tx_details_qr_desc">Mã QR giao dịch</string>
+<string name="tx_details_sender_receiver">Người gửi / Người nhận</string>
+<string name="tx_details_from">Từ</string>
+<string name="tx_details_to">Đến</string>
+<string name="tx_details_transaction_details">Chi tiết giao dịch</string>
+<string name="tx_details_status">Trạng thái</string>
+<string name="tx_details_fee">Phí</string>
+<string name="tx_details_size_weight">Kích thước / Trọng số</string>
+<string name="tx_details_confirmations">Số xác nhận</string>
+<string name="tx_details_time">Thời gian</string>
+<string name="tx_details_age">Tuổi</string>
+<string name="tx_details_sent_details">Chi tiết đã gửi</string>
+<string name="tx_details_received_details">Chi tiết đã nhận</string>
+<string name="tx_details_transaction_id">Mã giao dịch</string>
+<string name="tx_details_tap_to_copy">Chạm để sao chép</string>
+<!-- end TransactionDetailsActivity -->
+    
 </resources>
