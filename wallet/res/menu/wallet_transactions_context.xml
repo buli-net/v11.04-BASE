@@ -8,6 +8,14 @@
         android:showAsAction="ifRoom"
         android:title="@null"
         android:titleCondensed="@string/button_edit" />
+      <!-- add show transaction i -->
+    <item 
+        android:id="@+id/wallet_transactions_context_show_details"
+        android:icon="@drawable/ic_info_white_24dp"
+        android:title="Details"
+        android:showAsAction="ifRoom"
+        android:orderInCategory="0"/>
+    <!-- end -->
     <item
         android:id="@+id/wallet_transactions_context_show_qr"
         android:icon="@drawable/ic_qrcode_white_24dp"
