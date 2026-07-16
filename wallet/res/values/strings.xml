@@ -380,6 +380,8 @@
     <string name="error_http">HTTP error %1$s:\n%2$s</string>
     <string name="error_bluetooth">Bluetooth error: %1$s</string>
 
+    <!-- add create paper wallet -->
+    
     <!-- Paper Wallet Activity -->
     <string name="paper_wallet_activity_title">Create paper wallet</string>
     <string name="paper_wallet_print_title">Paper Wallet</string>
@@ -442,5 +444,83 @@
     <string name="paper_wallet_public_type">Public type: %s</string>
 
     <!-- end add create paper wallet -->
+
+    <!-- TransactionDetailsActivity -->
+     <!-- wallet/src/wallet/ui/TransactionDetailsActivity.java -->
+<string name="tx_details_title">Transaction Details</string>
+<string name="tx_details_missing_txid">Missing txid</string>
+<string name="tx_details_wallet_not_ready">Wallet not ready</string>
+<string name="tx_details_transaction_not_found">Transaction not found</string>
+<string name="tx_details_sent">Sent</string>
+<string name="tx_details_received">Received</string>
+<string name="tx_details_status_pending">Pending</string>
+<string name="tx_details_status_building">Building</string>
+<string name="tx_details_status_confirmed">Confirmed</string>
+<string name="tx_details_unconfirmed">Unconfirmed</string>
+<string name="tx_details_confirmations_value">%1$d confirmations · height %2$d</string>
+<string name="tx_details_total_from">Total: %1$s BTC from %2$d</string>
+<string name="tx_details_total_to">Total: %1$s BTC to %2$d</string>
+<string name="tx_details_copied">Copied</string>
+<string name="tx_details_save">Save</string>
+<string name="tx_details_share">Share</string>
+<string name="tx_details_explore">Explore</string>
+<string name="tx_details_save_failed">Save failed</string>
+<string name="tx_details_saved_to_pictures">Saved to Pictures/WalletQR</string>
+<string name="tx_details_save_failed_msg">Save failed: %s</string>
+<string name="tx_details_share_tx">Share transaction</string>
+<string name="tx_details_no_browser">No browser found</string>
+
+    <!-- qr copy txt-->
+
+<string name="qr_direction">Direction</string>
+<string name="qr_amount">Amount</string>
+<string name="qr_sender_receiver">Sender / Receiver</string>
+<string name="qr_from">From</string>
+<string name="qr_to">To</string>
+<string name="qr_tx_details">Transaction details</string>
+<string name="qr_status">Status</string>
+<string name="qr_fee">Fee</string>
+<string name="qr_size_weight">Size / Weight</string>
+<string name="qr_confirmations">Confirmations</string>
+<string name="qr_time">Time</string>
+    
+<string name="qr_age">Age</string>
+<string name="qr_ago">ago</string>
+<string name="qr_year">year</string>
+<string name="qr_years">years</string>
+<string name="qr_month">month</string>
+<string name="qr_months">months</string>
+<string name="qr_day">day</string>
+<string name="qr_days">days</string>
+<string name="qr_hour">hour</string>
+<string name="qr_hours">hours</string>
+<string name="qr_minute">minute</string>
+<string name="qr_minutes">minutes</string>
+<string name="qr_second">second</string>
+<string name="qr_seconds">seconds</string>
+    
+<string name="qr_sent_details">Sent Details</string>
+<string name="qr_received_details">Received Details</string>
+<string name="qr_txid">Transaction ID</string>
+
+      <!-- wallet/res/layout/activity_transaction_details.xml -->
+
+<string name="tx_details_qr_desc">Transaction QR</string>
+<string name="tx_details_sender_receiver">Sender / Receiver</string>
+<string name="tx_details_from">From</string>
+<string name="tx_details_to">To</string>
+<string name="tx_details_transaction_details">Transaction details</string>
+<string name="tx_details_status">Status</string>
+<string name="tx_details_fee">Fee</string>
+<string name="tx_details_size_weight">Size / Weight</string>
+<string name="tx_details_confirmations">Confirmations</string>
+<string name="tx_details_time">Time</string>
+<string name="tx_details_age">Age</string>
+<string name="tx_details_sent_details">Sent Details</string>
+<string name="tx_details_received_details">Received Details</string>
+<string name="tx_details_transaction_id">Transaction ID</string>
+<string name="tx_details_tap_to_copy">Tap to copy</string>
+    
+<!-- end TransactionDetailsActivity -->
     
 </resources>
