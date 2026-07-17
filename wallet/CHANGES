@@ -9,9 +9,11 @@
 - Create file wallet/res/drawable/ic_info_white_24dp.xml
 - Create file wallet/src/wallet/ui/TransactionDetailsActivity.java
 - Create file wallet/res/layout/activity_transaction_details.xml
+- Create file wallet/res/menu/transaction_details_activity_options.xml
 - Create file wallet/res/values/colors_txdetails.xml
 - Create file wallet/res/values-night/colors_txdetails.xml
 - Create file wallet/res/drawable/bg_qr_white_rounded.xml
+
 
 - Add code file wallet/res/values/strings.xml [add code line 448 --> 524]
 - Add code file wallet/res/menu/wallet_transactions_context.xml [ add code line 11->18 ]
