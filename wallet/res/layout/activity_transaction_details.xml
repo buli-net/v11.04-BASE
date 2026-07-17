@@ -15,7 +15,7 @@
         android:tag="levitate"
         app:cardCornerRadius="2dp"
         app:cardElevation="12dp"
-        app:cardBackgroundColor="@color/action_bar"
+        android:foreground="?android:attr/selectableItemBackground"
         >
 
         <RelativeLayout
