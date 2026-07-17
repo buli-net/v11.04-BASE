@@ -60,16 +60,27 @@ import java.util.Map;
 import wallet.R;
 import wallet.WalletApplication;
 
+/**
+ * Transaction Details screen.
+ * Shows amount, status, fee, and full input/output breakdown.
+ * Compatible with AppTheme.My.Preference, extends android.app.Activity.
+ */
 public class TransactionDetailsActivity extends Activity {
+    // Main amount / status views
     private TextView tvDirection, tvAmount, tvStatus, tvFee, tvTime, tvHeight, tvMeta, tvTxid;
+    // Age view - time elapsed since transaction
     private TextView tvAge;
+    // Full input/output list views
     private TextView tvFrom, tvTo;
+    // Actual counterparty sender/receiver views (single address)
     private TextView tvActualFrom, tvActualTo;
 
+    // QR live
     private ImageView ivQr;
     private Bitmap currentQrBitmap;
     private TextView tvTxidCopy;
 
+    // --- LIVE PATCH: keep tx/wallet/params for listener ---
     private Transaction tx;
     private Wallet wallet;
     private NetworkParameters params;
@@ -80,10 +91,14 @@ public class TransactionDetailsActivity extends Activity {
             runOnUiThread(() -> refreshLiveFields());
         }
     };
+    // --- END LIVE PATCH ---
 
+    // --- QR DIALOG LIVE PATCH ---
     private Dialog qrDialog;
     private ImageView qrDialogImageView;
+    // --- END QR DIALOG LIVE PATCH ---
 
+    // Age ticker - updates the Age field every second
     private final Handler ageHandler = new Handler(Looper.getMainLooper());
     private final Runnable ageRunnable = new Runnable() {
         @Override
@@ -99,12 +114,14 @@ public class TransactionDetailsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_details);
 
+        // Setup ActionBar
         ActionBar ab = getActionBar();
         if (ab!= null) {
             ab.setDisplayHomeAsUpEnabled(true);
             ab.setTitle(R.string.tx_details_title);
         }
 
+        // Bind views
         tvDirection = findViewById(R.id.tv_direction);
         tvAmount = findViewById(R.id.tv_amount);
         tvStatus = findViewById(R.id.tv_status);
@@ -121,6 +138,7 @@ public class TransactionDetailsActivity extends Activity {
         ivQr = findViewById(R.id.iv_tx_qr);
         tvTxidCopy = findViewById(R.id.tv_txid_copy);
 
+        // Right-align Transaction details values to match mockup
         if (tvStatus!= null) { tvStatus.setGravity(Gravity.END); tvStatus.setTextAlignment(TextView.TEXT_ALIGNMENT_VIEW_END); }
         if (tvFee!= null) { tvFee.setGravity(Gravity.END); tvFee.setTextAlignment(TextView.TEXT_ALIGNMENT_VIEW_END); }
         if (tvTime!= null) { tvTime.setGravity(Gravity.END); tvTime.setTextAlignment(TextView.TEXT_ALIGNMENT_VIEW_END); }
@@ -128,6 +146,7 @@ public class TransactionDetailsActivity extends Activity {
         if (tvMeta!= null) { tvMeta.setGravity(Gravity.END); tvMeta.setTextAlignment(TextView.TEXT_ALIGNMENT_VIEW_END); }
         if (tvAge!= null) { tvAge.setGravity(Gravity.END); tvAge.setTextAlignment(TextView.TEXT_ALIGNMENT_VIEW_END); }
 
+        // Get transaction hash from intent
         String txidStr = getIntent().getStringExtra("txid");
         if (txidStr == null) {
             Toast.makeText(this, getString(R.string.tx_details_missing_txid), Toast.LENGTH_SHORT).show();
@@ -135,6 +154,7 @@ public class TransactionDetailsActivity extends Activity {
             return;
         }
 
+        // Load wallet
         WalletApplication app = (WalletApplication) getApplication();
         wallet = app.getWallet();
         if (wallet == null) {
@@ -144,6 +164,7 @@ public class TransactionDetailsActivity extends Activity {
         }
         params = wallet.getNetworkParameters();
 
+        // Load transaction
         try {
             tx = wallet.getTransaction(Sha256Hash.wrap(txidStr));
         } catch (Exception e) {
@@ -155,6 +176,7 @@ public class TransactionDetailsActivity extends Activity {
             return;
         }
 
+        // --- Amount and direction ---
         Coin value = Coin.ZERO;
         try {
             Coin v = tx.getValue(wallet);
@@ -170,12 +192,15 @@ public class TransactionDetailsActivity extends Activity {
                 isSend? R.color.tx_amount_sent : R.color.tx_amount_recv));
         } catch (Exception ignored) {}
 
+        // --- Confirmation status: Pending / Building / Confirmed ---
         refreshLiveFields();
 
+        // --- Fee ---
         Coin fee = null;
         try { fee = tx.getFee(); } catch (Exception ignored) {}
         tvFee.setText(fee!= null? fee.toPlainString() + " BTC" : "—");
 
+        // --- Time ---
         Date updateTime = null;
         try { updateTime = tx.getUpdateTime(); } catch (Exception ignored) {}
         if (updateTime!= null) {
@@ -184,6 +209,7 @@ public class TransactionDetailsActivity extends Activity {
             tvTime.setText("—");
         }
 
+        // --- Size / weight / fee rate / RBF ---
         int size = 0, weight = 0;
         boolean rbf = false;
         try { size = tx.getMessageSize(); } catch (Exception ignored) {}
@@ -199,6 +225,7 @@ public class TransactionDetailsActivity extends Activity {
         }
         tvMeta.setText(size + " bytes · " + weight + " wu" + feeRate + (rbf? " · RBF" : ""));
 
+        // --- Actual sender / receiver ---
         String actualFrom = null;
         String actualTo = null;
         try {
@@ -220,6 +247,7 @@ public class TransactionDetailsActivity extends Activity {
         copyOnClick(tvActualFrom, actualFrom);
         copyOnClick(tvActualTo, actualTo);
 
+        // --- Full input / output list ---
         StringBuilder fromSb = new StringBuilder();
         Coin totalFrom = Coin.ZERO;
         int inCount = 0;
@@ -241,7 +269,7 @@ public class TransactionDetailsActivity extends Activity {
                 } catch (Exception ignored) {}
                 if (v!= null) totalFrom = totalFrom.add(v);
                 fromSb.append(addr).append(" (").append(type).append(") - ")
-                    .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
+                     .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
             }
         }
 
@@ -258,7 +286,7 @@ public class TransactionDetailsActivity extends Activity {
                 if (addr == null) addr = "unknown";
                 String type = getAddressType(addr, out.getScriptPubKey());
                 toSb.append(addr).append(" (").append(type).append(") - ")
-                  .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
+                   .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
             }
         }
 
@@ -271,10 +299,12 @@ public class TransactionDetailsActivity extends Activity {
         copyOnClick(tvFrom, fromText);
         copyOnClick(tvTo, toText);
 
+        // --- Transaction ID ---
         String hash = tx.getTxId().toString();
         tvTxid.setText(hash);
         copyOnClick(tvTxid, hash);
 
+        // --- QR live + copy full ---
         setupQr();
         updateLiveQr();
         setupParallaxScroll();
@@ -301,12 +331,15 @@ public class TransactionDetailsActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate copy action with always|withText to show icon only in portrait and icon+text in landscape
         getMenuInflater().inflate(R.menu.transaction_details_activity_options, menu);
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        // Force white text color for items actually shown on ActionBar (not the overflow popup)
+        // Same technique as in PaperWalletActivity
         final int white = Color.WHITE;
         final View decor = getWindow().getDecorView();
         decor.post(() -> {
@@ -326,6 +359,7 @@ public class TransactionDetailsActivity extends Activity {
         return super.onPrepareOptionsMenu(menu);
     }
 
+    // Helper: recursively find TextView and set white color
     private void findAndWhiteText(View root, int color) {
         if (root instanceof TextView) {
             ((TextView) root).setTextColor(color);
@@ -339,6 +373,7 @@ public class TransactionDetailsActivity extends Activity {
         }
     }
 
+    // Helper: find views by class name substring
     private void findViewsByClass(View root, String className, ArrayList<View> out) {
         if (root.getClass().getSimpleName().contains(className)) out.add(root);
         if (root instanceof ViewGroup) {
@@ -362,6 +397,7 @@ public class TransactionDetailsActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    /** Extract a base58/bech32 address from a script, or null if not standard. */
     private String getAddressFromScript(Script script, NetworkParameters params) {
         if (script == null) return null;
         try {
@@ -373,6 +409,7 @@ public class TransactionDetailsActivity extends Activity {
         }
     }
 
+    /** Detect script type from address prefix and script pattern. */
     private String getAddressType(String addr, Script script) {
         try {
             if (script!= null && ScriptPattern.isOpReturn(script)) return "OP_RETURN";
@@ -441,6 +478,8 @@ public class TransactionDetailsActivity extends Activity {
         } catch (Exception ignored) {}
     }
 
+    // ---------- QR live / copy full ----------
+
     private boolean isDark() {
         return (getResources().getConfiguration().uiMode
             & android.content.res.Configuration.UI_MODE_NIGHT_MASK)
@@ -452,28 +491,29 @@ public class TransactionDetailsActivity extends Activity {
             ivQr.setOnClickListener(v -> showQrDialog());
         }
         if (tvTxidCopy!= null) {
-            tvTxidCopy.setVisibility(View.GONE);
+            // Hide the old "Tap to copy" text at the bottom - moved to ActionBar
+            tvTxidCopy.setVisibility(android.view.View.GONE);
         }
     }
 
-    private String buildLiveTxText() {
-        String ageStr = getTv(tvAge);
-        return getString(R.string.qr_direction) + ": " + getTv(tvDirection) + "\n"
-                + getString(R.string.qr_amount) + ": " + getTv(tvAmount) + "\n\n"
-                + getString(R.string.qr_sender_receiver) + "\n"
-                + getString(R.string.qr_from) + ": " + getTv(tvActualFrom) + "\n"
-                + getString(R.string.qr_to) + ": " + getTv(tvActualTo) + "\n\n"
-                + getString(R.string.qr_tx_details) + "\n"
-                + getString(R.string.qr_status) + ": " + getTv(tvStatus) + "\n"
-                + getString(R.string.qr_fee) + ": " + getTv(tvFee) + "\n"
-                + getString(R.string.qr_size_weight) + ": " + getTv(tvMeta) + "\n"
-                + getString(R.string.qr_confirmations) + ": " + getTv(tvHeight) + "\n"
-                + getString(R.string.qr_time) + ": " + getTv(tvTime) + "\n"
-                + getString(R.string.qr_age) + ": " + ageStr + "\n\n"
-                + getString(R.string.qr_sent_details) + "\n" + getTv(tvFrom) + "\n\n"
-                + getString(R.string.qr_received_details) + "\n" + getTv(tvTo) + "\n\n"
-                + getString(R.string.qr_txid) + "\n" + getTv(tvTxid);
-    }
+private String buildLiveTxText() {
+    String ageStr = getTv(tvAge);
+    return getString(R.string.qr_direction) + ": " + getTv(tvDirection) + "\n"
+            + getString(R.string.qr_amount) + ": " + getTv(tvAmount) + "\n\n"
+            + getString(R.string.qr_sender_receiver) + "\n"
+            + getString(R.string.qr_from) + ": " + getTv(tvActualFrom) + "\n"
+            + getString(R.string.qr_to) + ": " + getTv(tvActualTo) + "\n\n"
+            + getString(R.string.qr_tx_details) + "\n"
+            + getString(R.string.qr_status) + ": " + getTv(tvStatus) + "\n"
+            + getString(R.string.qr_fee) + ": " + getTv(tvFee) + "\n"
+            + getString(R.string.qr_size_weight) + ": " + getTv(tvMeta) + "\n"
+            + getString(R.string.qr_confirmations) + ": " + getTv(tvHeight) + "\n"
+            + getString(R.string.qr_time) + ": " + getTv(tvTime) + "\n"
+            + getString(R.string.qr_age) + ": " + ageStr + "\n\n"
+            + getString(R.string.qr_sent_details) + "\n" + getTv(tvFrom) + "\n\n"
+            + getString(R.string.qr_received_details) + "\n" + getTv(tvTo) + "\n\n"
+            + getString(R.string.qr_txid) + "\n" + getTv(tvTxid);
+}
 
     private String getTv(TextView tv) {
         return tv!= null && tv.getText()!= null? tv.getText().toString() : "";
@@ -500,36 +540,47 @@ public class TransactionDetailsActivity extends Activity {
         copy(buildLiveTxText());
     }
 
+    // --- QR dialog with Save / Share / Explore ---
     private void showQrDialog() {
         boolean dark = isDark();
         int bgColor = dark? Color.BLACK : Color.WHITE;
-        int dialogTheme = dark
-          ? android.R.style.Theme_Black_NoTitleBar_Fullscreen
-            : android.R.style.Theme_Light_NoTitleBar_Fullscreen;
-        qrDialog = new Dialog(this, dialogTheme);
-        qrDialog.getWindow().setFlags(
-            android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        if (Build.VERSION.SDK_INT >= 21) {
-            qrDialog.getWindow().setStatusBarColor(bgColor);
-        }
-        qrDialog.getWindow().getDecorView().setSystemUiVisibility(
-           android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-          | android.view.View.SYSTEM_UI_FLAG_FULLSCREEN);
+        // int bgColor = dark? Color.WHITE : Color.WHITE;
+
+ int dialogTheme = dark
+   ? android.R.style.Theme_Black_NoTitleBar_Fullscreen
+    : android.R.style.Theme_Light_NoTitleBar_Fullscreen;
+
+qrDialog = new Dialog(this, dialogTheme);
+
+qrDialog.getWindow().setFlags(
+    android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN,
+    android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+if (android.os.Build.VERSION.SDK_INT >= 21) {
+    qrDialog.getWindow().setStatusBarColor(bgColor);
+}
+qrDialog.getWindow().getDecorView().setSystemUiVisibility(
+   android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+  | android.view.View.SYSTEM_UI_FLAG_FULLSCREEN);
+
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setBackgroundColor(bgColor);
         root.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
+
         qrDialogImageView = new ImageView(this);
         qrDialogImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         qrDialogImageView.setPadding(48, 48, 48, 48);
+     // qrDialogImageView.setBackgroundResource(R.drawable.bg_qr_white_rounded);
         LinearLayout.LayoutParams imgLp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f);
         qrDialogImageView.setLayoutParams(imgLp);
         qrDialogImageView.setOnClickListener(v -> qrDialog.dismiss());
         root.addView(qrDialogImageView);
+
+        // bottom action bar
         LinearLayout bar = new LinearLayout(this);
         bar.setOrientation(LinearLayout.HORIZONTAL);
         bar.setGravity(Gravity.CENTER);
@@ -537,9 +588,11 @@ public class TransactionDetailsActivity extends Activity {
         bar.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
+
         bar.addView(makeActionButton(android.R.drawable.ic_menu_save, getString(R.string.tx_details_save), dark, v -> saveQrBitmap()));
         bar.addView(makeActionButton(android.R.drawable.ic_menu_share, getString(R.string.tx_details_share), dark, v -> shareTx()));
         bar.addView(makeActionButton(android.R.drawable.ic_menu_search, getString(R.string.tx_details_explore), dark, v -> exploreTx()));
+
         root.addView(bar);
         qrDialog.setContentView(root);
         qrDialog.setCancelable(true);
@@ -560,6 +613,7 @@ public class TransactionDetailsActivity extends Activity {
         col.setClickable(true);
         col.setOnClickListener(onClick);
         col.setPadding(8, 8, 8, 8);
+
         ImageView iv = new ImageView(this);
         iv.setImageResource(iconRes);
         int iconSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 36, getResources().getDisplayMetrics());
@@ -567,6 +621,7 @@ public class TransactionDetailsActivity extends Activity {
         ivLp.gravity = Gravity.CENTER;
         iv.setLayoutParams(ivLp);
         col.addView(iv);
+
         TextView tv = new TextView(this);
         tv.setText(label);
         tv.setTextColor(dark? 0xFFBBBBBB : 0xFF666666);
@@ -636,48 +691,52 @@ public class TransactionDetailsActivity extends Activity {
         BitMatrix bitMatrix = writer.encode(text, BarcodeFormat.QR_CODE, size, size, hints);
         int w = bitMatrix.getWidth();
         int h = bitMatrix.getHeight();
-        Bitmap bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+      // Bitmap bmp = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565); // color 16 bit
+        Bitmap bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888); // color 32 bit
         for (int x = 0; x < w; x++) {
             for (int y = 0; y < h; y++) {
                 bmp.setPixel(x, y, bitMatrix.get(x, y)? Color.BLACK : Color.WHITE);
+               // bmp.setPixel(x, y, bitMatrix.get(x, y)? Color.BLACK : Color.TRANSPARENT);
             }
         }
         return bmp;
     }
 
-    private String formatAge(Date txTime) {
-        if (txTime == null) return "—";
-        java.util.Calendar then = java.util.Calendar.getInstance();
-        then.setTime(txTime);
-        java.util.Calendar now = java.util.Calendar.getInstance();
-        int years = now.get(java.util.Calendar.YEAR) - then.get(java.util.Calendar.YEAR);
-        int months = now.get(java.util.Calendar.MONTH) - then.get(java.util.Calendar.MONTH);
-        int days = now.get(java.util.Calendar.DAY_OF_MONTH) - then.get(java.util.Calendar.DAY_OF_MONTH);
-        int hours = now.get(java.util.Calendar.HOUR_OF_DAY) - then.get(java.util.Calendar.HOUR_OF_DAY);
-        int minutes = now.get(java.util.Calendar.MINUTE) - then.get(java.util.Calendar.MINUTE);
-        int seconds = now.get(java.util.Calendar.SECOND) - then.get(java.util.Calendar.SECOND);
-        if (seconds < 0) { seconds += 60; minutes--; }
-        if (minutes < 0) { minutes += 60; hours--; }
-        if (hours < 0) { hours += 24; days--; }
-        if (days < 0) {
-            java.util.Calendar temp = (java.util.Calendar) now.clone();
-            temp.add(java.util.Calendar.MONTH, -1);
-            int daysInLastMonth = temp.getActualMaximum(java.util.Calendar.DAY_OF_MONTH);
-            days += daysInLastMonth;
-            months--;
-        }
-        if (months < 0) { months += 12; years--; }
-        String result = "";
-        if (years > 0) result += years + " " + getString(years == 1? R.string.qr_year : R.string.qr_years) + " ";
-        if (months > 0) result += months + " " + getString(months == 1? R.string.qr_month : R.string.qr_months) + " ";
-        if (days > 0) result += days + " " + getString(days == 1? R.string.qr_day : R.string.qr_days) + " ";
-        if (hours > 0 || result.length() > 0) result += hours + " " + getString(hours == 1? R.string.qr_hour : R.string.qr_hours) + " ";
-        if (minutes > 0 || result.length() > 0) result += minutes + " " + getString(minutes == 1? R.string.qr_minute : R.string.qr_minutes) + " ";
-        result += seconds + " " + getString(seconds == 1? R.string.qr_second : R.string.qr_seconds) + " ";
-        result += getString(R.string.qr_ago);
-        return result;
+    // Format elapsed time as years/months/days/hours/minutes/seconds ago
+private String formatAge(Date txTime) {
+    if (txTime == null) return "—";
+    java.util.Calendar then = java.util.Calendar.getInstance();
+    then.setTime(txTime);
+    java.util.Calendar now = java.util.Calendar.getInstance();
+    int years = now.get(java.util.Calendar.YEAR) - then.get(java.util.Calendar.YEAR);
+    int months = now.get(java.util.Calendar.MONTH) - then.get(java.util.Calendar.MONTH);
+    int days = now.get(java.util.Calendar.DAY_OF_MONTH) - then.get(java.util.Calendar.DAY_OF_MONTH);
+    int hours = now.get(java.util.Calendar.HOUR_OF_DAY) - then.get(java.util.Calendar.HOUR_OF_DAY);
+    int minutes = now.get(java.util.Calendar.MINUTE) - then.get(java.util.Calendar.MINUTE);
+    int seconds = now.get(java.util.Calendar.SECOND) - then.get(java.util.Calendar.SECOND);
+    if (seconds < 0) { seconds += 60; minutes--; }
+    if (minutes < 0) { minutes += 60; hours--; }
+    if (hours < 0) { hours += 24; days--; }
+    if (days < 0) {
+        java.util.Calendar temp = (java.util.Calendar) now.clone();
+        temp.add(java.util.Calendar.MONTH, -1);
+        int daysInLastMonth = temp.getActualMaximum(java.util.Calendar.DAY_OF_MONTH);
+        days += daysInLastMonth;
+        months--;
     }
+    if (months < 0) { months += 12; years--; }
+    String result = "";
+    if (years > 0) result += years + " " + getString(years == 1? R.string.qr_year : R.string.qr_years) + " ";
+    if (months > 0) result += months + " " + getString(months == 1? R.string.qr_month : R.string.qr_months) + " ";
+    if (days > 0) result += days + " " + getString(days == 1? R.string.qr_day : R.string.qr_days) + " ";
+    if (hours > 0 || result.length() > 0) result += hours + " " + getString(hours == 1? R.string.qr_hour : R.string.qr_hours) + " ";
+    if (minutes > 0 || result.length() > 0) result += minutes + " " + getString(minutes == 1? R.string.qr_minute : R.string.qr_minutes) + " ";
+    result += seconds + " " + getString(seconds == 1? R.string.qr_second : R.string.qr_seconds) + " ";
+    result += getString(R.string.qr_ago);
+    return result;
+}
 
+    // ---------- LIVE PATCH: refresh status/conf + QR ----------
     private void refreshLiveFields() {
         if (tx == null || tvStatus == null || tvHeight == null) return;
         TransactionConfidence confidence = tx.getConfidence();
@@ -718,7 +777,7 @@ public class TransactionDetailsActivity extends Activity {
         updateLiveQr();
     }
 
-    // --- Parallax scroll: header returns instantly, lower cards follow finger rhythm ---
+    // ---------- PARALLAX SCROLL: push up together, pull down header returns instantly ----------
     private void setupParallaxScroll() {
         final View scroll = findViewById(R.id.nested_scroll);
         final View cardHeader = findViewById(R.id.card_header);
@@ -745,23 +804,43 @@ public class TransactionDetailsActivity extends Activity {
                         float dy = e.getRawY() - downY[0];
                         if (dy > 0 && scrollY == 0) {
                             float pull = dy * 0.55f;
-                            if (pull > 500) pull = 500 + (pull - 500) * 0.15f;
-                            cardHeader.setTranslationY(pull);
-                            if (cardSender!= null) cardSender.setTranslationY(pull * 0.65f);
-                            if (cardDetails!= null) cardDetails.setTranslationY(pull * 0.45f);
-                            if (cardIo!= null) cardIo.setTranslationY(pull * 0.28f);
-                            if (cardTxid!= null) cardTxid.setTranslationY(pull * 0.15f);
+                            if (pull > 500) {
+                                pull = 500 + (pull - 500) * 0.15f;
+                            }
+                            // Header pinned = returns instantly, does not follow finger
+                            cardHeader.setTranslationY(0);
+                            if (cardSender!= null) {
+                                cardSender.setTranslationY(pull * 0.3f);
+                            }
+                            if (cardDetails!= null) {
+                                cardDetails.setTranslationY(pull * 0.55f);
+                            }
+                            if (cardIo!= null) {
+                                cardIo.setTranslationY(pull * 0.8f);
+                            }
+                            if (cardTxid!= null) {
+                                cardTxid.setTranslationY(pull * 1.0f);
+                            }
                             return true;
                         }
                         break;
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_CANCEL:
-                        if (cardHeader.getTranslationY()!= 0) {
-                            cardHeader.animate().translationY(0).setDuration(180).setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f)).start();
-                            if (cardSender!= null) cardSender.animate().translationY(0).setDuration(280).setStartDelay(40).setInterpolator(new android.view.animation.OvershootInterpolator(0.8f)).start();
-                            if (cardDetails!= null) cardDetails.animate().translationY(0).setDuration(320).setStartDelay(80).setInterpolator(new android.view.animation.OvershootInterpolator(0.8f)).start();
-                            if (cardIo!= null) cardIo.animate().translationY(0).setDuration(360).setStartDelay(120).setInterpolator(new android.view.animation.OvershootInterpolator(0.8f)).start();
-                            if (cardTxid!= null) cardTxid.animate().translationY(0).setDuration(400).setStartDelay(160).setInterpolator(new android.view.animation.OvershootInterpolator(0.8f)).start();
+                        if (cardSender!= null && cardSender.getTranslationY()!= 0) {
+                            // Header instant, lower cards staggered return following hand rhythm
+                            cardHeader.animate().translationY(0).setDuration(0).start();
+                            if (cardSender!= null) {
+                                cardSender.animate().translationY(0).setDuration(280).setStartDelay(30).setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f)).start();
+                            }
+                            if (cardDetails!= null) {
+                                cardDetails.animate().translationY(0).setDuration(340).setStartDelay(70).setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f)).start();
+                            }
+                            if (cardIo!= null) {
+                                cardIo.animate().translationY(0).setDuration(380).setStartDelay(110).setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f)).start();
+                            }
+                            if (cardTxid!= null) {
+                                cardTxid.animate().translationY(0).setDuration(420).setStartDelay(150).setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f)).start();
+                            }
                         }
                         canPull[0] = false;
                         break;
