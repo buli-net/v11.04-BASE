@@ -8,7 +8,7 @@
     android:background="@color/tx_page_bg"
     >
 
-    <!-- Header card - uses same background as main wallet balance card, auto theme -->
+    <!-- Header card - same background as main balance card, supports light/dark theme via @color/action_bar -->
     <androidx.cardview.widget.CardView
         android:id="@+id/card_header"
         android:layout_width="match_parent"
@@ -17,7 +17,7 @@
         android:tag="levitate"
         app:cardCornerRadius="2dp"
         app:cardElevation="12dp"
-        app:cardBackgroundColor="?attr/colorPrimary"
+        app:cardBackgroundColor="@color/action_bar"
         >
 
         <RelativeLayout
@@ -26,7 +26,6 @@
             android:padding="16dp"
             >
 
-            <!-- QR icon on the right side -->
             <ImageView
                 android:id="@+id/iv_tx_qr"
                 android:layout_width="72dp"
@@ -42,7 +41,6 @@
                 android:contentDescription="@string/tx_details_qr_desc"
                 />
 
-            <!-- Direction text: Sent / Received -->
             <TextView
                 android:id="@+id/tv_direction"
                 android:layout_width="match_parent"
@@ -56,7 +54,6 @@
                 android:fontFamily="sans-serif-medium"
                 />
 
-            <!-- Amount text: -0.01 BTC / +0.01 BTC -->
             <TextView
                 android:id="@+id/tv_amount"
                 android:layout_width="match_parent"
@@ -73,7 +70,7 @@
 
     </androidx.cardview.widget.CardView>
 
-    <!-- Scrollable content - with vertical scrollbar shared with main wallet list -->
+    <!-- Scrollable content with shared system scrollbar - auto theme -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nested_scroll"
         android:layout_width="match_parent"
@@ -93,7 +90,6 @@
             android:padding="8dp"
             >
 
-            <!-- Sender / Receiver card -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_sender"
                 android:layout_width="match_parent"
@@ -173,7 +169,6 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Transaction details card -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_tx_details"
                 android:layout_width="match_parent"
@@ -201,7 +196,6 @@
                         android:layout_height="wrap_content"
                         />
 
-                    <!-- Status row -->
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
@@ -225,7 +219,6 @@
 
                     </LinearLayout>
 
-                    <!-- Fee row -->
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_marginTop="8dp"
@@ -250,7 +243,6 @@
 
                     </LinearLayout>
 
-                    <!-- Size / weight row -->
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_marginTop="8dp"
@@ -275,7 +267,6 @@
 
                     </LinearLayout>
 
-                    <!-- Confirmations row -->
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_marginTop="8dp"
@@ -300,7 +291,6 @@
 
                     </LinearLayout>
 
-                    <!-- Time row -->
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_marginTop="8dp"
@@ -325,7 +315,6 @@
 
                     </LinearLayout>
 
-                    <!-- Age row -->
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_marginTop="8dp"
@@ -354,7 +343,6 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Input / Output details card -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_io"
                 android:layout_width="match_parent"
@@ -428,7 +416,6 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Transaction ID card -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_txid"
                 android:layout_width="match_parent"
