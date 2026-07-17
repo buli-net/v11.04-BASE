@@ -19,6 +19,7 @@ import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -325,9 +326,19 @@ public class TransactionDetailsActivity extends Activity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.transaction_details_activity_options, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
+            return true;
+        }
+        if (item.getItemId() == R.id.transaction_details_options_copy) {
+            copyFullTx();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -427,7 +438,7 @@ public class TransactionDetailsActivity extends Activity {
             ivQr.setOnClickListener(v -> showQrDialog());
         }
         if (tvTxidCopy != null) {
-            tvTxidCopy.setOnClickListener(v -> copyFullTx());
+            tvTxidCopy.setVisibility(android.view.View.GONE);
         }
     }
 
