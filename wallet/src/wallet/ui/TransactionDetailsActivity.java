@@ -60,27 +60,16 @@ import java.util.Map;
 import wallet.R;
 import wallet.WalletApplication;
 
-/**
- * Transaction Details screen.
- * Shows amount, status, fee, and full input/output breakdown.
- * Compatible with AppTheme.My.Preference, extends android.app.Activity.
- */
 public class TransactionDetailsActivity extends Activity {
-    // Main amount / status views
     private TextView tvDirection, tvAmount, tvStatus, tvFee, tvTime, tvHeight, tvMeta, tvTxid;
-    // Age view - time elapsed since transaction
     private TextView tvAge;
-    // Full input/output list views
     private TextView tvFrom, tvTo;
-    // Actual counterparty sender/receiver views (single address)
     private TextView tvActualFrom, tvActualTo;
 
-    // QR live
     private ImageView ivQr;
     private Bitmap currentQrBitmap;
     private TextView tvTxidCopy;
 
-    // --- LIVE PATCH: keep tx/wallet/params for listener ---
     private Transaction tx;
     private Wallet wallet;
     private NetworkParameters params;
@@ -91,14 +80,10 @@ public class TransactionDetailsActivity extends Activity {
             runOnUiThread(() -> refreshLiveFields());
         }
     };
-    // --- END LIVE PATCH ---
 
-    // --- QR DIALOG LIVE PATCH ---
     private Dialog qrDialog;
     private ImageView qrDialogImageView;
-    // --- END QR DIALOG LIVE PATCH ---
 
-    // Age ticker - updates the Age field every second
     private final Handler ageHandler = new Handler(Looper.getMainLooper());
     private final Runnable ageRunnable = new Runnable() {
         @Override
@@ -114,14 +99,12 @@ public class TransactionDetailsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_details);
 
-        // Setup ActionBar
         ActionBar ab = getActionBar();
         if (ab!= null) {
             ab.setDisplayHomeAsUpEnabled(true);
             ab.setTitle(R.string.tx_details_title);
         }
 
-        // Bind views
         tvDirection = findViewById(R.id.tv_direction);
         tvAmount = findViewById(R.id.tv_amount);
         tvStatus = findViewById(R.id.tv_status);
@@ -138,7 +121,6 @@ public class TransactionDetailsActivity extends Activity {
         ivQr = findViewById(R.id.iv_tx_qr);
         tvTxidCopy = findViewById(R.id.tv_txid_copy);
 
-        // Right-align Transaction details values to match mockup
         if (tvStatus!= null) { tvStatus.setGravity(Gravity.END); tvStatus.setTextAlignment(TextView.TEXT_ALIGNMENT_VIEW_END); }
         if (tvFee!= null) { tvFee.setGravity(Gravity.END); tvFee.setTextAlignment(TextView.TEXT_ALIGNMENT_VIEW_END); }
         if (tvTime!= null) { tvTime.setGravity(Gravity.END); tvTime.setTextAlignment(TextView.TEXT_ALIGNMENT_VIEW_END); }
@@ -146,7 +128,6 @@ public class TransactionDetailsActivity extends Activity {
         if (tvMeta!= null) { tvMeta.setGravity(Gravity.END); tvMeta.setTextAlignment(TextView.TEXT_ALIGNMENT_VIEW_END); }
         if (tvAge!= null) { tvAge.setGravity(Gravity.END); tvAge.setTextAlignment(TextView.TEXT_ALIGNMENT_VIEW_END); }
 
-        // Get transaction hash from intent
         String txidStr = getIntent().getStringExtra("txid");
         if (txidStr == null) {
             Toast.makeText(this, getString(R.string.tx_details_missing_txid), Toast.LENGTH_SHORT).show();
@@ -154,7 +135,6 @@ public class TransactionDetailsActivity extends Activity {
             return;
         }
 
-        // Load wallet
         WalletApplication app = (WalletApplication) getApplication();
         wallet = app.getWallet();
         if (wallet == null) {
@@ -164,7 +144,6 @@ public class TransactionDetailsActivity extends Activity {
         }
         params = wallet.getNetworkParameters();
 
-        // Load transaction
         try {
             tx = wallet.getTransaction(Sha256Hash.wrap(txidStr));
         } catch (Exception e) {
@@ -176,7 +155,6 @@ public class TransactionDetailsActivity extends Activity {
             return;
         }
 
-        // --- Amount and direction ---
         Coin value = Coin.ZERO;
         try {
             Coin v = tx.getValue(wallet);
@@ -192,15 +170,12 @@ public class TransactionDetailsActivity extends Activity {
                 isSend? R.color.tx_amount_sent : R.color.tx_amount_recv));
         } catch (Exception ignored) {}
 
-        // --- Confirmation status: Pending / Building / Confirmed ---
         refreshLiveFields();
 
-        // --- Fee ---
         Coin fee = null;
         try { fee = tx.getFee(); } catch (Exception ignored) {}
         tvFee.setText(fee!= null? fee.toPlainString() + " BTC" : "—");
 
-        // --- Time ---
         Date updateTime = null;
         try { updateTime = tx.getUpdateTime(); } catch (Exception ignored) {}
         if (updateTime!= null) {
@@ -209,7 +184,6 @@ public class TransactionDetailsActivity extends Activity {
             tvTime.setText("—");
         }
 
-        // --- Size / weight / fee rate / RBF ---
         int size = 0, weight = 0;
         boolean rbf = false;
         try { size = tx.getMessageSize(); } catch (Exception ignored) {}
@@ -225,7 +199,6 @@ public class TransactionDetailsActivity extends Activity {
         }
         tvMeta.setText(size + " bytes · " + weight + " wu" + feeRate + (rbf? " · RBF" : ""));
 
-        // --- Actual sender / receiver ---
         String actualFrom = null;
         String actualTo = null;
         try {
@@ -247,7 +220,6 @@ public class TransactionDetailsActivity extends Activity {
         copyOnClick(tvActualFrom, actualFrom);
         copyOnClick(tvActualTo, actualTo);
 
-        // --- Full input / output list ---
         StringBuilder fromSb = new StringBuilder();
         Coin totalFrom = Coin.ZERO;
         int inCount = 0;
@@ -269,7 +241,7 @@ public class TransactionDetailsActivity extends Activity {
                 } catch (Exception ignored) {}
                 if (v!= null) totalFrom = totalFrom.add(v);
                 fromSb.append(addr).append(" (").append(type).append(") - ")
-                     .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
+                    .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
             }
         }
 
@@ -286,7 +258,7 @@ public class TransactionDetailsActivity extends Activity {
                 if (addr == null) addr = "unknown";
                 String type = getAddressType(addr, out.getScriptPubKey());
                 toSb.append(addr).append(" (").append(type).append(") - ")
-                   .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
+                  .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
             }
         }
 
@@ -299,16 +271,12 @@ public class TransactionDetailsActivity extends Activity {
         copyOnClick(tvFrom, fromText);
         copyOnClick(tvTo, toText);
 
-        // --- Transaction ID ---
         String hash = tx.getTxId().toString();
         tvTxid.setText(hash);
         copyOnClick(tvTxid, hash);
 
-        // --- QR live + copy full ---
         setupQr();
         updateLiveQr();
-
-        // --- Parallax pull effect ---
         setupParallaxScroll();
     }
 
@@ -394,7 +362,6 @@ public class TransactionDetailsActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    /** Extract a base58/bech32 address from a script, or null if not standard. */
     private String getAddressFromScript(Script script, NetworkParameters params) {
         if (script == null) return null;
         try {
@@ -406,7 +373,6 @@ public class TransactionDetailsActivity extends Activity {
         }
     }
 
-    /** Detect script type from address prefix and script pattern. */
     private String getAddressType(String addr, Script script) {
         try {
             if (script!= null && ScriptPattern.isOpReturn(script)) return "OP_RETURN";
@@ -538,7 +504,7 @@ public class TransactionDetailsActivity extends Activity {
         boolean dark = isDark();
         int bgColor = dark? Color.BLACK : Color.WHITE;
         int dialogTheme = dark
-           ? android.R.style.Theme_Black_NoTitleBar_Fullscreen
+          ? android.R.style.Theme_Black_NoTitleBar_Fullscreen
             : android.R.style.Theme_Light_NoTitleBar_Fullscreen;
         qrDialog = new Dialog(this, dialogTheme);
         qrDialog.getWindow().setFlags(
@@ -760,55 +726,48 @@ public class TransactionDetailsActivity extends Activity {
         final View cardDetails = findViewById(R.id.card_tx_details);
         final View cardIo = findViewById(R.id.card_io);
         final View cardTxid = findViewById(R.id.card_txid);
-        if (scroll == null || cardHeader == null) return; // XML ids not added yet, skip safely
+        if (scroll == null || cardHeader == null) return;
 
-        final float[] startY = {0f};
-        final boolean[] isPulling = {false};
+        final float[] downY = {0f};
+        final boolean[] canPull = {false};
 
-        scroll.setOnTouchListener((v, event) -> {
-            boolean isAtTop = false;
-            try {
-                // Works for both ScrollView and NestedScrollView
-                isAtTop = v.getScrollY() == 0;
-            } catch (Exception ignored) {}
-
-            switch (event.getActionMasked()) {
-                case MotionEvent.ACTION_DOWN:
-                    startY[0] = event.getY();
-                    isPulling[0] = isAtTop;
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    if (!isPulling[0] ||!isAtTop) break;
-                    float dy = event.getY() - startY[0];
-                    if (dy > 0) {
-                        // Damping to feel natural and avoid huge pull
-                        float pull = dy * 0.5f;
-                        if (pull > 400) pull = 400 + (pull - 400) * 0.2f;
-
-                        // Push up = all together (default scroll). Pull down = staggered.
-                        // Header 1.0x instant, others delayed
-                        cardHeader.setTranslationY(pull * 1.0f);
-                        if (cardSender!= null) cardSender.setTranslationY(pull * 0.7f);
-                        if (cardDetails!= null) cardDetails.setTranslationY(pull * 0.5f);
-                        if (cardIo!= null) cardIo.setTranslationY(pull * 0.35f);
-                        if (cardTxid!= null) cardTxid.setTranslationY(pull * 0.2f);
-                        return true; // consume overscroll pull
-                    }
-                    break;
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    if (cardHeader.getTranslationY()!= 0) {
-                        // Spring back with staggered duration - header snaps back first
-                        cardHeader.animate().translationY(0).setDuration(250).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
-                        if (cardSender!= null) cardSender.animate().translationY(0).setDuration(300).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
-                        if (cardDetails!= null) cardDetails.animate().translationY(0).setDuration(350).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
-                        if (cardIo!= null) cardIo.animate().translationY(0).setDuration(400).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
-                        if (cardTxid!= null) cardTxid.animate().translationY(0).setDuration(450).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
-                    }
-                    isPulling[0] = false;
-                    break;
+        scroll.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent e) {
+                int scrollY = v.getScrollY();
+                switch (e.getActionMasked()) {
+                    case MotionEvent.ACTION_DOWN:
+                        downY[0] = e.getRawY();
+                        canPull[0] = (scrollY == 0);
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if (!canPull[0]) break;
+                        float dy = e.getRawY() - downY[0];
+                        if (dy > 0 && scrollY == 0) {
+                            float pull = dy * 0.55f;
+                            if (pull > 500) pull = 500 + (pull - 500) * 0.15f;
+                            cardHeader.setTranslationY(pull);
+                            if (cardSender!= null) cardSender.setTranslationY(pull * 0.65f);
+                            if (cardDetails!= null) cardDetails.setTranslationY(pull * 0.45f);
+                            if (cardIo!= null) cardIo.setTranslationY(pull * 0.28f);
+                            if (cardTxid!= null) cardTxid.setTranslationY(pull * 0.15f);
+                            return true;
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        if (cardHeader.getTranslationY()!= 0) {
+                            cardHeader.animate().translationY(0).setDuration(180).setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f)).start();
+                            if (cardSender!= null) cardSender.animate().translationY(0).setDuration(280).setStartDelay(40).setInterpolator(new android.view.animation.OvershootInterpolator(0.8f)).start();
+                            if (cardDetails!= null) cardDetails.animate().translationY(0).setDuration(320).setStartDelay(80).setInterpolator(new android.view.animation.OvershootInterpolator(0.8f)).start();
+                            if (cardIo!= null) cardIo.animate().translationY(0).setDuration(360).setStartDelay(120).setInterpolator(new android.view.animation.OvershootInterpolator(0.8f)).start();
+                            if (cardTxid!= null) cardTxid.animate().translationY(0).setDuration(400).setStartDelay(160).setInterpolator(new android.view.animation.OvershootInterpolator(0.8f)).start();
+                        }
+                        canPull[0] = false;
+                        break;
+                }
+                return false;
             }
-            return false;
         });
     }
 }
