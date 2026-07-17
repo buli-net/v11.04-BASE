@@ -21,6 +21,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -49,6 +50,7 @@ import org.bitcoinj.wallet.Wallet;
 
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -327,8 +329,57 @@ public class TransactionDetailsActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate copy action with always|withText to show icon only in portrait and icon+text in landscape
         getMenuInflater().inflate(R.menu.transaction_details_activity_options, menu);
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // Force white text color for items actually shown on ActionBar (not the overflow popup)
+        // Same technique as in PaperWalletActivity
+        final int white = Color.WHITE;
+        final View decor = getWindow().getDecorView();
+        decor.post(() -> {
+            ArrayList<View> actionMenuViews = new ArrayList<>();
+            findViewsByClass(decor, "ActionMenuView", actionMenuViews);
+            for (View amv : actionMenuViews) {
+                if (!(amv instanceof ViewGroup)) continue;
+                ViewGroup vg = (ViewGroup) amv;
+                for (int i = 0; i < vg.getChildCount(); i++) {
+                    View itemView = vg.getChildAt(i);
+                    if (itemView.getClass().getSimpleName().contains("ActionMenuItemView")) {
+                        findAndWhiteText(itemView, white);
+                    }
+                }
+            }
+        });
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    // Helper: recursively find TextView and set white color
+    private void findAndWhiteText(View root, int color) {
+        if (root instanceof TextView) {
+            ((TextView) root).setTextColor(color);
+            return;
+        }
+        if (root instanceof ViewGroup) {
+            ViewGroup vg = (ViewGroup) root;
+            for (int i = 0; i < vg.getChildCount(); i++) {
+                findAndWhiteText(vg.getChildAt(i), color);
+            }
+        }
+    }
+
+    // Helper: find views by class name substring
+    private void findViewsByClass(View root, String className, ArrayList<View> out) {
+        if (root.getClass().getSimpleName().contains(className)) out.add(root);
+        if (root instanceof ViewGroup) {
+            ViewGroup vg = (ViewGroup) root;
+            for (int i = 0; i < vg.getChildCount(); i++) {
+                findViewsByClass(vg.getChildAt(i), className, out);
+            }
+        }
     }
 
     @Override
@@ -438,6 +489,7 @@ public class TransactionDetailsActivity extends Activity {
             ivQr.setOnClickListener(v -> showQrDialog());
         }
         if (tvTxidCopy != null) {
+            // Hide the old "Tap to copy" text at the bottom - moved to ActionBar
             tvTxidCopy.setVisibility(android.view.View.GONE);
         }
     }
@@ -651,73 +703,40 @@ qrDialog.getWindow().getDecorView().setSystemUiVisibility(
     // Format elapsed time as years/months/days/hours/minutes/seconds ago
 private String formatAge(Date txTime) {
     if (txTime == null) return "—";
-
-    // Lấy thời gian lúc giao dịch và bây giờ
     java.util.Calendar then = java.util.Calendar.getInstance();
     then.setTime(txTime);
     java.util.Calendar now = java.util.Calendar.getInstance();
-
-    // Tính chênh lệch từng phần
     int years = now.get(java.util.Calendar.YEAR) - then.get(java.util.Calendar.YEAR);
     int months = now.get(java.util.Calendar.MONTH) - then.get(java.util.Calendar.MONTH);
     int days = now.get(java.util.Calendar.DAY_OF_MONTH) - then.get(java.util.Calendar.DAY_OF_MONTH);
     int hours = now.get(java.util.Calendar.HOUR_OF_DAY) - then.get(java.util.Calendar.HOUR_OF_DAY);
     int minutes = now.get(java.util.Calendar.MINUTE) - then.get(java.util.Calendar.MINUTE);
     int seconds = now.get(java.util.Calendar.SECOND) - then.get(java.util.Calendar.SECOND);
-
-    // Nếu âm thì mượn đơn vị lớn hơn
-    if (seconds < 0) {
-        seconds = seconds + 60;
-        minutes = minutes - 1;
-    }
-    if (minutes < 0) {
-        minutes = minutes + 60;
-        hours = hours - 1;
-    }
-    if (hours < 0) {
-        hours = hours + 24;
-        days = days - 1;
-    }
+    if (seconds < 0) { seconds += 60; minutes--; }
+    if (minutes < 0) { minutes += 60; hours--; }
+    if (hours < 0) { hours += 24; days--; }
     if (days < 0) {
-        // Lấy số ngày của tháng trước
         java.util.Calendar temp = (java.util.Calendar) now.clone();
         temp.add(java.util.Calendar.MONTH, -1);
         int daysInLastMonth = temp.getActualMaximum(java.util.Calendar.DAY_OF_MONTH);
-        days = days + daysInLastMonth;
-        months = months - 1;
+        days += daysInLastMonth;
+        months--;
     }
-    if (months < 0) {
-        months = months + 12;
-        years = years - 1;
-    }
-
-    // Ghép chuỗi kết quả
+    if (months < 0) { months += 12; years--; }
     String result = "";
-    if (years > 0) {
-        result = result + years + " " + getString(years == 1 ? R.string.qr_year : R.string.qr_years) + " ";
-    }
-    if (months > 0) {
-        result = result + months + " " + getString(months == 1 ? R.string.qr_month : R.string.qr_months) + " ";
-    }
-    if (days > 0) {
-        result = result + days + " " + getString(days == 1 ? R.string.qr_day : R.string.qr_days) + " ";
-    }
-    if (hours > 0 || result.length() > 0) {
-        result = result + hours + " " + getString(hours == 1 ? R.string.qr_hour : R.string.qr_hours) + " ";
-    }
-    if (minutes > 0 || result.length() > 0) {
-        result = result + minutes + " " + getString(minutes == 1 ? R.string.qr_minute : R.string.qr_minutes) + " ";
-    }
-    result = result + seconds + " " + getString(seconds == 1 ? R.string.qr_second : R.string.qr_seconds) + " ";
-    result = result + getString(R.string.qr_ago);
-
+    if (years > 0) result += years + " " + getString(years == 1 ? R.string.qr_year : R.string.qr_years) + " ";
+    if (months > 0) result += months + " " + getString(months == 1 ? R.string.qr_month : R.string.qr_months) + " ";
+    if (days > 0) result += days + " " + getString(days == 1 ? R.string.qr_day : R.string.qr_days) + " ";
+    if (hours > 0 || result.length() > 0) result += hours + " " + getString(hours == 1 ? R.string.qr_hour : R.string.qr_hours) + " ";
+    if (minutes > 0 || result.length() > 0) result += minutes + " " + getString(minutes == 1 ? R.string.qr_minute : R.string.qr_minutes) + " ";
+    result += seconds + " " + getString(seconds == 1 ? R.string.qr_second : R.string.qr_seconds) + " ";
+    result += getString(R.string.qr_ago);
     return result;
 }
     
     // ---------- LIVE PATCH: refresh status/conf + QR ----------
     private void refreshLiveFields() {
         if (tx == null || tvStatus == null || tvHeight == null) return;
-
         TransactionConfidence confidence = tx.getConfidence();
         int depth = 0;
         int height = 0;
@@ -725,7 +744,6 @@ private String formatAge(Date txTime) {
             try { depth = confidence.getDepthInBlocks(); } catch (Exception ignored) {}
             try { height = confidence.getAppearedAtChainHeight(); } catch (Exception ignored) {}
         }
-
         String statusText;
         int statusColorRes;
         if (depth <= 0) {
@@ -742,7 +760,6 @@ private String formatAge(Date txTime) {
         try {
             tvStatus.setTextColor(getResources().getColor(statusColorRes));
         } catch (Exception ignored) {}
-
         String confStr;
         if (depth <= 0) {
             confStr = getString(R.string.tx_details_unconfirmed);
@@ -750,15 +767,11 @@ private String formatAge(Date txTime) {
             confStr = getString(R.string.tx_details_confirmations_value, depth, height);
         }
         tvHeight.setText(confStr);
-
-        // Update Age field
         if (tvAge != null) {
             Date updateTime = null;
             try { updateTime = tx.getUpdateTime(); } catch (Exception ignored) {}
             tvAge.setText(formatAge(updateTime));
         }
-
         updateLiveQr();
     }
-    // ---------- END LIVE PATCH ----------
 }
