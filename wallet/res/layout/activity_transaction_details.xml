@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nested_scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/tx_page_bg"
     android:clipToPadding="false"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:overScrollMode="never">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- HEADER - giờ nằm chung trong scroll, không ghim nữa -->
+        <!-- HEADER - card Đã nhận, về ngay lập tức khi kéo xuống -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/card_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="2dp"
@@ -61,8 +64,9 @@
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Sender / Receiver card -->
+        <!-- Sender / Receiver card - về sau 0.7x -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/card_sender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="2dp"
@@ -112,8 +116,9 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Transaction details card -->
+        <!-- Transaction details card - về sau 0.5x -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/card_tx_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="2dp"
@@ -200,8 +205,9 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Input / Output full list card -->
+        <!-- Input / Output full list card - về sau 0.35x -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/card_io"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="2dp"
@@ -248,8 +254,9 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Transaction ID card -->
+        <!-- Transaction ID card - về sau 0.2x -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/card_txid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="2dp"
