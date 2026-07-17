@@ -269,7 +269,7 @@ public class TransactionDetailsActivity extends Activity {
                 } catch (Exception ignored) {}
                 if (v!= null) totalFrom = totalFrom.add(v);
                 fromSb.append(addr).append(" (").append(type).append(") - ")
-                    .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
+                   .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
             }
         }
 
@@ -286,7 +286,7 @@ public class TransactionDetailsActivity extends Activity {
                 if (addr == null) addr = "unknown";
                 String type = getAddressType(addr, out.getScriptPubKey());
                 toSb.append(addr).append(" (").append(type).append(") - ")
-                  .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
+                 .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
             }
         }
 
@@ -331,15 +331,12 @@ public class TransactionDetailsActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate copy action with always|withText to show icon only in portrait and icon+text in landscape
         getMenuInflater().inflate(R.menu.transaction_details_activity_options, menu);
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        // Force white text color for items actually shown on ActionBar (not the overflow popup)
-        // Same technique as in PaperWalletActivity
         final int white = Color.WHITE;
         final View decor = getWindow().getDecorView();
         decor.post(() -> {
@@ -359,7 +356,6 @@ public class TransactionDetailsActivity extends Activity {
         return super.onPrepareOptionsMenu(menu);
     }
 
-    // Helper: recursively find TextView and set white color
     private void findAndWhiteText(View root, int color) {
         if (root instanceof TextView) {
             ((TextView) root).setTextColor(color);
@@ -373,7 +369,6 @@ public class TransactionDetailsActivity extends Activity {
         }
     }
 
-    // Helper: find views by class name substring
     private void findViewsByClass(View root, String className, ArrayList<View> out) {
         if (root.getClass().getSimpleName().contains(className)) out.add(root);
         if (root instanceof ViewGroup) {
@@ -397,7 +392,6 @@ public class TransactionDetailsActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    /** Extract a base58/bech32 address from a script, or null if not standard. */
     private String getAddressFromScript(Script script, NetworkParameters params) {
         if (script == null) return null;
         try {
@@ -409,7 +403,6 @@ public class TransactionDetailsActivity extends Activity {
         }
     }
 
-    /** Detect script type from address prefix and script pattern. */
     private String getAddressType(String addr, Script script) {
         try {
             if (script!= null && ScriptPattern.isOpReturn(script)) return "OP_RETURN";
@@ -478,8 +471,6 @@ public class TransactionDetailsActivity extends Activity {
         } catch (Exception ignored) {}
     }
 
-    // ---------- QR live / copy full ----------
-
     private boolean isDark() {
         return (getResources().getConfiguration().uiMode
             & android.content.res.Configuration.UI_MODE_NIGHT_MASK)
@@ -491,7 +482,6 @@ public class TransactionDetailsActivity extends Activity {
             ivQr.setOnClickListener(v -> showQrDialog());
         }
         if (tvTxidCopy!= null) {
-            // Hide the old "Tap to copy" text at the bottom - moved to ActionBar
             tvTxidCopy.setVisibility(android.view.View.GONE);
         }
     }
@@ -540,14 +530,12 @@ private String buildLiveTxText() {
         copy(buildLiveTxText());
     }
 
-    // --- QR dialog with Save / Share / Explore ---
     private void showQrDialog() {
         boolean dark = isDark();
         int bgColor = dark? Color.BLACK : Color.WHITE;
-        // int bgColor = dark? Color.WHITE : Color.WHITE;
 
  int dialogTheme = dark
-  ? android.R.style.Theme_Black_NoTitleBar_Fullscreen
+ ? android.R.style.Theme_Black_NoTitleBar_Fullscreen
     : android.R.style.Theme_Light_NoTitleBar_Fullscreen;
 
 qrDialog = new Dialog(this, dialogTheme);
@@ -573,14 +561,12 @@ qrDialog.getWindow().getDecorView().setSystemUiVisibility(
         qrDialogImageView = new ImageView(this);
         qrDialogImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         qrDialogImageView.setPadding(48, 48, 48, 48);
-     // qrDialogImageView.setBackgroundResource(R.drawable.bg_qr_white_rounded);
         LinearLayout.LayoutParams imgLp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f);
         qrDialogImageView.setLayoutParams(imgLp);
         qrDialogImageView.setOnClickListener(v -> qrDialog.dismiss());
         root.addView(qrDialogImageView);
 
-        // bottom action bar
         LinearLayout bar = new LinearLayout(this);
         bar.setOrientation(LinearLayout.HORIZONTAL);
         bar.setGravity(Gravity.CENTER);
@@ -691,18 +677,15 @@ qrDialog.getWindow().getDecorView().setSystemUiVisibility(
         BitMatrix bitMatrix = writer.encode(text, BarcodeFormat.QR_CODE, size, size, hints);
         int w = bitMatrix.getWidth();
         int h = bitMatrix.getHeight();
-      // Bitmap bmp = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565); // color 16 bit
-        Bitmap bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888); // color 32 bit
+        Bitmap bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         for (int x = 0; x < w; x++) {
             for (int y = 0; y < h; y++) {
                 bmp.setPixel(x, y, bitMatrix.get(x, y)? Color.BLACK : Color.WHITE);
-               // bmp.setPixel(x, y, bitMatrix.get(x, y)? Color.BLACK : Color.TRANSPARENT);
             }
         }
         return bmp;
     }
 
-    // Format elapsed time as years/months/days/hours/minutes/seconds ago
 private String formatAge(Date txTime) {
     if (txTime == null) return "—";
     java.util.Calendar then = java.util.Calendar.getInstance();
@@ -736,7 +719,6 @@ private String formatAge(Date txTime) {
     return result;
 }
 
-    // ---------- LIVE PATCH: refresh status/conf + QR ----------
     private void refreshLiveFields() {
         if (tx == null || tvStatus == null || tvHeight == null) return;
         TransactionConfidence confidence = tx.getConfidence();
@@ -777,7 +759,8 @@ private String formatAge(Date txTime) {
         updateLiveQr();
     }
 
-    // ---------- PARALLAX RÚT BÀI: đẩy lên cùng nhịp tay, kéo xuống header về ngay ôm card dưới ----------
+    // ---------- PARALLAX CHUẨN VÍ CHÍNH - giữ XML gốc NestedScrollView ----------
+    // Đẩy lên: tất cả lên cùng nhịp tay, kéo xuống: card Đã nhận về ngay ôm các card dưới như rút bài
     private void setupParallaxScroll() {
         final View scroll = findViewById(R.id.nested_scroll);
         final View cardHeader = findViewById(R.id.card_header);
@@ -787,7 +770,7 @@ private String formatAge(Date txTime) {
         final View cardTxid = findViewById(R.id.card_txid);
         if (scroll == null || cardHeader == null) return;
 
-        // Header là hộp - elevation cao hơn để ôm các card dưới
+        // Header là hộp - elevation cao để ôm
         cardHeader.setElevation(12f);
         if (cardSender!= null) {
             cardSender.setElevation(2f);
@@ -810,7 +793,7 @@ private String formatAge(Date txTime) {
                 float absDy = Math.min(40, Math.abs(dy));
 
                 if (dy > 0) {
-                    // ĐẨY LÊN: tất cả lên cùng nhịp tay, header dẫn đầu
+                    // ĐẨY LÊN: card Đã nhận lên theo nhịp tay cùng các card khác
                     cardHeader.setTranslationY(0);
                     cardHeader.setScaleX(1f);
                     cardHeader.setScaleY(1f);
@@ -832,7 +815,7 @@ private String formatAge(Date txTime) {
                         cardTxid.animate().translationY(0).setDuration(300).setStartDelay(30).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
                     }
                 } else {
-                    // KÉO XUỐNG: header về ngay lập tức, các card dưới như rút ruột từ trong hộp
+                    // KÉO XUỐNG: card Đã nhận về ngay, các card khác như rút ruột
                     if (scrollY <= 120) {
                         float progress = Math.max(0f, Math.min(1f, (120 - scrollY) / 120f));
 
@@ -865,7 +848,7 @@ private String formatAge(Date txTime) {
             }
         });
 
-        // Overscroll ở đỉnh - hiệu ứng hộp rõ nhất
+        // Overscroll đỉnh - hiệu ứng hộp rút bài rõ nhất
         scroll.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent e) {
