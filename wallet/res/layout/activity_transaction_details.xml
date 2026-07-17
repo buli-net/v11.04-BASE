@@ -6,21 +6,25 @@
     android:layout_height="match_parent"
     android:background="@color/tx_page_bg"
     android:clipToPadding="false"
+    android:clipChildren="false"
     android:padding="8dp"
     android:overScrollMode="never">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
-        <!-- HEADER - card Đã nhận, về ngay lập tức khi kéo xuống -->
+        <!-- HEADER - hộp ôm, về ngay lập tức khi kéo xuống -->
         <androidx.cardview.widget.CardView
             android:id="@+id/card_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:tag="levitate"
             app:cardCornerRadius="2dp"
-            app:cardElevation="4dp"
+            app:cardElevation="12dp"
             app:cardBackgroundColor="@color/tx_card_bg"
             android:layout_marginBottom="8dp">
             <RelativeLayout
@@ -64,13 +68,13 @@
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Sender / Receiver card - về sau 0.7x -->
+        <!-- Sender / Receiver card - rút ra 0.25x -->
         <androidx.cardview.widget.CardView
             android:id="@+id/card_sender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="2dp"
-            app:cardElevation="0dp"
+            app:cardElevation="2dp"
             app:cardBackgroundColor="@color/tx_card_bg"
             android:layout_marginBottom="8dp">
             <LinearLayout
@@ -116,13 +120,13 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Transaction details card - về sau 0.5x -->
+        <!-- Transaction details card - rút ra 0.5x -->
         <androidx.cardview.widget.CardView
             android:id="@+id/card_tx_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="2dp"
-            app:cardElevation="0dp"
+            app:cardElevation="1dp"
             app:cardBackgroundColor="@color/tx_card_bg"
             android:layout_marginBottom="8dp">
             <LinearLayout
@@ -205,7 +209,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Input / Output full list card - về sau 0.35x -->
+        <!-- Input / Output full list card - rút ra 0.75x -->
         <androidx.cardview.widget.CardView
             android:id="@+id/card_io"
             android:layout_width="match_parent"
@@ -254,7 +258,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Transaction ID card - về sau 0.2x -->
+        <!-- Transaction ID card - rút ra 1.0x -->
         <androidx.cardview.widget.CardView
             android:id="@+id/card_txid"
             android:layout_width="match_parent"
