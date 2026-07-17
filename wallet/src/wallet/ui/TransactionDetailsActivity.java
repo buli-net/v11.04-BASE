@@ -269,7 +269,7 @@ public class TransactionDetailsActivity extends Activity {
                 } catch (Exception ignored) {}
                 if (v!= null) totalFrom = totalFrom.add(v);
                 fromSb.append(addr).append(" (").append(type).append(") - ")
-                     .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
+                    .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
             }
         }
 
@@ -286,7 +286,7 @@ public class TransactionDetailsActivity extends Activity {
                 if (addr == null) addr = "unknown";
                 String type = getAddressType(addr, out.getScriptPubKey());
                 toSb.append(addr).append(" (").append(type).append(") - ")
-                   .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
+                  .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
             }
         }
 
@@ -547,7 +547,7 @@ private String buildLiveTxText() {
         // int bgColor = dark? Color.WHITE : Color.WHITE;
 
  int dialogTheme = dark
-   ? android.R.style.Theme_Black_NoTitleBar_Fullscreen
+  ? android.R.style.Theme_Black_NoTitleBar_Fullscreen
     : android.R.style.Theme_Light_NoTitleBar_Fullscreen;
 
 qrDialog = new Dialog(this, dialogTheme);
@@ -777,7 +777,7 @@ private String formatAge(Date txTime) {
         updateLiveQr();
     }
 
-    // ---------- PARALLAX SCROLL: push up together, pull down header returns instantly ----------
+    // ---------- PARALLAX RÚT BÀI: đẩy lên cùng nhịp tay, kéo xuống header về ngay ôm card dưới ----------
     private void setupParallaxScroll() {
         final View scroll = findViewById(R.id.nested_scroll);
         final View cardHeader = findViewById(R.id.card_header);
@@ -787,9 +787,85 @@ private String formatAge(Date txTime) {
         final View cardTxid = findViewById(R.id.card_txid);
         if (scroll == null || cardHeader == null) return;
 
+        // Header là hộp - elevation cao hơn để ôm các card dưới
+        cardHeader.setElevation(12f);
+        if (cardSender!= null) {
+            cardSender.setElevation(2f);
+        }
+        if (cardDetails!= null) {
+            cardDetails.setElevation(1f);
+        }
+
         final float[] downY = {0f};
         final boolean[] canPull = {false};
 
+        androidx.core.widget.NestedScrollView nsv = (androidx.core.widget.NestedScrollView) scroll;
+
+        nsv.setOnScrollChangeListener(new androidx.core.widget.NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(androidx.core.widget.NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                int dy = scrollY - oldScrollY;
+                if (dy == 0) return;
+
+                float absDy = Math.min(40, Math.abs(dy));
+
+                if (dy > 0) {
+                    // ĐẨY LÊN: tất cả lên cùng nhịp tay, header dẫn đầu
+                    cardHeader.setTranslationY(0);
+                    cardHeader.setScaleX(1f);
+                    cardHeader.setScaleY(1f);
+
+                    if (cardSender!= null) {
+                        cardSender.setTranslationY(cardSender.getTranslationY() - absDy * 0.15f);
+                        cardSender.animate().translationY(0).setDuration(180).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
+                    }
+                    if (cardDetails!= null) {
+                        cardDetails.setTranslationY(cardDetails.getTranslationY() - absDy * 0.30f);
+                        cardDetails.animate().translationY(0).setDuration(220).setStartDelay(10).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
+                    }
+                    if (cardIo!= null) {
+                        cardIo.setTranslationY(cardIo.getTranslationY() - absDy * 0.45f);
+                        cardIo.animate().translationY(0).setDuration(260).setStartDelay(20).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
+                    }
+                    if (cardTxid!= null) {
+                        cardTxid.setTranslationY(cardTxid.getTranslationY() - absDy * 0.60f);
+                        cardTxid.animate().translationY(0).setDuration(300).setStartDelay(30).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
+                    }
+                } else {
+                    // KÉO XUỐNG: header về ngay lập tức, các card dưới như rút ruột từ trong hộp
+                    if (scrollY <= 120) {
+                        float progress = Math.max(0f, Math.min(1f, (120 - scrollY) / 120f));
+
+                        cardHeader.setTranslationY(0);
+                        cardHeader.setScaleX(1f + progress * 0.02f);
+                        cardHeader.setScaleY(1f + progress * 0.02f);
+
+                        if (cardSender!= null) {
+                            cardSender.setTranslationY(cardSender.getTranslationY() + absDy * 0.35f);
+                            cardSender.setScaleX(0.97f + progress * 0.03f);
+                            cardSender.animate().translationY(0).scaleX(1f).setDuration(200).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
+                        }
+                        if (cardDetails!= null) {
+                            cardDetails.setTranslationY(cardDetails.getTranslationY() + absDy * 0.65f);
+                            cardDetails.setScaleX(0.95f + progress * 0.05f);
+                            cardDetails.animate().translationY(0).scaleX(1f).setDuration(260).setStartDelay(20).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
+                        }
+                        if (cardIo!= null) {
+                            cardIo.setTranslationY(cardIo.getTranslationY() + absDy * 0.95f);
+                            cardIo.setScaleX(0.93f + progress * 0.07f);
+                            cardIo.animate().translationY(0).scaleX(1f).setDuration(320).setStartDelay(40).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
+                        }
+                        if (cardTxid!= null) {
+                            cardTxid.setTranslationY(cardTxid.getTranslationY() + absDy * 1.25f);
+                            cardTxid.setScaleX(0.91f + progress * 0.09f);
+                            cardTxid.animate().translationY(0).scaleX(1f).setDuration(380).setStartDelay(60).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
+                        }
+                    }
+                }
+            }
+        });
+
+        // Overscroll ở đỉnh - hiệu ứng hộp rõ nhất
         scroll.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent e) {
@@ -803,20 +879,24 @@ private String formatAge(Date txTime) {
                         if (!canPull[0]) break;
                         float dy = e.getRawY() - downY[0];
                         if (dy > 0 && scrollY == 0) {
-                            float pull = dy * 0.55f;
-                            if (pull > 500) {
-                                pull = 500 + (pull - 500) * 0.15f;
+                            float pull = dy * 0.65f;
+                            if (pull > 600) {
+                                pull = 600 + (pull - 600) * 0.1f;
                             }
-                            // Header pinned = returns instantly, does not follow finger
+
                             cardHeader.setTranslationY(0);
+                            float scale = 1f + Math.min(0.05f, pull / 3000f);
+                            cardHeader.setScaleX(scale);
+                            cardHeader.setScaleY(scale);
+
                             if (cardSender!= null) {
-                                cardSender.setTranslationY(pull * 0.3f);
+                                cardSender.setTranslationY(pull * 0.25f);
                             }
                             if (cardDetails!= null) {
-                                cardDetails.setTranslationY(pull * 0.55f);
+                                cardDetails.setTranslationY(pull * 0.5f);
                             }
                             if (cardIo!= null) {
-                                cardIo.setTranslationY(pull * 0.8f);
+                                cardIo.setTranslationY(pull * 0.75f);
                             }
                             if (cardTxid!= null) {
                                 cardTxid.setTranslationY(pull * 1.0f);
@@ -826,21 +906,18 @@ private String formatAge(Date txTime) {
                         break;
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_CANCEL:
-                        if (cardSender!= null && cardSender.getTranslationY()!= 0) {
-                            // Header instant, lower cards staggered return following hand rhythm
-                            cardHeader.animate().translationY(0).setDuration(0).start();
-                            if (cardSender!= null) {
-                                cardSender.animate().translationY(0).setDuration(280).setStartDelay(30).setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f)).start();
-                            }
-                            if (cardDetails!= null) {
-                                cardDetails.animate().translationY(0).setDuration(340).setStartDelay(70).setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f)).start();
-                            }
-                            if (cardIo!= null) {
-                                cardIo.animate().translationY(0).setDuration(380).setStartDelay(110).setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f)).start();
-                            }
-                            if (cardTxid!= null) {
-                                cardTxid.animate().translationY(0).setDuration(420).setStartDelay(150).setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f)).start();
-                            }
+                        cardHeader.animate().translationY(0).scaleX(1f).scaleY(1f).setDuration(180).setInterpolator(new android.view.animation.DecelerateInterpolator(2f)).start();
+                        if (cardSender!= null) {
+                            cardSender.animate().translationY(0).scaleX(1f).setDuration(320).setStartDelay(0).setInterpolator(new android.view.animation.OvershootInterpolator(0.7f)).start();
+                        }
+                        if (cardDetails!= null) {
+                            cardDetails.animate().translationY(0).scaleX(1f).setDuration(380).setStartDelay(35).setInterpolator(new android.view.animation.OvershootInterpolator(0.7f)).start();
+                        }
+                        if (cardIo!= null) {
+                            cardIo.animate().translationY(0).scaleX(1f).setDuration(440).setStartDelay(70).setInterpolator(new android.view.animation.OvershootInterpolator(0.7f)).start();
+                        }
+                        if (cardTxid!= null) {
+                            cardTxid.animate().translationY(0).scaleX(1f).setDuration(500).setStartDelay(105).setInterpolator(new android.view.animation.OvershootInterpolator(0.7f)).start();
                         }
                         canPull[0] = false;
                         break;
