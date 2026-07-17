@@ -21,7 +21,6 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -269,7 +268,7 @@ public class TransactionDetailsActivity extends Activity {
                 } catch (Exception ignored) {}
                 if (v!= null) totalFrom = totalFrom.add(v);
                 fromSb.append(addr).append(" (").append(type).append(") - ")
-                   .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
+                    .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
             }
         }
 
@@ -286,7 +285,7 @@ public class TransactionDetailsActivity extends Activity {
                 if (addr == null) addr = "unknown";
                 String type = getAddressType(addr, out.getScriptPubKey());
                 toSb.append(addr).append(" (").append(type).append(") - ")
-                 .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
+                  .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
             }
         }
 
@@ -535,7 +534,7 @@ private String buildLiveTxText() {
         int bgColor = dark? Color.BLACK : Color.WHITE;
 
  int dialogTheme = dark
- ? android.R.style.Theme_Black_NoTitleBar_Fullscreen
+  ? android.R.style.Theme_Black_NoTitleBar_Fullscreen
     : android.R.style.Theme_Light_NoTitleBar_Fullscreen;
 
 qrDialog = new Dialog(this, dialogTheme);
@@ -759,154 +758,56 @@ private String formatAge(Date txTime) {
         updateLiveQr();
     }
 
-    // ---------- PARALLAX CHUẨN VÍ CHÍNH - giữ XML gốc NestedScrollView ----------
-    // Đẩy lên: tất cả lên cùng nhịp tay, kéo xuống: card Đã nhận về ngay ôm các card dưới như rút bài
+    // ---------- PARALLAX CHUẨN VÍ CHÍNH - QuickReturnBehavior y hệt WalletActivity.java ----------
     private void setupParallaxScroll() {
         final View scroll = findViewById(R.id.nested_scroll);
         final View cardHeader = findViewById(R.id.card_header);
-        final View cardSender = findViewById(R.id.card_sender);
-        final View cardDetails = findViewById(R.id.card_tx_details);
-        final View cardIo = findViewById(R.id.card_io);
-        final View cardTxid = findViewById(R.id.card_txid);
         if (scroll == null || cardHeader == null) return;
 
-        // Header là hộp - elevation cao để ôm
-        cardHeader.setElevation(12f);
-        if (cardSender!= null) {
-            cardSender.setElevation(2f);
-        }
-        if (cardDetails!= null) {
-            cardDetails.setElevation(1f);
-        }
+        // Gắn behavior y hệt WalletActivity.java - đẩy lên theo nhịp tay, kéo xuống về ngay
+        androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams layoutParams =
+            new androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams(
+                cardHeader.getLayoutParams().width,
+                cardHeader.getLayoutParams().height);
+        layoutParams.setBehavior(new QuickReturnBehavior());
+        cardHeader.setLayoutParams(layoutParams);
 
-        final float[] downY = {0f};
-        final boolean[] canPull = {false};
-
-        androidx.core.widget.NestedScrollView nsv = (androidx.core.widget.NestedScrollView) scroll;
-
-        nsv.setOnScrollChangeListener(new androidx.core.widget.NestedScrollView.OnScrollChangeListener() {
+        // Padding top cho scroll bằng chiều cao header - để header ôm trên đầu như ví chính
+        cardHeader.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
-            public void onScrollChange(androidx.core.widget.NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                int dy = scrollY - oldScrollY;
-                if (dy == 0) return;
-
-                float absDy = Math.min(40, Math.abs(dy));
-
-                if (dy > 0) {
-                    // ĐẨY LÊN: card Đã nhận lên theo nhịp tay cùng các card khác
-                    cardHeader.setTranslationY(0);
-                    cardHeader.setScaleX(1f);
-                    cardHeader.setScaleY(1f);
-
-                    if (cardSender!= null) {
-                        cardSender.setTranslationY(cardSender.getTranslationY() - absDy * 0.15f);
-                        cardSender.animate().translationY(0).setDuration(180).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
-                    }
-                    if (cardDetails!= null) {
-                        cardDetails.setTranslationY(cardDetails.getTranslationY() - absDy * 0.30f);
-                        cardDetails.animate().translationY(0).setDuration(220).setStartDelay(10).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
-                    }
-                    if (cardIo!= null) {
-                        cardIo.setTranslationY(cardIo.getTranslationY() - absDy * 0.45f);
-                        cardIo.animate().translationY(0).setDuration(260).setStartDelay(20).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
-                    }
-                    if (cardTxid!= null) {
-                        cardTxid.setTranslationY(cardTxid.getTranslationY() - absDy * 0.60f);
-                        cardTxid.animate().translationY(0).setDuration(300).setStartDelay(30).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
-                    }
-                } else {
-                    // KÉO XUỐNG: card Đã nhận về ngay, các card khác như rút ruột
-                    if (scrollY <= 120) {
-                        float progress = Math.max(0f, Math.min(1f, (120 - scrollY) / 120f));
-
-                        cardHeader.setTranslationY(0);
-                        cardHeader.setScaleX(1f + progress * 0.02f);
-                        cardHeader.setScaleY(1f + progress * 0.02f);
-
-                        if (cardSender!= null) {
-                            cardSender.setTranslationY(cardSender.getTranslationY() + absDy * 0.35f);
-                            cardSender.setScaleX(0.97f + progress * 0.03f);
-                            cardSender.animate().translationY(0).scaleX(1f).setDuration(200).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
-                        }
-                        if (cardDetails!= null) {
-                            cardDetails.setTranslationY(cardDetails.getTranslationY() + absDy * 0.65f);
-                            cardDetails.setScaleX(0.95f + progress * 0.05f);
-                            cardDetails.animate().translationY(0).scaleX(1f).setDuration(260).setStartDelay(20).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
-                        }
-                        if (cardIo!= null) {
-                            cardIo.setTranslationY(cardIo.getTranslationY() + absDy * 0.95f);
-                            cardIo.setScaleX(0.93f + progress * 0.07f);
-                            cardIo.animate().translationY(0).scaleX(1f).setDuration(320).setStartDelay(40).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
-                        }
-                        if (cardTxid!= null) {
-                            cardTxid.setTranslationY(cardTxid.getTranslationY() + absDy * 1.25f);
-                            cardTxid.setScaleX(0.91f + progress * 0.09f);
-                            cardTxid.animate().translationY(0).scaleX(1f).setDuration(380).setStartDelay(60).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
-                        }
-                    }
-                }
+            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                int height = bottom - top;
+                int extra = (int) (8 * getResources().getDisplayMetrics().density);
+                scroll.setPadding(scroll.getPaddingLeft(), height + extra,
+                    scroll.getPaddingRight(), scroll.getPaddingBottom());
             }
         });
+    }
 
-        // Overscroll đỉnh - hiệu ứng hộp rút bài rõ nhất
-        scroll.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent e) {
-                int scrollY = v.getScrollY();
-                switch (e.getActionMasked()) {
-                    case MotionEvent.ACTION_DOWN:
-                        downY[0] = e.getRawY();
-                        canPull[0] = (scrollY == 0);
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        if (!canPull[0]) break;
-                        float dy = e.getRawY() - downY[0];
-                        if (dy > 0 && scrollY == 0) {
-                            float pull = dy * 0.65f;
-                            if (pull > 600) {
-                                pull = 600 + (pull - 600) * 0.1f;
-                            }
+    // Copy y nguyên từ WalletActivity.java
+    public static final class QuickReturnBehavior extends androidx.coordinatorlayout.widget.CoordinatorLayout.Behavior<View> {
+        @Override
+        public boolean onStartNestedScroll(androidx.coordinatorlayout.widget.CoordinatorLayout coordinatorLayout,
+                                           View child, View directTargetChild, View target,
+                                           int nestedScrollAxes, int type) {
+            return (nestedScrollAxes & androidx.core.view.ViewCompat.SCROLL_AXIS_VERTICAL) != 0;
+        }
 
-                            cardHeader.setTranslationY(0);
-                            float scale = 1f + Math.min(0.05f, pull / 3000f);
-                            cardHeader.setScaleX(scale);
-                            cardHeader.setScaleY(scale);
-
-                            if (cardSender!= null) {
-                                cardSender.setTranslationY(pull * 0.25f);
-                            }
-                            if (cardDetails!= null) {
-                                cardDetails.setTranslationY(pull * 0.5f);
-                            }
-                            if (cardIo!= null) {
-                                cardIo.setTranslationY(pull * 0.75f);
-                            }
-                            if (cardTxid!= null) {
-                                cardTxid.setTranslationY(pull * 1.0f);
-                            }
-                            return true;
-                        }
-                        break;
-                    case MotionEvent.ACTION_UP:
-                    case MotionEvent.ACTION_CANCEL:
-                        cardHeader.animate().translationY(0).scaleX(1f).scaleY(1f).setDuration(180).setInterpolator(new android.view.animation.DecelerateInterpolator(2f)).start();
-                        if (cardSender!= null) {
-                            cardSender.animate().translationY(0).scaleX(1f).setDuration(320).setStartDelay(0).setInterpolator(new android.view.animation.OvershootInterpolator(0.7f)).start();
-                        }
-                        if (cardDetails!= null) {
-                            cardDetails.animate().translationY(0).scaleX(1f).setDuration(380).setStartDelay(35).setInterpolator(new android.view.animation.OvershootInterpolator(0.7f)).start();
-                        }
-                        if (cardIo!= null) {
-                            cardIo.animate().translationY(0).scaleX(1f).setDuration(440).setStartDelay(70).setInterpolator(new android.view.animation.OvershootInterpolator(0.7f)).start();
-                        }
-                        if (cardTxid!= null) {
-                            cardTxid.animate().translationY(0).scaleX(1f).setDuration(500).setStartDelay(105).setInterpolator(new android.view.animation.OvershootInterpolator(0.7f)).start();
-                        }
-                        canPull[0] = false;
-                        break;
-                }
-                return false;
+        @Override
+        public void onNestedScroll(androidx.coordinatorlayout.widget.CoordinatorLayout coordinatorLayout,
+                                   View child, View target, int dxConsumed, int dyConsumed,
+                                   int dxUnconsumed, int dyUnconsumed, int type) {
+            float newTrans = child.getTranslationY() - dyConsumed;
+            float min = -child.getHeight();
+            float max = 0;
+            if (newTrans < min) {
+                newTrans = min;
             }
-        });
+            if (newTrans > max) {
+                newTrans = max;
+            }
+            child.setTranslationY(newTrans);
+        }
     }
 }
