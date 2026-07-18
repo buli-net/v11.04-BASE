@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/paper_wallet_options_refresh"
-        android:icon="@drawable/ic_refresh_white_24dp"
+        android:icon="@drawable/ic_refresh_24dp"
         android:title="@string/paper_wallet_generate_new"
         android:titleCondensed="@string/paper_wallet_generate_new"
         android:showAsAction="always|withText" />
