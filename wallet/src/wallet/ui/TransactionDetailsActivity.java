@@ -197,6 +197,31 @@ public class TransactionDetailsActivity extends Activity {
         // --- Fee ---
         Coin fee = null;
         try { fee = tx.getFee(); } catch (Exception ignored) {}
+        // FIX: signet/testnet3 and 2 wallets sending to each other - if getFee() returns null, calculate manually from wallet prev txs
+        if (fee == null) {
+            try {
+                Coin totalInCalc = Coin.ZERO;
+                boolean allKnown = true;
+                if (tx.getInputs() != null) {
+                    for (TransactionInput in : tx.getInputs()) {
+                        TransactionOutput connected = getConnectedOutput(in);
+                        if (connected == null || connected.getValue() == null) { allKnown = false; break; }
+                        totalInCalc = totalInCalc.add(connected.getValue());
+                    }
+                } else {
+                    allKnown = false;
+                }
+                if (allKnown) {
+                    Coin totalOutCalc = Coin.ZERO;
+                    if (tx.getOutputs() != null) {
+                        for (TransactionOutput out : tx.getOutputs()) {
+                            if (out.getValue() != null) totalOutCalc = totalOutCalc.add(out.getValue());
+                        }
+                    }
+                    fee = totalInCalc.subtract(totalOutCalc);
+                }
+            } catch (Exception ignored) {}
+        }
         tvFee.setText(fee!= null? fee.toPlainString() + " BTC" : "—");
 
         // --- Time ---
@@ -257,13 +282,21 @@ public class TransactionDetailsActivity extends Activity {
                 String addr = "unknown";
                 String type = "nonstandard";
                 try {
-                    TransactionOutPoint outpoint = in.getOutpoint();
-                    if (outpoint!= null && outpoint.getConnectedOutput()!= null) {
-                        TransactionOutput connected = outpoint.getConnectedOutput();
+                    // FIX: use fallback lookup for signet/testnet3 and 2-wallet case
+                    TransactionOutput connected = getConnectedOutput(in);
+                    if (connected != null) {
                         v = connected.getValue();
                         addr = getAddressFromScript(connected.getScriptPubKey(), params);
+                        if (addr == null) addr = getAddressFromWitness(in, params);
                         if (addr == null) addr = "unknown";
                         type = getAddressType(addr, connected.getScriptPubKey());
+                    } else {
+                        // still try witness even if no connected output (external faucet)
+                        String witnessAddr = getAddressFromWitness(in, params);
+                        if (witnessAddr != null) {
+                            addr = witnessAddr;
+                            type = getAddressType(addr, null);
+                        }
                     }
                 } catch (Exception ignored) {}
                 if (v!= null) totalFrom = totalFrom.add(v);
@@ -391,6 +424,50 @@ public class TransactionDetailsActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    // FIX HELPER: get connected output with wallet fallback for signet/testnet3
+    private TransactionOutput getConnectedOutput(TransactionInput in) {
+        try {
+            TransactionOutPoint outpoint = in.getOutpoint();
+            if (outpoint == null) return null;
+            TransactionOutput connected = outpoint.getConnectedOutput();
+            if (connected != null) return connected;
+            if (wallet != null) {
+                Transaction prev = wallet.getTransaction(outpoint.getHash());
+                if (prev != null) {
+                    return prev.getOutput((int) outpoint.getIndex());
+                }
+            }
+        } catch (Exception ignored) {}
+        return null;
+    }
+
+    // FIX HELPER: extract address from witness for P2WPKH/P2TR (needed for signet/testnet3 external txs and 2 wallets case)
+    private String getAddressFromWitness(TransactionInput in, NetworkParameters params) {
+        try {
+            if (in.getWitness() == null) return null;
+            if (in.getWitness().getPushCount() == 0) return null;
+            byte[] last = in.getWitness().getPush(in.getWitness().getPushCount() - 1);
+            if (last == null) return null;
+            // P2WPKH: pubkey 33 or 65 bytes
+            if (last.length == 33 || last.length == 65) {
+                org.bitcoinj.core.ECKey key = org.bitcoinj.core.ECKey.fromPublicOnly(last);
+                try {
+                    return org.bitcoinj.core.SegwitAddress.fromKey(params, key).toString();
+                } catch (Exception e) {
+                    // fallback to P2PKH for safety
+                    return org.bitcoinj.core.LegacyAddress.fromKey(params, key).toString();
+                }
+            }
+            // P2TR: x-only 32 bytes
+            if (last.length == 32) {
+                try {
+                    return org.bitcoinj.core.SegwitAddress.fromXOnlyPubKey(params, last).toString();
+                } catch (Exception ignored) {}
+            }
+        } catch (Exception ignored) {}
+        return null;
+    }
+
     private String getAddressFromScript(Script script, NetworkParameters params) {
         if (script == null) return null;
         try {
@@ -420,17 +497,22 @@ public class TransactionDetailsActivity extends Activity {
         for (TransactionInput in : tx.getInputs()) {
             try {
                 TransactionOutPoint outpoint = in.getOutpoint();
-                if (outpoint!= null && outpoint.getConnectedOutput()!= null) {
-                    TransactionOutput connected = outpoint.getConnectedOutput();
+                TransactionOutput connected = getConnectedOutput(in);
+                if (connected != null) {
                     if (mineOnly!= null) {
                         boolean isMine;
                         try { isMine = connected.isMine(wallet); } catch (Exception e) { continue; }
                         if (isMine!= mineOnly) continue;
                     }
                     String a = getAddressFromScript(connected.getScriptPubKey(), params);
+                    if (a == null) a = getAddressFromWitness(in, params);
                     if (a!= null) return a;
-                }
-                if (mineOnly == null) {
+                } else {
+                    // FIX: no connected output (signet faucet or 2 wallets case) -> try witness directly
+                    if (mineOnly == null || mineOnly == false) {
+                        String wa = getAddressFromWitness(in, params);
+                        if (wa != null) return wa;
+                    }
                     try {
                         String a = getAddressFromScript(in.getScriptSig(), params);
                         if (a!= null) return a;
