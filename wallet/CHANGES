@@ -7,6 +7,7 @@
 + Add button i show info transaction
 
 - Create file wallet/res/drawable/ic_info_white_24dp.xml
+- Create file wallet/res/drawable/ic_copy_textColorPrimary_24dp
 - Create file wallet/src/wallet/ui/TransactionDetailsActivity.java
 - Create file wallet/res/layout/activity_transaction_details.xml
 - Create file wallet/res/menu/transaction_details_activity_options.xml
