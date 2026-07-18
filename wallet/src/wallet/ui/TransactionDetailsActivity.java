@@ -448,20 +448,19 @@ public class TransactionDetailsActivity extends Activity {
             if (in.getWitness().getPushCount() == 0) return null;
             byte[] last = in.getWitness().getPush(in.getWitness().getPushCount() - 1);
             if (last == null) return null;
-            // P2WPKH: pubkey 33 or 65 bytes
+            // P2WPKH: 33 or 65 bytes pubkey
             if (last.length == 33 || last.length == 65) {
                 org.bitcoinj.crypto.ECKey key = org.bitcoinj.crypto.ECKey.fromPublicOnly(last);
                 try {
                     return org.bitcoinj.base.SegwitAddress.fromKey(params, key).toString();
                 } catch (Exception e) {
-                    // fallback to P2PKH for safety
                     return org.bitcoinj.base.LegacyAddress.fromKey(params, key).toString();
                 }
             }
-            // P2TR: x-only 32 bytes
+            // P2TR: 32 bytes x-only - use fromProgram(1, xonly) instead of fromXOnlyPubKey
             if (last.length == 32) {
                 try {
-                    return org.bitcoinj.base.SegwitAddress.fromXOnlyPubKey(params, last).toString();
+                    return org.bitcoinj.base.SegwitAddress.fromProgram(params, 1, last).toString();
                 } catch (Exception ignored) {}
             }
         } catch (Exception ignored) {}
