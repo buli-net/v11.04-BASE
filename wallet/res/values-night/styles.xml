@@ -69,8 +69,8 @@
 
 
 <style name="My.Preference.ActionBarTheme">
-    <item name="android:colorControlNormal">@color/action_white</item>
-    <item name="android:textColorSecondary">@color/action_white</item>
+    <item name="android:colorControlNormal">@color/fg_on_dark_bg_network_significant</item>
+    <item name="android:textColorSecondary">@color/fg_on_dark_bg_network_significant</item>
 </style>
 
 <style name="My.Preference.ActionBar" parent="@android:style/Widget.Material.ActionBar.Solid">
@@ -79,7 +79,7 @@
 </style>
 
 <style name="My.Preference.ActionBar.Title" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
-    <item name="android:textColor">@color/action_white</item>
+    <item name="android:textColor">@color/fg_on_dark_bg_network_significant</item>
     <item name="android:textSize">22sp</item>
     <item name="android:textStyle">bold</item>
     <item name="android:fontFamily">sans-serif-medium</item>
