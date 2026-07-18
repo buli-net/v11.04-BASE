@@ -406,24 +406,32 @@ public class TransactionDetailsActivity extends Activity {
         return null;
     }
 
-    private String getAddressFromWitness(TransactionInput in, NetworkParameters params) {
+        private String getAddressFromWitness(TransactionInput in, NetworkParameters params) {
         try {
             if (in.getWitness() == null) return null;
-            if (in.getWitness().getPushCount() == 0) return null;
-            byte[] last = in.getWitness().getPush(in.getWitness().getPushCount() - 1);
-            if (last == null) return null;
-            if (last.length == 33 || last.length == 65) {
-                org.bitcoinj.crypto.ECKey key = org.bitcoinj.crypto.ECKey.fromPublicOnly(last);
+            int count = in.getWitness().getPushCount();
+            if (count == 0) return null;
+            // P2WPKH witness = [sig, pubkey] -> pubkey là cái cuối
+            byte[] last = in.getWitness().getPush(count - 1);
+            if (last != null && (last.length == 33 || last.length == 65)) {
                 try {
-                    return org.bitcoinj.base.SegwitAddress.fromKey(params, key).toString();
+                    org.bitcoinj.crypto.ECKey key = org.bitcoinj.crypto.ECKey.fromPublicOnly(last);
+                    byte[] hash = key.getPubKeyHash(); // hash160
+                    // P2WPKH = segwit v0 + hash160 20 bytes
+                    return org.bitcoinj.base.SegwitAddress.fromProgram(params, 0, hash).toString();
                 } catch (Exception e) {
-                    return org.bitcoinj.base.LegacyAddress.fromKey(params, key).toString();
+                    e.printStackTrace();
                 }
             }
-            if (last.length == 32) {
-                try {
-                    return org.bitcoinj.base.SegwitAddress.fromProgram(params, 1, last).toString();
-                } catch (Exception ignored) {}
+            // thử quét hết stack đề phòng
+            for (int i=0;i<count;i++) {
+                byte[] p = in.getWitness().getPush(i);
+                if (p != null && (p.length == 33 || p.length == 65)) {
+                    try {
+                        org.bitcoinj.crypto.ECKey key = org.bitcoinj.crypto.ECKey.fromPublicOnly(p);
+                        return org.bitcoinj.base.SegwitAddress.fromProgram(params, 0, key.getPubKeyHash()).toString();
+                    } catch (Exception ignored) {}
+                }
             }
         } catch (Exception ignored) {}
         return null;
