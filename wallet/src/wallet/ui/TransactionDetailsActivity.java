@@ -63,6 +63,7 @@ import wallet.WalletApplication;
  * Transaction Details screen.
  * Shows amount, status, fee, and full input/output breakdown.
  * Compatible with AppTheme.My.Preference, extends android.app.Activity.
+ * Fixed for mainnet, signet, testnet3 - handles missing prevOut via witness extraction.
  */
 public class TransactionDetailsActivity extends Activity {
     // Main amount / status views
@@ -90,12 +91,9 @@ public class TransactionDetailsActivity extends Activity {
             runOnUiThread(() -> refreshLiveFields());
         }
     };
-    // --- END LIVE PATCH ---
 
-    // --- QR DIALOG LIVE PATCH ---
     private Dialog qrDialog;
     private ImageView qrDialogImageView;
-    // --- END QR DIALOG LIVE PATCH ---
 
     // Age ticker - updates the Age field every second
     private final Handler ageHandler = new Handler(Looper.getMainLooper());
@@ -113,14 +111,12 @@ public class TransactionDetailsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_details);
 
-        // Setup ActionBar
         ActionBar ab = getActionBar();
         if (ab!= null) {
             ab.setDisplayHomeAsUpEnabled(true);
             ab.setTitle(R.string.tx_details_title);
         }
 
-        // Bind views
         tvDirection = findViewById(R.id.tv_direction);
         tvAmount = findViewById(R.id.tv_amount);
         tvStatus = findViewById(R.id.tv_status);
@@ -137,7 +133,6 @@ public class TransactionDetailsActivity extends Activity {
         ivQr = findViewById(R.id.iv_tx_qr);
         tvTxidCopy = findViewById(R.id.tv_txid_copy);
 
-        // Right-align Transaction details values to match mockup
         if (tvStatus!= null) { tvStatus.setGravity(Gravity.END); tvStatus.setTextAlignment(TextView.TEXT_ALIGNMENT_VIEW_END); }
         if (tvFee!= null) { tvFee.setGravity(Gravity.END); tvFee.setTextAlignment(TextView.TEXT_ALIGNMENT_VIEW_END); }
         if (tvTime!= null) { tvTime.setGravity(Gravity.END); tvTime.setTextAlignment(TextView.TEXT_ALIGNMENT_VIEW_END); }
@@ -145,7 +140,6 @@ public class TransactionDetailsActivity extends Activity {
         if (tvMeta!= null) { tvMeta.setGravity(Gravity.END); tvMeta.setTextAlignment(TextView.TEXT_ALIGNMENT_VIEW_END); }
         if (tvAge!= null) { tvAge.setGravity(Gravity.END); tvAge.setTextAlignment(TextView.TEXT_ALIGNMENT_VIEW_END); }
 
-        // Get transaction hash from intent
         String txidStr = getIntent().getStringExtra("txid");
         if (txidStr == null) {
             Toast.makeText(this, getString(R.string.tx_details_missing_txid), Toast.LENGTH_SHORT).show();
@@ -153,7 +147,6 @@ public class TransactionDetailsActivity extends Activity {
             return;
         }
 
-        // Load wallet
         WalletApplication app = (WalletApplication) getApplication();
         wallet = app.getWallet();
         if (wallet == null) {
@@ -163,7 +156,6 @@ public class TransactionDetailsActivity extends Activity {
         }
         params = wallet.getNetworkParameters();
 
-        // Load transaction
         try {
             tx = wallet.getTransaction(Sha256Hash.wrap(txidStr));
         } catch (Exception e) {
@@ -191,15 +183,38 @@ public class TransactionDetailsActivity extends Activity {
                 isSend? R.color.tx_amount_sent : R.color.tx_amount_recv));
         } catch (Exception ignored) {}
 
-        // --- Confirmation status: Pending / Building / Confirmed ---
         refreshLiveFields();
 
-        // --- Fee ---
+        // --- Fee: try native getFee(), then manually calculate if all inputs are known ---
         Coin fee = null;
         try { fee = tx.getFee(); } catch (Exception ignored) {}
+        // Manual fallback: if we are the sender we have all prevOuts in wallet, so we can calculate totalIn - totalOut
+        if (fee == null) {
+            try {
+                Coin totalInCalc = Coin.ZERO;
+                boolean allKnown = true;
+                if (tx.getInputs()!= null) {
+                    for (TransactionInput in : tx.getInputs()) {
+                        TransactionOutput connected = getConnectedOutput(in);
+                        if (connected == null || connected.getValue() == null) { allKnown = false; break; }
+                        totalInCalc = totalInCalc.add(connected.getValue());
+                    }
+                } else {
+                    allKnown = false;
+                }
+                if (allKnown) {
+                    Coin totalOutCalc = Coin.ZERO;
+                    if (tx.getOutputs()!= null) {
+                        for (TransactionOutput out : tx.getOutputs()) {
+                            if (out.getValue()!= null) totalOutCalc = totalOutCalc.add(out.getValue());
+                        }
+                    }
+                    fee = totalInCalc.subtract(totalOutCalc);
+                }
+            } catch (Exception ignored) {}
+        }
         tvFee.setText(fee!= null? fee.toPlainString() + " BTC" : "—");
 
-        // --- Time ---
         Date updateTime = null;
         try { updateTime = tx.getUpdateTime(); } catch (Exception ignored) {}
         if (updateTime!= null) {
@@ -208,7 +223,6 @@ public class TransactionDetailsActivity extends Activity {
             tvTime.setText("—");
         }
 
-        // --- Size / weight / fee rate / RBF ---
         int size = 0, weight = 0;
         boolean rbf = false;
         try { size = tx.getMessageSize(); } catch (Exception ignored) {}
@@ -224,7 +238,7 @@ public class TransactionDetailsActivity extends Activity {
         }
         tvMeta.setText(size + " bytes · " + weight + " wu" + feeRate + (rbf? " · RBF" : ""));
 
-        // --- Actual sender / receiver ---
+        // --- Actual sender / receiver: For receiving, From is external address extracted via witness if needed ---
         String actualFrom = null;
         String actualTo = null;
         try {
@@ -246,7 +260,7 @@ public class TransactionDetailsActivity extends Activity {
         copyOnClick(tvActualFrom, actualFrom);
         copyOnClick(tvActualTo, actualTo);
 
-        // --- Full input / output list ---
+        // --- Full input / output list: Fixed for signet/testnet3 where prevOut is missing ---
         StringBuilder fromSb = new StringBuilder();
         Coin totalFrom = Coin.ZERO;
         int inCount = 0;
@@ -257,18 +271,29 @@ public class TransactionDetailsActivity extends Activity {
                 String addr = "unknown";
                 String type = "nonstandard";
                 try {
-                    TransactionOutPoint outpoint = in.getOutpoint();
-                    if (outpoint!= null && outpoint.getConnectedOutput()!= null) {
-                        TransactionOutput connected = outpoint.getConnectedOutput();
+                    // Try to get connected output from wallet DB (works for mainnet and for self-spends)
+                    TransactionOutput connected = getConnectedOutput(in);
+                    if (connected!= null) {
                         v = connected.getValue();
+                        // Primary: get address from scriptPubKey of prevOut
                         addr = getAddressFromScript(connected.getScriptPubKey(), params);
+                        // Fallback: extract from witness pubkey if script parsing fails
+                        if (addr == null) addr = getAddressFromWitness(in, params);
                         if (addr == null) addr = "unknown";
                         type = getAddressType(addr, connected.getScriptPubKey());
+                    } else {
+                        // No prevOut in DB (common for signet/testnet3 faucet receives and cross-wallet receives)
+                        // Extract address directly from witness stack (P2WPKH = last push is compressed pubkey 33 bytes)
+                        String witnessAddr = getAddressFromWitness(in, params);
+                        if (witnessAddr!= null) {
+                            addr = witnessAddr;
+                            type = getAddressType(addr, null);
+                        }
                     }
                 } catch (Exception ignored) {}
                 if (v!= null) totalFrom = totalFrom.add(v);
                 fromSb.append(addr).append(" (").append(type).append(") - ")
-                    .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
+                   .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
             }
         }
 
@@ -285,7 +310,7 @@ public class TransactionDetailsActivity extends Activity {
                 if (addr == null) addr = "unknown";
                 String type = getAddressType(addr, out.getScriptPubKey());
                 toSb.append(addr).append(" (").append(type).append(") - ")
-                  .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
+                 .append(v!= null? v.toPlainString() + " BTC" : "? BTC").append("\n");
             }
         }
 
@@ -298,12 +323,10 @@ public class TransactionDetailsActivity extends Activity {
         copyOnClick(tvFrom, fromText);
         copyOnClick(tvTo, toText);
 
-        // --- Transaction ID ---
         String hash = tx.getTxId().toString();
         tvTxid.setText(hash);
         copyOnClick(tvTxid, hash);
 
-        // --- QR live + copy full ---
         setupQr();
         updateLiveQr();
         setupParallaxScroll();
@@ -391,6 +414,66 @@ public class TransactionDetailsActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Try to get the connected output for an input.
+     * 1. Try outpoint.getConnectedOutput() - bitcoinj sets this when tx is in wallet
+     * 2. Fallback: look up prev tx hash in current wallet (wallet.getTransaction)
+     * This is why mainnet receives often work while signet faucet receives don't - faucet prev tx is not in wallet DB.
+     */
+    private TransactionOutput getConnectedOutput(TransactionInput in) {
+        try {
+            TransactionOutPoint outpoint = in.getOutpoint();
+            if (outpoint == null) return null;
+            // First try: directly connected (set by bitcoinj when available)
+            TransactionOutput connected = outpoint.getConnectedOutput();
+            if (connected!= null) return connected;
+            // Second try: lookup prev transaction in wallet
+            if (wallet!= null) {
+                Transaction prev = wallet.getTransaction(outpoint.getHash());
+                if (prev!= null) {
+                    return prev.getOutput((int) outpoint.getIndex());
+                }
+            }
+        } catch (Exception ignored) {}
+        return null;
+    }
+
+    /**
+     * Extract sender address from witness stack.
+     * For P2WPKH (native segwit v0): witness = [signature, pubkey], pubkey is 33 bytes compressed (or 65 uncompressed)
+     * We hash the pubkey and create Segwit v0 address (tb1q... / bc1q...)
+     * For P2TR (taproot v1): witness = [signature] 64 bytes, cannot recover address without prevOut, return null
+     * This method fixes From = — for signet/testnet3 self-wallet sends where prevOut is not in DB.
+     */
+    private String getAddressFromWitness(TransactionInput in, NetworkParameters params) {
+        try {
+            if (in.getWitness() == null) return null;
+            int count = in.getWitness().getPushCount();
+            if (count == 0) return null;
+            // Scan from last to first to find a pubkey (P2WPKH case)
+            for (int i = count - 1; i >= 0; i--) {
+                byte[] push = in.getWitness().getPush(i);
+                if (push == null) continue;
+                // Compressed pubkey 33 bytes or uncompressed 65 bytes
+                if (push.length == 33 || push.length == 65) {
+                    try {
+                        org.bitcoinj.crypto.ECKey key = org.bitcoinj.crypto.ECKey.fromPublicOnly(push);
+                        // Use fromProgram(v0, hash160) instead of fromKey() for better compatibility across bitcoinj versions and networks (mainnet, signet, testnet3)
+                        byte[] hash = key.getPubKeyHash();
+                        return org.bitcoinj.base.SegwitAddress.fromProgram(params, 0, hash).toString();
+                    } catch (Exception ignored) {}
+                }
+                // For P2TR x-only pubkey (32 bytes) - can create v1 address
+                if (push.length == 32) {
+                    try {
+                        return org.bitcoinj.base.SegwitAddress.fromProgram(params, 1, push).toString();
+                    } catch (Exception ignored) {}
+                }
+            }
+        } catch (Exception ignored) {}
+        return null;
+    }
+
     private String getAddressFromScript(Script script, NetworkParameters params) {
         if (script == null) return null;
         try {
@@ -419,18 +502,24 @@ public class TransactionDetailsActivity extends Activity {
         if (tx.getInputs() == null) return null;
         for (TransactionInput in : tx.getInputs()) {
             try {
-                TransactionOutPoint outpoint = in.getOutpoint();
-                if (outpoint!= null && outpoint.getConnectedOutput()!= null) {
-                    TransactionOutput connected = outpoint.getConnectedOutput();
+                TransactionOutput connected = getConnectedOutput(in);
+                if (connected!= null) {
                     if (mineOnly!= null) {
                         boolean isMine;
                         try { isMine = connected.isMine(wallet); } catch (Exception e) { continue; }
                         if (isMine!= mineOnly) continue;
                     }
+                    // Try scriptPubKey first, then witness fallback
                     String a = getAddressFromScript(connected.getScriptPubKey(), params);
+                    if (a == null) a = getAddressFromWitness(in, params);
                     if (a!= null) return a;
-                }
-                if (mineOnly == null) {
+                } else {
+                    // No connected output (signet/testnet3 cross-wallet receive)
+                    // Try to extract from witness directly
+                    if (mineOnly == null ||!mineOnly) {
+                        String wa = getAddressFromWitness(in, params);
+                        if (wa!= null) return wa;
+                    }
                     try {
                         String a = getAddressFromScript(in.getScriptSig(), params);
                         if (a!= null) return a;
@@ -532,31 +621,25 @@ private String buildLiveTxText() {
     private void showQrDialog() {
         boolean dark = isDark();
         int bgColor = dark? Color.BLACK : Color.WHITE;
-
  int dialogTheme = dark
-  ? android.R.style.Theme_Black_NoTitleBar_Fullscreen
+ ? android.R.style.Theme_Black_NoTitleBar_Fullscreen
     : android.R.style.Theme_Light_NoTitleBar_Fullscreen;
-
 qrDialog = new Dialog(this, dialogTheme);
-
 qrDialog.getWindow().setFlags(
     android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN,
     android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
 if (android.os.Build.VERSION.SDK_INT >= 21) {
     qrDialog.getWindow().setStatusBarColor(bgColor);
 }
 qrDialog.getWindow().getDecorView().setSystemUiVisibility(
    android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
   | android.view.View.SYSTEM_UI_FLAG_FULLSCREEN);
-
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setBackgroundColor(bgColor);
         root.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
-
         qrDialogImageView = new ImageView(this);
         qrDialogImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         qrDialogImageView.setPadding(48, 48, 48, 48);
@@ -565,7 +648,6 @@ qrDialog.getWindow().getDecorView().setSystemUiVisibility(
         qrDialogImageView.setLayoutParams(imgLp);
         qrDialogImageView.setOnClickListener(v -> qrDialog.dismiss());
         root.addView(qrDialogImageView);
-
         LinearLayout bar = new LinearLayout(this);
         bar.setOrientation(LinearLayout.HORIZONTAL);
         bar.setGravity(Gravity.CENTER);
@@ -573,11 +655,9 @@ qrDialog.getWindow().getDecorView().setSystemUiVisibility(
         bar.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
-
         bar.addView(makeActionButton(android.R.drawable.ic_menu_save, getString(R.string.tx_details_save), dark, v -> saveQrBitmap()));
         bar.addView(makeActionButton(android.R.drawable.ic_menu_share, getString(R.string.tx_details_share), dark, v -> shareTx()));
         bar.addView(makeActionButton(android.R.drawable.ic_menu_search, getString(R.string.tx_details_explore), dark, v -> exploreTx()));
-
         root.addView(bar);
         qrDialog.setContentView(root);
         qrDialog.setCancelable(true);
@@ -598,7 +678,6 @@ qrDialog.getWindow().getDecorView().setSystemUiVisibility(
         col.setClickable(true);
         col.setOnClickListener(onClick);
         col.setPadding(8, 8, 8, 8);
-
         ImageView iv = new ImageView(this);
         iv.setImageResource(iconRes);
         int iconSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 36, getResources().getDisplayMetrics());
@@ -606,7 +685,6 @@ qrDialog.getWindow().getDecorView().setSystemUiVisibility(
         ivLp.gravity = Gravity.CENTER;
         iv.setLayoutParams(ivLp);
         col.addView(iv);
-
         TextView tv = new TextView(this);
         tv.setText(label);
         tv.setTextColor(dark? 0xFFBBBBBB : 0xFF666666);
@@ -758,21 +836,16 @@ private String formatAge(Date txTime) {
         updateLiveQr();
     }
 
-    // ---------- PARALLAX CHUẨN VÍ CHÍNH - QuickReturnBehavior y hệt WalletActivity.java ----------
     private void setupParallaxScroll() {
         final View scroll = findViewById(R.id.nested_scroll);
         final View cardHeader = findViewById(R.id.card_header);
         if (scroll == null || cardHeader == null) return;
-
-        // Gắn behavior y hệt WalletActivity.java - đẩy lên theo nhịp tay, kéo xuống về ngay
         androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams layoutParams =
             new androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams(
                 cardHeader.getLayoutParams().width,
                 cardHeader.getLayoutParams().height);
         layoutParams.setBehavior(new QuickReturnBehavior());
         cardHeader.setLayoutParams(layoutParams);
-
-        // Padding top cho scroll bằng chiều cao header - để header ôm trên đầu như ví chính
         cardHeader.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom,
@@ -785,15 +858,13 @@ private String formatAge(Date txTime) {
         });
     }
 
-    // Copy y nguyên từ WalletActivity.java
     public static final class QuickReturnBehavior extends androidx.coordinatorlayout.widget.CoordinatorLayout.Behavior<View> {
         @Override
         public boolean onStartNestedScroll(androidx.coordinatorlayout.widget.CoordinatorLayout coordinatorLayout,
                                            View child, View directTargetChild, View target,
                                            int nestedScrollAxes, int type) {
-            return (nestedScrollAxes & androidx.core.view.ViewCompat.SCROLL_AXIS_VERTICAL) != 0;
+            return (nestedScrollAxes & androidx.core.view.ViewCompat.SCROLL_AXIS_VERTICAL)!= 0;
         }
-
         @Override
         public void onNestedScroll(androidx.coordinatorlayout.widget.CoordinatorLayout coordinatorLayout,
                                    View child, View target, int dxConsumed, int dyConsumed,
@@ -801,12 +872,8 @@ private String formatAge(Date txTime) {
             float newTrans = child.getTranslationY() - dyConsumed;
             float min = -child.getHeight();
             float max = 0;
-            if (newTrans < min) {
-                newTrans = min;
-            }
-            if (newTrans > max) {
-                newTrans = max;
-            }
+            if (newTrans < min) newTrans = min;
+            if (newTrans > max) newTrans = max;
             child.setTranslationY(newTrans);
         }
     }
