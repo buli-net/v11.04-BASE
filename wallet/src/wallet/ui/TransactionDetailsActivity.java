@@ -336,7 +336,7 @@ public class TransactionDetailsActivity extends Activity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        final int pink = getResources().getColor(R.color.fg_on_dark_bg_network_significant);
+        final int networkSignificantColor = getResources().getColor(R.color.fg_on_dark_bg_network_significant);
         final View decor = getWindow().getDecorView();
         decor.post(() -> {
             ArrayList<View> actionMenuViews = new ArrayList<>();
@@ -347,7 +347,7 @@ public class TransactionDetailsActivity extends Activity {
                 for (int i = 0; i < vg.getChildCount(); i++) {
                     View itemView = vg.getChildAt(i);
                     if (itemView.getClass().getSimpleName().contains("ActionMenuItemView")) {
-                        findAndWhiteText(itemView, pink);
+                        findAndWhiteText(itemView, networkSignificantColor);
                     }
                 }
             }
