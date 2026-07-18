@@ -178,7 +178,7 @@
                     android:maxLines="2"
                     android:gravity="center"
                     android:paddingHorizontal="6dp"
-                    android:drawableTop="@drawable/ic_copy_textColorPrimary_24dp"
+                    android:drawableTop="@drawable/ic_copy_text-Color-Primary_24dp"
                     android:text="@string/paper_wallet_copy"
                     android:textAllCaps="false"
                     android:textSize="12sp" />
