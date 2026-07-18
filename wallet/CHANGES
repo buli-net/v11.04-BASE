@@ -34,11 +34,11 @@
 - Create file wallet/src/wallet/util/Bip38Helper.java
 - Create file wallet/res/menu/paper_wallet_options.xml
 
-- Create file wallet/res/drawable/ic_export_txt_white_24dp.xml
-- Create file wallet/res/drawable/ic_print_white_24dp.xml
-- Create file wallet/res/drawable/ic_refresh_white_24dp.xml
-- Create file wallet/res/drawable/ic_save_white_24dp.xml
-- Create file wallet/res/drawable/ic_share_white_24dp.xml
+- Create file wallet/res/drawable/ic_export_txt_24dp.xml
+- Create file wallet/res/drawable/ic_print_24dp.xml
+- Create file wallet/res/drawable/ic_refresh_24dp.xml
+- Create file wallet/res/drawable/ic_save_24dp.xml
+- Create file wallet/res/drawable/ic_share_24dp.xml
 
 
 - Create file wallet/res/drawable/ic_copy_24dp.xml
