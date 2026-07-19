@@ -140,7 +140,7 @@
     <item name="android:actionBarStyle">@style/My.Preference.ActionBar</item>
     <item name="android:actionBarTheme">@style/My.Preference.ActionBarTheme</item>
 
-
+</style>
     
 <style name="My.Preference.ActionBarTheme">
 <item name="android:colorControlNormal">@color/fg_on_dark_bg_network_significant</item>
