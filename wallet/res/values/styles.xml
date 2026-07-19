@@ -155,10 +155,15 @@
     <item name="android:paddingRight">@dimen/list_entry_padding_horizontal_cram</item>
 </style>
 
-<style name="My.Preference.ActionBar.Title" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
+    <style name="My.Preference.ActionBar.Title" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
     <item name="android:textColor">@color/fg_on_dark_bg_network_significant</item>
     <item name="android:textStyle">bold</item>
     <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:singleLine">true</item>
+    <item name="android:autoSizeTextType">uniform</item>
+    <item name="android:autoSizeMinTextSize">12sp</item>
+    <item name="android:autoSizeMaxTextSize">20sp</item>
+    <item name="android:autoSizeStepGranularity">1sp</item>
 </style>
 <!-- end -->
 </resources>
