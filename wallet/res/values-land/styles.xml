@@ -4,10 +4,6 @@
         <item name="android:textColor">@color/fg_on_dark_bg_network_significant</item>
         <item name="android:textStyle">bold</item>
         <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:autoSizeTextType">uniform</item>
-        <item name="android:autoSizeMinTextSize">10sp</item>
-        <item name="android:autoSizeMaxTextSize">20sp</item>
-        <item name="android:autoSizeStepGranularity">1sp</item>
+        <item name="android:textSize">@dimen/font_size_normal</item>
     </style>
 </resources>
