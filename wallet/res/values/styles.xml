@@ -150,7 +150,7 @@
 
 
 <style name="My.Preference.MenuText">
-    <item name="android:textSize">8sp</item>
+    <item name="android:textSize">5sp</item>
 </style>
 
     
