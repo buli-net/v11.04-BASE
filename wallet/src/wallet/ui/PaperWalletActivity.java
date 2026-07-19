@@ -452,7 +452,7 @@ public class PaperWalletActivity extends AbstractWalletActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        // AUTO: chỉ trắng chữ đang nằm thật trên bar, không đụng popup 3 chấm
+        
         final int networkSignificantColor = getResources().getColor(R.color.fg_on_dark_bg_network_significant);
         final View decor = getWindow().getDecorView();
         decor.post(() -> {
@@ -464,7 +464,7 @@ public class PaperWalletActivity extends AbstractWalletActivity {
                 for (int i = 0; i < vg.getChildCount(); i++) {
                     View itemView = vg.getChildAt(i);
                     if (itemView.getClass().getSimpleName().contains("ActionMenuItemView")) {
-                        // tìm TextView con
+                        
                         findAndWhiteText(itemView, networkSignificantColor);
                     }
                 }
@@ -476,8 +476,9 @@ public class PaperWalletActivity extends AbstractWalletActivity {
     private void findAndWhiteText(View root, int color) {
         if (root instanceof TextView) {
             ((TextView) root).setTextColor(color);
-            float sizePx = getResources().getDimension(R.dimen.paper_wallet_menu_text_size);
+            float sizePx = getResources().getDimension(R.dimen.font_size_tiny);
             ((TextView) root).setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, sizePx);
+           ((TextView) root).setTypeface(null, android.graphics.Typeface.BOLD);
             return;
         }
         if (root instanceof ViewGroup) {
