@@ -381,6 +381,9 @@ public class TransactionDetailsActivity extends Activity {
     private void findAndWhiteText(View root, int color) {
         if (root instanceof TextView) {
             ((TextView) root).setTextColor(color);
+            float sizePx = getResources().getDimension(R.dimen.font_size_tiny);
+            ((TextView) root).setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, sizePx);
+           ((TextView) root).setTypeface(null, android.graphics.Typeface.BOLD);
             return;
         }
         if (root instanceof ViewGroup) {
