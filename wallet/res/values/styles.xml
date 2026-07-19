@@ -141,6 +141,12 @@
     <item name="android:actionBarTheme">@style/My.Preference.ActionBarTheme</item>
 
 
+    
+<style name="My.Preference.ActionBarTheme">
+<item name="android:colorControlNormal">@color/fg_on_dark_bg_network_significant</item>
+<item name="android:textColorSecondary">@color/fg_on_dark_bg_network_significant</item>
+</style>
+    
 <style name="My.Preference.ActionBar" parent="@android:style/Widget.Material.Light.ActionBar.Solid">
     <item name="android:background">@color/bg_action_bar</item>
     <item name="android:titleTextStyle">@style/My.Preference.ActionBar.Title</item>
