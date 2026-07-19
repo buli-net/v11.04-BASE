@@ -159,10 +159,11 @@
     <item name="android:textStyle">bold</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:textSize">@dimen/font_size_large</item>
-
+ </style> 
+    
     <style name="My.Preference.ActionButton">
         <item name="android:textSize">@dimen/font_size_small</item>
-    </style>
+    
 </style>
 <!-- end -->
 </resources>
