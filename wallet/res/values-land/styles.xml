@@ -7,11 +7,5 @@
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textSize">@dimen/font_size_normal</item>
     </style>
-
-
-<style name="My.Preference.MenuText">
-    <item name="android:textSize">11sp</item>
-</style>
-
     
 </resources>
