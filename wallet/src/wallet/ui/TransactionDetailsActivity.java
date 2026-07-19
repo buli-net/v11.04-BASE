@@ -810,7 +810,7 @@ private String formatAge(Date txTime) {
         if (depth <= 0) {
             statusText = getString(R.string.tx_details_status_pending);
             statusColorRes = R.color.tx_status_pending;
-        } else if (depth < 6) {
+        } else if (depth < 7) {
             statusText = getString(R.string.tx_details_status_building);
             statusColorRes = R.color.tx_status_building;
         } else {
