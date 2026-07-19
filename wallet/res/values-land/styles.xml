@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="My.Widget.ActionButton">
+        <item name="android:textSize">10sp</item>
+    </style>
+
     <style name="My.Preference.ActionBar.Title">
         <item name="android:textColor">@color/fg_on_dark_bg_network_significant</item>
         <item name="android:textStyle">bold</item>
@@ -7,11 +11,7 @@
         <item name="android:textSize">@dimen/font_size_normal</item>
     </style>
 
-    
     <style name="My.Preference.ActionButton">
-        <item name="android:textColor">@color/fg_on_dark_bg_network_significant</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:textSize">@dimen/font_size_normal</item>
+        <item name="android:textSize">@dimen/font_size_small</item>
     </style>
 </resources>
