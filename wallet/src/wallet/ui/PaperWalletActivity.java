@@ -476,6 +476,8 @@ public class PaperWalletActivity extends AbstractWalletActivity {
     private void findAndWhiteText(View root, int color) {
         if (root instanceof TextView) {
             ((TextView) root).setTextColor(color);
+            float sizePx = getResources().getDimension(R.dimen.paper_wallet_menu_text_size);
+            ((TextView) root).setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, sizePx);
             return;
         }
         if (root instanceof ViewGroup) {
