@@ -9,12 +9,8 @@
     </style>
 
 
-<style name="My.Preference.ActionButton" parent="@android:style/Widget.Material.Light.ActionButton">
-    <item name="android:textSize">7sp</item>
-    <item name="android:textStyle">normal</item>
-    <item name="android:minWidth">0dp</item>
-    <item name="android:paddingLeft">8dp</item>
-    <item name="android:paddingRight">8dp</item>
+<style name="My.Preference.MenuText">
+    <item name="android:textSize">11sp</item>
 </style>
 
     
