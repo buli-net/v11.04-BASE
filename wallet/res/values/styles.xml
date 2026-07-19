@@ -140,7 +140,6 @@
     <item name="android:actionBarStyle">@style/My.Preference.ActionBar</item>
     <item name="android:actionBarTheme">@style/My.Preference.ActionBarTheme</item>
     <item name="android:actionButtonStyle">@style/My.Preference.ActionButton</item>
-
 </style>
     
 <style name="My.Preference.ActionBarTheme" parent="@android:style/ThemeOverlay.Material.ActionBar">
