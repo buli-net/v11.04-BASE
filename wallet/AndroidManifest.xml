@@ -101,7 +101,7 @@
             android:label="Create paper wallet"
             android:exported="false"
             android:parentActivityName="wallet.ui.WalletActivity"
-            android:theme="@style/My.Theme" />
+            android:theme="@style/My.Preference" />
       <!-- end create paper wallet-->
         
         <activity
