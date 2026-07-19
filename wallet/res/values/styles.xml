@@ -128,7 +128,7 @@
     </style>
 
         <!-- fix theme setting -->
-    <style name="My.Preference" parent="@android:style/Theme.Material.Light">
+<style name="My.Preference" parent="@android:style/Theme.Material.Light">
     <item name="android:colorBackground">@color/bg_level1</item>
     <item name="android:colorPrimary">@color/bg_action_bar</item>
     <item name="android:colorPrimaryDark">@color/bg_action_bar</item>
@@ -139,22 +139,26 @@
     <item name="android:windowLightNavigationBar">true</item>
     <item name="android:actionBarStyle">@style/My.Preference.ActionBar</item>
     <item name="android:actionBarTheme">@style/My.Preference.ActionBarTheme</item>
+    
+    <item name="android:listPreferredItemPaddingLeft">@dimen/list_entry_padding_horizontal_normal</item>
+    <item name="android:listPreferredItemPaddingRight">@dimen/list_entry_padding_horizontal_normal</item>
 </style>
 
-
 <style name="My.Preference.ActionBarTheme">
-<item name="android:colorControlNormal">@color/fg_on_dark_bg_network_significant</item>
-<item name="android:textColorSecondary">@color/fg_on_dark_bg_network_significant</item>
+    <item name="android:colorControlNormal">@color/fg_on_dark_bg_network_significant</item>
+    <item name="android:textColorSecondary">@color/fg_on_dark_bg_network_significant</item>
 </style>
 
 <style name="My.Preference.ActionBar" parent="@android:style/Widget.Material.Light.ActionBar.Solid">
     <item name="android:background">@color/bg_action_bar</item>
     <item name="android:titleTextStyle">@style/My.Preference.ActionBar.Title</item>
+    <item name="android:paddingLeft">@dimen/list_entry_padding_horizontal_cram</item>
+    <item name="android:paddingRight">@dimen/list_entry_padding_horizontal_cram</item>
 </style>
 
 <style name="My.Preference.ActionBar.Title" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
     <item name="android:textColor">@color/fg_on_dark_bg_network_significant</item>
-    <item name="android:textSize">22sp</item>
+    <item name="android:textSize">@dimen/font_size_large</item>
     <item name="android:textStyle">bold</item>
     <item name="android:fontFamily">sans-serif-medium</item>
 </style>
