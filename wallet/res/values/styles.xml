@@ -131,7 +131,7 @@
 <style name="My.Preference" parent="@android:style/Theme.Material.Light">
 
 <item name="android:actionMenuTextAppearance">@style/My.Preference.MenuText</item>
-<item name="actionMenuTextAppearance">@style/My.Preference.MenuText</item>
+
 
     
     <item name="android:colorBackground">@color/bg_level1</item>
