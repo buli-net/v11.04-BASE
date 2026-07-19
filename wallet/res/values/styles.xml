@@ -149,6 +149,34 @@
         <item name="android:popupMenuStyle">@style/My.Widget.PopupMenu</item>
 </style>
 
+<style name="My.Preference.ActionBar" parent="@android:style/Widget.Material.Light.ActionBar.Solid">
+    <item name="android:background">@color/bg_action_bar</item>
+    <item name="android:titleTextStyle">@style/My.Preference.ActionBar.Title</item>
+    <item name="android:paddingLeft">@dimen/list_entry_padding_horizontal_cram</item>
+    <item name="android:paddingRight">@dimen/list_entry_padding_horizontal_cram</item>
+</style>
+
+
+
+
+
+    <style name="My.Widget.Toolbar" parent="@android:style/Widget.Material.Toolbar">
+        <item name="android:background">@color/bg_action_bar</item>
+        <item name="android:titleTextAppearance">@style/My.TextAppearance.Widget.Toolbar.Title</item>
+        <item name="android:subtitleTextAppearance">@style/My.TextAppearance.Widget.Toolbar.Subtitle</item>
+        <item name="android:navigationIcon">@drawable/ic_back_white_24dp</item>
+    </style>
+
+    <style name="My.TextAppearance.Widget.Toolbar.Title" parent="@android:style/TextAppearance.Material.Widget.Toolbar.Title">
+        <item name="android:textColor">@color/fg_on_dark_bg_network_significant</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="My.TextAppearance.Widget.Toolbar.Subtitle" parent="@android:style/TextAppearance.Material.Widget.Toolbar.Subtitle">
+        <item name="android:textColor">@color/fg_on_dark_bg_network_insignificant</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
     <style name="My.Widget.ActionButton" parent="@android:style/Widget.Material.ActionButton">
         <item name="android:minHeight">?android:attr/actionBarSize</item>
         <item name="android:minWidth">48dp</item>
@@ -161,22 +189,85 @@
         <item name="android:textStyle">bold</item>
         <item name="android:background">?android:attr/selectableItemBackground</item>
     </style>
-<style name="My.Preference.ActionBar" parent="@android:style/Widget.Material.Light.ActionBar.Solid">
-    <item name="android:background">@color/bg_action_bar</item>
-    <item name="android:titleTextStyle">@style/My.Preference.ActionBar.Title</item>
-    <item name="android:paddingLeft">@dimen/list_entry_padding_horizontal_cram</item>
-    <item name="android:paddingRight">@dimen/list_entry_padding_horizontal_cram</item>
-</style>
 
+    <style name="My.Widget.ActionButton.Overflow" parent="@android:style/Widget.Material.ActionButton.Overflow">
+        <item name="android:minHeight">?android:attr/actionBarSize</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="android:tint">@color/fg_on_dark_bg_network_significant</item>
+    </style>
+
+    <style name="My.Widget.ActionButton.Floating" parent="@android:style/Widget.Material.ActionButton">
+        <item name="android:background">@drawable/floating_action_button_background</item>
+        <item name="android:backgroundTint">@color/fg_network_significant</item>
+    </style>
+
+    <style name="My.Widget.ActionButton.Floating.DarkDefault" parent="@android:style/Widget.Material.ActionButton">
+        <item name="android:background">@drawable/floating_action_button_background</item>
+        <item name="android:backgroundTint">@color/fg_network_significant_darkdefault</item>
+    </style>
+
+    <style name="My.ThemeOverlay.ContextBar" parent="@android:style/ThemeOverlay.Material.ActionBar">
+        <item name="android:actionButtonStyle">@style/My.Widget.ActionButton.Context</item>
+        <item name="android:actionOverflowButtonStyle">@style/My.Widget.ActionButton.Context.Overflow</item>
+    </style>
+
+    <style name="My.Widget.ActionButton.Context" parent="@android:style/Widget.Material.ActionButton">
+        <item name="android:drawableTint">@color/fg_insignificant</item>
+    </style>
+
+    <style name="My.Widget.ActionButton.Context.Overflow" parent="@android:style/Widget.Material.ActionButton.Overflow">
+        <item name="android:tint">@color/fg_insignificant</item>
+    </style>
+
+    <style name="My.Widget.TextView" parent="@android:style/Widget.Material.Light.TextView">
+        <item name="android:textColor">@color/fg_significant</item>
+        <item name="android:textSize">@dimen/font_size_normal</item>
+    </style>
+
+    <style name="My.Widget.EditText" parent="@android:style/Widget.Material.Light.EditText">
+        <item name="android:textColor">@color/fg_significant</item>
+        <item name="android:textSize">@dimen/font_size_normal</item>
+    </style>
+
+    <style name="My.Widget.AutoCompleteTextView" parent="@android:style/Widget.Material.Light.AutoCompleteTextView">
+        <item name="android:textColor">@color/fg_significant</item>
+        <item name="android:textSize">@dimen/font_size_normal</item>
+    </style>
+
+    <style name="My.Widget.Button.Borderless" parent="@android:style/Widget.Material.Button.Borderless">
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:drawablePadding">8dp</item>
+    </style>
+
+    <style name="My.Widget.CompoundButton.CheckBox" parent="@android:style/Widget.Material.Light.CompoundButton.CheckBox">
+        <item name="android:textColor">@color/fg_significant</item>
+        <item name="android:textSize">@dimen/font_size_normal</item>
+    </style>
+
+    <style name="My.Widget.Spinner" parent="@android:style/Widget.Material.Light.Spinner">
+        <item name="android:textColor">@color/fg_significant</item>
+        <item name="android:textSize">@dimen/font_size_normal</item>
+    </style>
+
+    <style name="My.Widget.PopupMenu" parent="@android:style/Widget.Material.Light.PopupMenu">
+        <item name="android:popupBackground">@color/bg_level3</item>
+    </style>
+
+    <style name="My.Widget.PopupMenu.Overflow" parent="@android:style/Widget.Material.Light.PopupMenu.Overflow">
+        <item name="android:overlapAnchor">false</item>
+        <item name="android:popupBackground">@color/bg_level3</item>
+    </style>
+
+
+
+
+    
     <style name="My.Preference.ActionBar.Title" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
     <item name="android:textColor">@color/fg_on_dark_bg_network_significant</item>
     <item name="android:textStyle">bold</item>
     <item name="android:fontFamily">sans-serif-medium</item>
-    <item name="android:singleLine">true</item>
-    <item name="android:autoSizeTextType">uniform</item>
-    <item name="android:autoSizeMinTextSize">12sp</item>
-    <item name="android:autoSizeMaxTextSize">20sp</item>
-    <item name="android:autoSizeStepGranularity">1sp</item>
+    <item name="android:textSize">@dimen/font_size_normal</item>
 </style>
 <!-- end -->
 </resources>
