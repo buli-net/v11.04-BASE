@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources
     xmlns:android="http://schemas.android.com/apk/res/android">
-
+<style name="My.Widget" parent="@android:style/Widget.Material" />
     <style name="My.Theme" parent="@android:style/Theme.Material.Light.NoActionBar">
         <item name="android:actionOverflowButtonStyle">@style/My.Widget.ActionButton.Overflow</item>
         <item name="android:actionOverflowMenuStyle">@style/My.Widget.PopupMenu.Overflow</item>
