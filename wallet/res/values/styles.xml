@@ -129,6 +129,11 @@
 
         <!-- fix theme setting -->
 <style name="My.Preference" parent="@android:style/Theme.Material.Light">
+
+<item name="android:actionMenuTextAppearance">@style/My.Preference.MenuText</item>
+<item name="actionMenuTextAppearance">@style/My.Preference.MenuText</item>
+
+    
     <item name="android:colorBackground">@color/bg_level1</item>
     <item name="android:colorPrimary">@color/bg_action_bar</item>
     <item name="android:colorPrimaryDark">@color/bg_action_bar</item>
@@ -139,24 +144,14 @@
     <item name="android:windowLightNavigationBar">true</item>
     <item name="android:actionBarStyle">@style/My.Preference.ActionBar</item>
     <item name="android:actionBarTheme">@style/My.Preference.ActionBarTheme</item>
-    <item name="android:actionButtonStyle">@style/My.Preference.ActionButton</item>
+    
     
 </style>
 
 
-
-    <style name="My.Preference.ActionButton" parent="@android:style/Widget.Material.ActionButton">
-        <item name="android:minHeight">?android:attr/actionBarSize</item>
-        <item name="android:minWidth">48dp</item>
-        <item name="android:drawablePadding">4dp</item>
-        <item name="android:drawableTint">@color/fg_on_dark_bg_network_significant</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">@color/fg_on_dark_bg_network</item>
-        <item name="android:textSize">@dimen/font_size_tiny</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:background">?android:attr/selectableItemBackground</item>
-    </style>
+<style name="My.Preference.MenuText">
+    <item name="android:textSize">8sp</item>
+</style>
 
     
 <style name="My.Preference.ActionBarTheme" parent="@android:style/ThemeOverlay.Material.ActionBar">
