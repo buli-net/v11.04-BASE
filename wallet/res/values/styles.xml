@@ -129,6 +129,7 @@
 
         <!-- fix theme setting -->
 <style name="My.Preference" parent="@android:style/Theme.Material.Light">
+    <item name="android:actionButtonStyle">@style/My.Widget.ActionButton</item>
     <item name="android:colorBackground">@color/bg_level1</item>
     <item name="android:colorPrimary">@color/bg_action_bar</item>
     <item name="android:colorPrimaryDark">@color/bg_action_bar</item>
@@ -148,6 +149,18 @@
         <item name="android:popupMenuStyle">@style/My.Widget.PopupMenu</item>
 </style>
 
+    <style name="My.Widget.ActionButton" parent="@android:style/Widget.Material.ActionButton">
+        <item name="android:minHeight">?android:attr/actionBarSize</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="android:drawablePadding">4dp</item>
+        <item name="android:drawableTint">@color/fg_on_dark_bg_network_significant</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/fg_on_dark_bg_network</item>
+        <item name="android:textSize">@dimen/font_size_tiny</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+    </style>
 <style name="My.Preference.ActionBar" parent="@android:style/Widget.Material.Light.ActionBar.Solid">
     <item name="android:background">@color/bg_action_bar</item>
     <item name="android:titleTextStyle">@style/My.Preference.ActionBar.Title</item>
