@@ -7,7 +7,7 @@
         <item name="android:singleLine">true</item>
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:autoSizeMinTextSize">10sp</item>
-        <item name="android:autoSizeMaxTextSize">14sp</item>
+        <item name="android:autoSizeMaxTextSize">16sp</item>
         <item name="android:autoSizeStepGranularity">1sp</item>
     </style>
 </resources>
