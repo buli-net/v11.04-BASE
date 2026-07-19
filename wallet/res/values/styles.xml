@@ -142,9 +142,9 @@
 
 </style>
     
-<style name="My.Preference.ActionBarTheme">
-<item name="android:colorControlNormal">@color/fg_on_dark_bg_network_significant</item>
-<item name="android:textColorSecondary">@color/fg_on_dark_bg_network_significant</item>
+<style name="My.Preference.ActionBarTheme" parent="@android:style/ThemeOverlay.Material.ActionBar">
+    <item name="android:colorControlNormal">@color/fg_on_dark_bg_network_significant</item>
+    <item name="android:textColorSecondary">@color/fg_on_dark_bg_network_significant</item>
 </style>
     
 <style name="My.Preference.ActionBar" parent="@android:style/Widget.Material.Light.ActionBar.Solid">
