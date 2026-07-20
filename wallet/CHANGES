@@ -73,8 +73,8 @@
 + Fix theme ui setting bug light/dark
 
 - wallet/AndroidManifest.xml [ add line 179, <!-- line 180->181 --> ]
-- wallet/res/values-night/styles.xml [ add code line 56->102 ]
-- wallet/res/values/styles.xml [ add code line 130->178 ]
+- wallet/res/values-night/styles.xml [ add code line 56->99 ]
+- wallet/res/values/styles.xml [ add code line 130->175 ]
 
 - Create file wallet/res/values-land/styles.xml
 
