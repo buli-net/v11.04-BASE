@@ -81,21 +81,23 @@
         <item name="android:background">?android:attr/selectableItemBackground</item>
     </style>
     
-<style name="My.Preference.ActionBarTheme">
+<style name="My.Preference.ActionBarTheme" parent="@android:style/ThemeOverlay.Material.ActionBar">
     <item name="android:colorControlNormal">@color/fg_on_dark_bg_network_significant</item>
     <item name="android:textColorSecondary">@color/fg_on_dark_bg_network_significant</item>
 </style>
-
-<style name="My.Preference.ActionBar" parent="@android:style/Widget.Material.ActionBar.Solid">
+  
+<style name="My.Preference.ActionBar" parent="@android:style/Widget.Material.Light.ActionBar.Solid">
     <item name="android:background">@color/bg_action_bar</item>
     <item name="android:titleTextStyle">@style/My.Preference.ActionBar.Title</item>
+    <item name="android:paddingLeft">@dimen/list_entry_padding_horizontal_cram</item>
+    <item name="android:paddingRight">@dimen/list_entry_padding_horizontal_cram</item>
 </style>
-
+    
 <style name="My.Preference.ActionBar.Title" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
     <item name="android:textColor">@color/fg_on_dark_bg_network_significant</item>
-    <item name="android:textSize">22sp</item>
     <item name="android:textStyle">bold</item>
     <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:textSize">@dimen/font_size_large</item>
 </style>
     <!-- end -->
 </resources>
