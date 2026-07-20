@@ -204,7 +204,7 @@
 
                         <TextView
                             android:text="@string/tx_details_status"
-                            android:textSize="13sp"
+                            android:textSize="14sp"
                             android:textColor="@color/tx_text_secondary"
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
@@ -212,9 +212,8 @@
 
                         <TextView
                             android:id="@+id/tv_status"
-                            android:textSize="13sp"
+                            android:textSize="14sp"
                             android:textStyle="bold"
-                            android:fontFamily="monospace"
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
@@ -231,7 +230,7 @@
 
                         <TextView
                             android:text="@string/tx_details_fee"
-                            android:textSize="13sp"
+                            android:textSize="14sp"
                             android:textColor="@color/tx_text_secondary"
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
@@ -239,8 +238,7 @@
 
                         <TextView
                             android:id="@+id/tv_fee"
-                            android:textSize="13sp"
-                            android:fontFamily="monospace"
+                            android:textSize="14sp"
                             android:textColor="@color/tx_text_secondary"
                             android:layout_width="0dp"
                             android:layout_weight="1"
@@ -258,7 +256,7 @@
 
                         <TextView
                             android:text="@string/tx_details_size_weight"
-                            android:textSize="13sp"
+                            android:textSize="14sp"
                             android:textColor="@color/tx_text_secondary"
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
@@ -266,8 +264,7 @@
 
                         <TextView
                             android:id="@+id/tv_meta"
-                            android:textSize="13sp"
-                            android:fontFamily="monospace"
+                            android:textSize="14sp"
                             android:textColor="@color/tx_text_secondary"
                             android:layout_width="0dp"
                             android:layout_weight="1"
@@ -285,7 +282,7 @@
 
                         <TextView
                             android:text="@string/tx_details_confirmations"
-                            android:textSize="13sp"
+                            android:textSize="14sp"
                             android:textColor="@color/tx_text_secondary"
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
@@ -293,8 +290,7 @@
 
                         <TextView
                             android:id="@+id/tv_height"
-                            android:textSize="13sp"
-                            android:fontFamily="monospace"
+                            android:textSize="14sp"
                             android:textColor="@color/tx_text_secondary"
                             android:layout_width="0dp"
                             android:layout_weight="1"
@@ -312,7 +308,7 @@
 
                         <TextView
                             android:text="@string/tx_details_time"
-                            android:textSize="13sp"
+                            android:textSize="14sp"
                             android:textColor="@color/tx_text_secondary"
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
@@ -320,8 +316,7 @@
 
                         <TextView
                             android:id="@+id/tv_time"
-                            android:textSize="13sp"
-                            android:fontFamily="monospace"
+                            android:textSize="14sp"
                             android:textColor="@color/tx_text_secondary"
                             android:layout_width="0dp"
                             android:layout_weight="1"
@@ -339,7 +334,7 @@
 
                         <TextView
                             android:text="@string/tx_details_age"
-                            android:textSize="13sp"
+                            android:textSize="14sp"
                             android:textColor="@color/tx_text_secondary"
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
@@ -347,8 +342,7 @@
 
                         <TextView
                             android:id="@+id/tv_age"
-                            android:textSize="13sp"
-                            android:fontFamily="monospace"
+                            android:textSize="14sp"
                             android:textColor="@color/tx_text_secondary"
                             android:layout_width="0dp"
                             android:layout_weight="1"
