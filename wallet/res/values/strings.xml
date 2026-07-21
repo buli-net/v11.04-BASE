@@ -387,7 +387,7 @@
     <string name="paper_wallet_print_title">Paper Wallet</string>
     
     <!-- Labels -->
-    <string name="paper_wallet_warning">Anyone with the private key can spend. Store offline.</string>
+    <string name="paper_wallet_warning">Anyone with the private key can spend.</string>
     <string name="paper_wallet_public_label">Public</string>
     <string name="paper_wallet_private_label">Private</string>
 
