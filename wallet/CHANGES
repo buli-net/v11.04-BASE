@@ -76,8 +76,6 @@
 - wallet/res/values-night/styles.xml [ add code line 56->99 ]
 - wallet/res/values/styles.xml [ add code line 130->175 ]
 
-- Create file wallet/res/values-land/styles.xml
-
 ------------------------------------------------------------------
 
 + update link check version wallet.schildbach.de/version -> buli-net.github.io/version
