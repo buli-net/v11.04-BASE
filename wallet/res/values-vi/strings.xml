@@ -387,7 +387,7 @@
     <string name="paper_wallet_print_title">Ví giấy</string>
     
     <!-- Labels -->
-    <string name="paper_wallet_warning">Bất kỳ ai có khóa riêng đều có thể chi tiêu. Hãy lưu trữ ngoại tuyến.</string>
+    <string name="paper_wallet_warning">Bất kỳ ai có khóa riêng đều có thể chi tiêu.</string>
     <string name="paper_wallet_public_label">Công khai</string>
     <string name="paper_wallet_private_label">Riêng tư</string>
 
