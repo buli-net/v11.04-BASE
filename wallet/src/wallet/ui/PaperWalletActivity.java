@@ -196,7 +196,7 @@ public class PaperWalletActivity extends AbstractWalletActivity {
             } else if (index == 1) {
                 return useKey.toAddress(ScriptType.P2PKH, network).toString();
             } else if (index == 2) {
-                return useKey.toAddress(ScriptType.P2SH_P2WPKH, network).toString();
+                return useKey.toAddress(ScriptType.P2SH, network).toString();
             } else if (index == 3) {
                 return useKey.toAddress(ScriptType.P2WPKH, network).toString();
             } else if (index == 4) {
@@ -367,9 +367,6 @@ public class PaperWalletActivity extends AbstractWalletActivity {
             regenerateAddressOnly();
             Toast.makeText(this, getString(R.string.paper_wallet_public_format_toast, typeNames[typeIndex]), Toast.LENGTH_SHORT).show();
             return;
-        }
-
-        if (false) {
         } else {
             publicHexMode = true;
             updatePublicView();
