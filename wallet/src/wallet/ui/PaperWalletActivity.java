@@ -75,9 +75,8 @@ public class PaperWalletActivity extends AbstractWalletActivity {
 
     private ECKey currentKey = null;
 
-    // 0: P2PKH uncompressed (cổ), 1: P2PKH compressed, 2: P2SH-P2WPKH (3...), 3: P2WPKH bech32 (bc1q...), 4: P2TR taproot (bc1p...)
     private int typeIndex = 1;
-    private final String[] typeNames = new String[]{"LEGACY_UNCOMP", "LEGACY", "P2SH-SEGWIT", "BECH32", "TAPROOT"};
+    private String[] typeNames;
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
@@ -94,6 +93,14 @@ public class PaperWalletActivity extends AbstractWalletActivity {
             getActionBar().setDisplayHomeAsUpEnabled(true);
 
         setTitle(R.string.paper_wallet_activity_title);
+
+        typeNames = new String[]{
+                getString(R.string.paper_wallet_public_format_legacy_uncomp),
+                getString(R.string.paper_wallet_public_format_legacy),
+                getString(R.string.paper_wallet_public_format_p2sh),
+                getString(R.string.paper_wallet_public_format_bech32),
+                getString(R.string.paper_wallet_public_format_taproot)
+        };
 
         cardView = findViewById(R.id.paper_wallet_card);
         qrAddressView = findViewById(R.id.paper_wallet_qr_address);
@@ -359,17 +366,15 @@ public class PaperWalletActivity extends AbstractWalletActivity {
             publicHexMode = false;
             typeIndex = 1;
             regenerateAddressOnly();
-            Toast.makeText(this, typeNames[typeIndex], Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.paper_wallet_public_format_toast, typeNames[typeIndex]), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Nếu đang ở loại cuối thì chuyển sang HEX, ngược lại xoay vòng
         if (typeIndex == typeNames.length - 1) {
             publicHexMode = true;
             updatePublicView();
-            Toast.makeText(this, "HEX", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.paper_wallet_public_format_toast, getString(R.string.paper_wallet_public_format_hex)), Toast.LENGTH_SHORT).show();
         } else {
-            // Xoay vòng địa chỉ nhưng giữ nguyên private key để tương thích sweep
             typeIndex = (typeIndex + 1) % typeNames.length;
             try {
                 if (typeIndex == 4) ScriptType.valueOf("P2TR");
@@ -377,7 +382,7 @@ public class PaperWalletActivity extends AbstractWalletActivity {
                 typeIndex = 0;
             }
             regenerateAddressOnly();
-            Toast.makeText(this, typeNames[typeIndex], Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.paper_wallet_public_format_toast, typeNames[typeIndex]), Toast.LENGTH_SHORT).show();
         }
     }
 
