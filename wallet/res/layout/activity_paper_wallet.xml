@@ -21,7 +21,6 @@
             android:lineSpacingExtra="2dp"
             android:layout_marginBottom="16dp" />
 
-        <!-- Two-column title -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -50,66 +49,60 @@
                 android:textColor="?android:attr/textColorPrimary" />
         </LinearLayout>
 
-        <!-- 2 QR codes -->
-<!-- 2 QR codes -->
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:weightSum="2"
-    android:background="@android:color/transparent"
-    android:layout_marginTop="10dp"
-    android:gravity="center">
-
-    <!-- Public -->
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:background="@android:color/transparent">
-
-        <FrameLayout
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:padding="4dp">
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:background="@android:color/transparent"
+            android:layout_marginTop="10dp"
+            android:gravity="center">
 
-            <ImageView
-                android:id="@+id/paper_wallet_qr_address"
-                android:layout_width="160dp"
-                android:layout_height="160dp"
-                android:scaleType="fitXY"
-                android:background="@android:color/white" />
-        </FrameLayout>
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:background="@android:color/transparent">
 
-    <!-- Private -->
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:background="@android:color/transparent">
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    android:padding="4dp">
 
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:padding="4dp">
+                    <ImageView
+                        android:id="@+id/paper_wallet_qr_address"
+                        android:layout_width="160dp"
+                        android:layout_height="160dp"
+                        android:scaleType="fitXY"
+                        android:background="@android:color/white" />
+                </FrameLayout>
+            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/paper_wallet_qr_key"
-                android:layout_width="160dp"
-                android:layout_height="160dp"
-                android:scaleType="fitXY"
-                android:background="@android:color/white" />
-        </FrameLayout>
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:background="@android:color/transparent">
 
-</LinearLayout>
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    android:padding="4dp">
 
-        <!-- Addresses below QR - allow up to 3 lines -->
+                    <ImageView
+                        android:id="@+id/paper_wallet_qr_key"
+                        android:layout_width="160dp"
+                        android:layout_height="160dp"
+                        android:scaleType="fitXY"
+                        android:background="@android:color/white" />
+                </FrameLayout>
+            </LinearLayout>
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -151,7 +144,6 @@
                 android:breakStrategy="balanced" />
         </LinearLayout>
 
-        <!-- 6 buttons in one row aligned to QR - expanded frame -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -193,7 +185,7 @@
                     android:gravity="center"
                     android:paddingHorizontal="6dp"
                     android:drawableTop="@drawable/ic_qr_bech32_24dp"
-                    android:text="@string/paper_wallet_public_format_bech32"
+                    android:text="@string/paper_wallet_public_format_legacy"
                     android:textAllCaps="false"
                     android:textSize="12sp" />
 
@@ -272,7 +264,6 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="12dp" />
 
-        <!-- BIP38 encryption options -->
         <CheckBox
             android:id="@+id/paper_wallet_encrypt_toggle"
             android:layout_width="wrap_content"
@@ -322,6 +313,5 @@
             android:background="?android:attr/listDivider"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="12dp" />
-
     </LinearLayout>
 </ScrollView>
