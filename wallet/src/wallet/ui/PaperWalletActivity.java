@@ -75,7 +75,7 @@ public class PaperWalletActivity extends AbstractWalletActivity {
 
     private ECKey currentKey = null;
 
-    private int typeIndex = 1;
+    private int typeIndex = 0;
     private String[] typeNames;
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -196,25 +196,14 @@ public class PaperWalletActivity extends AbstractWalletActivity {
             } else if (index == 1) {
                 return useKey.toAddress(ScriptType.P2PKH, network).toString();
             } else if (index == 2) {
-                try {
-                    return useKey.toAddress(ScriptType.valueOf("P2WPKH_P2SH"), network).toString();
-                } catch (Exception e1) {
-                    try {
-                        return useKey.toAddress(ScriptType.valueOf("P2SH_P2WPKH"), network).toString();
-                    } catch (Exception e2) {
-                        return useKey.toAddress(ScriptType.P2PKH, network).toString();
-                    }
-                }
+                return useKey.toAddress(ScriptType.P2SH_P2WPKH, network).toString();
             } else if (index == 3) {
                 return useKey.toAddress(ScriptType.P2WPKH, network).toString();
             } else if (index == 4) {
-                try {
-                    return useKey.toAddress(ScriptType.P2TR, network).toString();
-                } catch (Exception e) {
-                    return useKey.toAddress(ScriptType.P2WPKH, network).toString();
-                }
+                return useKey.toAddress(ScriptType.P2TR, network).toString();
             }
         } catch (Exception e) {
+            android.util.Log.e("PaperWallet", "getAddress failed idx=" + index + " " + e.getMessage(), e);
             return key.toAddress(ScriptType.P2PKH, network).toString();
         }
         return key.toAddress(ScriptType.P2PKH, network).toString();
@@ -244,7 +233,9 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         String id = params.getId().toLowerCase();
         boolean isTestOrSignet = id.contains("test") || id.contains("signet");
         NetworkParameters wifParams = isTestOrSignet? TestNet3Params.get() : params;
-        currentPrivKeyWif = currentKey.getPrivateKeyEncoded(wifParams).toBase58();
+        boolean compressed = typeIndex!= 0;
+        ECKey wifKey = ECKey.fromPrivate(currentKey.getPrivKey(), compressed);
+        currentPrivKeyWif = wifKey.getPrivateKeyEncoded(wifParams).toBase58();
         currentPrivKeyHex = currentKey.getPrivateKeyAsHex();
         privKeyHexMode = false;
         publicHexMode = false;
@@ -286,7 +277,15 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         }
         final Network network = getNetwork();
         currentAddress = getAddressForType(currentKey, network, typeIndex);
+        NetworkParameters params = Constants.NETWORK_PARAMETERS;
+        String id = params.getId().toLowerCase();
+        boolean isTestOrSignet = id.contains("test") || id.contains("signet");
+        NetworkParameters wifParams = isTestOrSignet? TestNet3Params.get() : params;
+        boolean compressed = typeIndex!= 0;
+        ECKey wifKey = ECKey.fromPrivate(currentKey.getPrivKey(), compressed);
+        currentPrivKeyWif = wifKey.getPrivateKeyEncoded(wifParams).toBase58();
         updatePublicView();
+        updatePrivKeyView();
     }
 
     private void updatePublicView() {
@@ -306,7 +305,7 @@ public class PaperWalletActivity extends AbstractWalletActivity {
             toggleAddressBtn.setText(R.string.paper_wallet_hide);
             toggleAddressBtn.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_eye_off_24dp, 0, 0);
             if (publicFormatBtn!= null) {
-                publicFormatBtn.setText(publicHexMode? typeNames[typeIndex] + " / HEX" : typeNames[typeIndex]);
+                publicFormatBtn.setText(publicHexMode? typeNames[typeIndex] + " / " + getString(R.string.paper_wallet_public_format_hex) : typeNames[typeIndex]);
             }
             if (publicLabelView!= null) publicLabelView.setText(base + suffix);
             if (qrAddressView!= null &&!displayKey.isEmpty()) qrAddressView.setImageBitmap(makeQr(displayKey));
@@ -358,27 +357,20 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         updatePublicView();
     }
 
-    // ==== FIXED: ADDRESS -> HEX -> NEXT ADDRESS -> HEX ====
     private void togglePublicFormat() {
         if (!publicVisible) {
             publicVisible = true;
         }
-
         if (publicHexMode) {
-            // đang ở HEX -> qua loại kế tiếp
             publicHexMode = false;
             typeIndex = (typeIndex + 1) % typeNames.length;
-            try {
-                if (typeIndex == 4) ScriptType.valueOf("P2TR");
-            } catch (Exception e) {
-                // nếu không support taproot thì skip
-                if (typeIndex == 4) typeIndex = 0;
-            }
             regenerateAddressOnly();
             Toast.makeText(this, getString(R.string.paper_wallet_public_format_toast, typeNames[typeIndex]), Toast.LENGTH_SHORT).show();
             return;
+        }
+
+        if (false) {
         } else {
-            // đang ở ADDRESS -> qua HEX của chính loại đó
             publicHexMode = true;
             updatePublicView();
             Toast.makeText(this, getString(R.string.paper_wallet_public_format_toast, getString(R.string.paper_wallet_public_format_hex)), Toast.LENGTH_SHORT).show();
