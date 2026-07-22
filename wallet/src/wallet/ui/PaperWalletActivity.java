@@ -227,10 +227,12 @@ public class PaperWalletActivity extends AbstractWalletActivity {
             sha256.update(xOnly);
             byte[] tweakBytes = sha256.digest();
 
-            org.bouncycastle.math.ec.ECPoint G = ECKey.CURVE.getG();
+            org.bouncycastle.jce.spec.ECNamedCurveParameterSpec spec = org.bouncycastle.jce.ECNamedCurveTable.getParameterSpec("secp256k1");
+            org.bouncycastle.math.ec.ECCurve curve = spec.getCurve();
+            org.bouncycastle.math.ec.ECPoint G = spec.getG();
             java.math.BigInteger tweak = new java.math.BigInteger(1, tweakBytes);
             org.bouncycastle.math.ec.ECPoint tweakPoint = G.multiply(tweak);
-            org.bouncycastle.math.ec.ECPoint internalPoint = ECKey.CURVE.getCurve().decodePoint(comp);
+            org.bouncycastle.math.ec.ECPoint internalPoint = curve.decodePoint(comp);
             org.bouncycastle.math.ec.ECPoint outputPoint = internalPoint.add(tweakPoint);
             byte[] outputComp = outputPoint.getEncoded(true);
             byte[] outputXOnly = new byte[32];
