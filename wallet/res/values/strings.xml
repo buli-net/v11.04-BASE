@@ -403,11 +403,19 @@
     <string name="paper_wallet_print">Print</string>
     <string name="paper_wallet_export_txt">Export TXT</string>
 
-    <!-- Public formats -->
+    <!-- Paper wallet address types -->
+    <string name="paper_wallet_public_type">Loại: %1$s</string>
+    <string name="paper_wallet_public_format_legacy_uncomp">LEGACY_UNCOMP</string>
+    <string name="paper_wallet_public_format_legacy">LEGACY</string>
+    <string name="paper_wallet_public_format_p2sh">P2SH-SEGWIT</string>
     <string name="paper_wallet_public_format_bech32">BECH32</string>
-    <string name="paper_wallet_public_format_legacy">P2PKH</string>
-    <string name="paper_wallet_public_format_p2sh">P2SH</string>
+    <string name="paper_wallet_public_format_taproot">TAPROOT</string>
     <string name="paper_wallet_public_format_hex">HEX</string>
+    
+    <string name="paper_wallet_public_format_toast">Định dạng: %1$s</string>
+    <string name="paper_wallet_private_format_toast">Định dạng: %1$s</string>
+
+    
 
     <!-- Private formats -->
     <string name="paper_wallet_private_format_wif">WIF</string>
