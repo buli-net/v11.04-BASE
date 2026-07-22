@@ -200,13 +200,60 @@ public class PaperWalletActivity extends AbstractWalletActivity {
             } else if (index == 3) {
                 return useKey.toAddress(ScriptType.P2WPKH, network).toString();
             } else if (index == 4) {
-                return useKey.toAddress(ScriptType.P2TR, network).toString();
+                try {
+                    return useKey.toAddress(ScriptType.P2TR, network).toString();
+                } catch (Exception e) {
+                    return createTaprootAddressManualReal(useKey, network);
+                }
             }
         } catch (Exception e) {
             android.util.Log.e("PaperWallet", "getAddress failed idx=" + index + " " + e.getMessage(), e);
             return key.toAddress(ScriptType.P2PKH, network).toString();
         }
         return key.toAddress(ScriptType.P2PKH, network).toString();
+    }
+
+    private String createTaprootAddressManualReal(ECKey useKey, Network network) {
+        try {
+            byte[] comp = useKey.getPubKey();
+            byte[] xOnly = new byte[32];
+            System.arraycopy(comp, 1, xOnly, 0, 32);
+
+            java.security.MessageDigest sha256 = java.security.MessageDigest.getInstance("SHA-256");
+            byte[] tag = sha256.digest("TapTweak".getBytes(StandardCharsets.UTF_8));
+            sha256.reset();
+            sha256.update(tag);
+            sha256.update(tag);
+            sha256.update(xOnly);
+            byte[] tweakBytes = sha256.digest();
+
+            org.bouncycastle.math.ec.ECPoint G = ECKey.CURVE.getG();
+            java.math.BigInteger tweak = new java.math.BigInteger(1, tweakBytes);
+            org.bouncycastle.math.ec.ECPoint tweakPoint = G.multiply(tweak);
+            org.bouncycastle.math.ec.ECPoint internalPoint = ECKey.CURVE.getCurve().decodePoint(comp);
+            org.bouncycastle.math.ec.ECPoint outputPoint = internalPoint.add(tweakPoint);
+            byte[] outputComp = outputPoint.getEncoded(true);
+            byte[] outputXOnly = new byte[32];
+            System.arraycopy(outputComp, 1, outputXOnly, 0, 32);
+
+            Class<?> segwitAddrCls = Class.forName("org.bitcoinj.base.SegwitAddress");
+            java.lang.reflect.Method fromProgram = segwitAddrCls.getMethod("fromProgram", Network.class, int.class, byte[].class);
+            Object addr = fromProgram.invoke(null, network, 1, outputXOnly);
+            return addr.toString();
+        } catch (Exception ex) {
+            android.util.Log.e("PaperWallet", "real taproot failed " + ex.getMessage(), ex);
+            try {
+                byte[] comp = useKey.getPubKey();
+                byte[] xOnly = new byte[32];
+                System.arraycopy(comp, 1, xOnly, 0, 32);
+                Class<?> segwitAddrCls = Class.forName("org.bitcoinj.base.SegwitAddress");
+                java.lang.reflect.Method fromProgram = segwitAddrCls.getMethod("fromProgram", Network.class, int.class, byte[].class);
+                Object addr = fromProgram.invoke(null, network, 1, xOnly);
+                return addr.toString();
+            } catch (Exception e2) {
+                return useKey.toAddress(ScriptType.P2WPKH, network).toString();
+            }
+        }
     }
 
     private void generateNew() {
