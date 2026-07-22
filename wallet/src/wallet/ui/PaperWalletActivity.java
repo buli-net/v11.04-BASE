@@ -295,7 +295,7 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         String suffix;
         if (publicHexMode) {
             displayKey = currentPubKeyHex;
-            suffix = " (" + getString(R.string.paper_wallet_public_format_hex) + ")";
+            suffix = " (" + typeNames[typeIndex] + " / " + getString(R.string.paper_wallet_public_format_hex) + ")";
         } else {
             displayKey = currentAddress;
             suffix = " (" + typeNames[typeIndex] + ")";
@@ -306,7 +306,7 @@ public class PaperWalletActivity extends AbstractWalletActivity {
             toggleAddressBtn.setText(R.string.paper_wallet_hide);
             toggleAddressBtn.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_eye_off_24dp, 0, 0);
             if (publicFormatBtn!= null) {
-                publicFormatBtn.setText(publicHexMode? getString(R.string.paper_wallet_public_format_hex) : typeNames[typeIndex]);
+                publicFormatBtn.setText(publicHexMode? typeNames[typeIndex] + " / HEX" : typeNames[typeIndex]);
             }
             if (publicLabelView!= null) publicLabelView.setText(base + suffix);
             if (qrAddressView!= null &&!displayKey.isEmpty()) qrAddressView.setImageBitmap(makeQr(displayKey));
@@ -358,31 +358,30 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         updatePublicView();
     }
 
+    // ==== FIXED: ADDRESS -> HEX -> NEXT ADDRESS -> HEX ====
     private void togglePublicFormat() {
         if (!publicVisible) {
             publicVisible = true;
         }
-        if (publicHexMode) {
-            publicHexMode = false;
-            typeIndex = 1;
-            regenerateAddressOnly();
-            Toast.makeText(this, getString(R.string.paper_wallet_public_format_toast, typeNames[typeIndex]), Toast.LENGTH_SHORT).show();
-            return;
-        }
 
-        if (typeIndex == typeNames.length - 1) {
-            publicHexMode = true;
-            updatePublicView();
-            Toast.makeText(this, getString(R.string.paper_wallet_public_format_toast, getString(R.string.paper_wallet_public_format_hex)), Toast.LENGTH_SHORT).show();
-        } else {
+        if (publicHexMode) {
+            // đang ở HEX -> qua loại kế tiếp
+            publicHexMode = false;
             typeIndex = (typeIndex + 1) % typeNames.length;
             try {
                 if (typeIndex == 4) ScriptType.valueOf("P2TR");
             } catch (Exception e) {
-                typeIndex = 0;
+                // nếu không support taproot thì skip
+                if (typeIndex == 4) typeIndex = 0;
             }
             regenerateAddressOnly();
             Toast.makeText(this, getString(R.string.paper_wallet_public_format_toast, typeNames[typeIndex]), Toast.LENGTH_SHORT).show();
+            return;
+        } else {
+            // đang ở ADDRESS -> qua HEX của chính loại đó
+            publicHexMode = true;
+            updatePublicView();
+            Toast.makeText(this, getString(R.string.paper_wallet_public_format_toast, getString(R.string.paper_wallet_public_format_hex)), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -420,7 +419,7 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         }
         TextView printPublicLabel = printView.findViewById(R.id.print_public_label);
         if (printPublicLabel!= null) {
-            String s = getString(R.string.paper_wallet_public_label) + (publicHexMode? " (" + getString(R.string.paper_wallet_public_format_hex) + ")" : " (" + typeNames[typeIndex] + ")");
+            String s = getString(R.string.paper_wallet_public_label) + (publicHexMode? " (" + typeNames[typeIndex] + " / " + getString(R.string.paper_wallet_public_format_hex) + ")" : " (" + typeNames[typeIndex] + ")");
             printPublicLabel.setText(s);
         }
         TextView printPrivLabel = printView.findViewById(R.id.print_privkey_label);
@@ -469,7 +468,7 @@ public class PaperWalletActivity extends AbstractWalletActivity {
 
     private void exportWalletTxt() {
         try {
-            String typeName = publicHexMode? getString(R.string.paper_wallet_public_format_hex) : typeNames[typeIndex];
+            String typeName = publicHexMode? typeNames[typeIndex] + " / " + getString(R.string.paper_wallet_public_format_hex) : typeNames[typeIndex];
             StringBuilder sb = new StringBuilder();
             sb.append(getString(R.string.paper_wallet_activity_title)).append("\n");
             sb.append(getString(R.string.paper_wallet_public_type, typeName)).append("\n");
