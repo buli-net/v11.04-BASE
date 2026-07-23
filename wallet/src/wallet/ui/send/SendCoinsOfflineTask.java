@@ -74,7 +74,7 @@ public abstract class SendCoinsOfflineTask {
                     }
                     if (hasP2TR) break;
                 }
-                final Transaction transaction;
+                Transaction transaction;
                 if (hasP2TR) transaction = sendCoinsOfflineTaproot(sendRequest);
                 else {
                     try { transaction = wallet.sendCoinsOffline(sendRequest); }
