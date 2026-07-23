@@ -174,12 +174,12 @@ public abstract class SendCoinsOfflineTask {
 
         Script dest = sendRequest.tx.getOutput(0).getScriptPubKey();
 
-        long fee = 1000;
+        // GỐC: không set fee cứng, dùng feePerKb từ SweepWalletFragment
+        long fee;
         if (sendRequest.feePerKb!= null) {
-            fee = sendRequest.feePerKb.value * 150 / 1000 + 10;
-            if (fee < 150) {
-                fee = 150;
-            }
+            fee = sendRequest.feePerKb.value * 150 / 1000;
+        } else {
+            fee = 1000;
         }
 
         if (total <= fee) {
@@ -207,7 +207,9 @@ public abstract class SendCoinsOfflineTask {
             if (prog.length == 34 && prog[0] == 0x51) {
                 for (ECKey k : keys) {
                     try {
-                        if (k.getPrivKey() == null) continue;
+                        if (k.getPrivKey() == null) {
+                            continue;
+                        }
                         ECKey tweaked = deriveTweaked(k);
                         byte[] sighash = calcSighash(tx, i, utxos);
                         byte[] sig = signSchnorr(tweaked, sighash);
@@ -403,7 +405,9 @@ public abstract class SendCoinsOfflineTask {
             byte[] rnd = new byte[32];
             secureRandom.nextBytes(rnd);
             k = new BigInteger(1, rnd).mod(n);
-            if (k.signum() == 0) continue;
+            if (k.signum() == 0) {
+                continue;
+            }
             R = spec.getG().multiply(k).normalize();
             if ((R.getEncoded(true)[0] & 1) == 1) {
                 k = n.subtract(k);
@@ -473,7 +477,9 @@ public abstract class SendCoinsOfflineTask {
     }
 
     protected abstract void onSuccess(Transaction transaction);
+
     protected abstract void onInsufficientMoney(Coin missing);
+
     protected abstract void onInvalidEncryptionKey();
 
     protected void onEmptyWalletFailed(Exception exception) {
