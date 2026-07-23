@@ -94,12 +94,11 @@ public class PaperWalletActivity extends AbstractWalletActivity {
 
         setTitle(R.string.paper_wallet_activity_title);
 
+        // CHỈ GIỮ LOẠI VÍ GỐC QUÉT ĐƯỢC
         typeNames = new String[]{
                 getString(R.string.paper_wallet_public_format_legacy_uncomp),
                 getString(R.string.paper_wallet_public_format_legacy),
-                getString(R.string.paper_wallet_public_format_p2sh),
-                getString(R.string.paper_wallet_public_format_bech32),
-                getString(R.string.paper_wallet_public_format_taproot)
+                getString(R.string.paper_wallet_public_format_bech32)
         };
 
         cardView = findViewById(R.id.paper_wallet_card);
@@ -187,107 +186,29 @@ public class PaperWalletActivity extends AbstractWalletActivity {
     }
 
     /**
-     * Get address for selected type.
-     * Index: 0 = LEGACY_UNCOMP (P2PKH uncompressed 1...), 1 = LEGACY (P2PKH compressed 1...),
-     * 2 = P2SH-SEGWIT (BIP49 P2SH(P2WPKH) 3...), 3 = BECH32 (BIP84 P2WPKH bc1q...),
-     * 4 = TAPROOT (BIP86 P2TR bc1p... real with TapTweak)
+     * CHỈ GIỮ LOẠI QUÉT ĐƯỢC GỐC:
+     * 0 = LEGACY_UNCOMP (P2PKH uncompressed 1... WIF 5...),
+     * 1 = LEGACY (P2PKH compressed 1... WIF K/L...),
+     * 2 = BECH32 (BIP84 P2WPKH bc1q...),
+     * ĐÃ BỎ: P2SH (3...) và TAPROOT (bc1p...) vì ví gốc không quét được
      */
     private String getAddressForType(ECKey key, Network network, int index) {
         try {
-            // For LEGACY_UNCOMP we need uncompressed key, others use compressed (BIP32/38 standard)
             boolean compressed = index!= 0;
             ECKey useKey = compressed? ECKey.fromPrivate(key.getPrivKey(), true) : ECKey.fromPrivate(key.getPrivKey(), false);
 
             if (index == 0) {
-                // Original 2009 format: P2PKH with uncompressed pubkey -> address starts with 1..., WIF starts with 5...
                 return useKey.toAddress(ScriptType.P2PKH, network).toString();
             } else if (index == 1) {
-                // P2PKH compressed -> address 1... but pubkey 33 bytes, WIF K/L...
                 return useKey.toAddress(ScriptType.P2PKH, network).toString();
             } else if (index == 2) {
-                // BIP49 P2SH(P2WPKH) -> address 3... This is the real standard, not fake.
-                // bitcoinj 0.17.1 toAddress(P2SH) returns P2PKH incorrectly, so we build manually:
-                // Step 1: create P2WPKH witness program from pubkey (0x0014 + HASH160(pubkey))
-                // Step 2: wrap it into P2SH (HASH160(witnessProgram)) and encode as LegacyAddress 3...
-                try {
-                    org.bitcoinj.script.Script p2wpkh = org.bitcoinj.script.ScriptBuilder.createP2WPKHOutputScript(useKey);
-                    org.bitcoinj.script.Script p2sh = org.bitcoinj.script.ScriptBuilder.createP2SHOutputScript(p2wpkh);
-                    return org.bitcoinj.base.LegacyAddress.fromScriptHash(network, p2sh.getPubKeyHash()).toString();
-                } catch (Exception ex) {
-                    // Fallback to library implementation if manual fails
-                    return useKey.toAddress(ScriptType.P2SH, network).toString();
-                }
-            } else if (index == 3) {
-                // BIP84 native SegWit P2WPKH -> bc1q...
                 return useKey.toAddress(ScriptType.P2WPKH, network).toString();
-            } else if (index == 4) {
-                // BIP86 Taproot P2TR -> bc1p... with real TapTweak
-                try {
-                    return useKey.toAddress(ScriptType.P2TR, network).toString();
-                } catch (Exception e) {
-                    // Manual fallback for older bitcoinj that doesn't have P2TR yet
-                    return createTaprootAddressManualReal(useKey, network);
-                }
             }
         } catch (Exception e) {
             android.util.Log.e("PaperWallet", "getAddress failed idx=" + index + " " + e.getMessage(), e);
             return key.toAddress(ScriptType.P2PKH, network).toString();
         }
         return key.toAddress(ScriptType.P2PKH, network).toString();
-    }
-
-    /**
-     * Create real BIP341 Taproot address with TapTweak.
-     * Formula: output_key = internal_key + hash_TapTweak(internal_xonly) * G
-     * This is 100% compatible with Bitcoin Core and mempool.space P2TR.
-     */
-    private String createTaprootAddressManualReal(ECKey useKey, Network network) {
-        try {
-            byte[] comp = useKey.getPubKey(); // 33 bytes compressed
-            byte[] xOnly = new byte[32];
-            System.arraycopy(comp, 1, xOnly, 0, 32); // x-only pubkey for taproot
-
-            // Tagged hash: TapTweak = SHA256(SHA256("TapTweak") + SHA256("TapTweak") + xOnly)
-            java.security.MessageDigest sha256 = java.security.MessageDigest.getInstance("SHA-256");
-            byte[] tag = sha256.digest("TapTweak".getBytes(StandardCharsets.UTF_8));
-            sha256.reset();
-            sha256.update(tag);
-            sha256.update(tag);
-            sha256.update(xOnly);
-            byte[] tweakBytes = sha256.digest();
-
-            // EC math using BouncyCastle (ECKey.CURVE is not public in 0.17.1, so get from ECNamedCurveTable)
-            org.bouncycastle.jce.spec.ECNamedCurveParameterSpec spec = org.bouncycastle.jce.ECNamedCurveTable.getParameterSpec("secp256k1");
-            org.bouncycastle.math.ec.ECCurve curve = spec.getCurve();
-            org.bouncycastle.math.ec.ECPoint G = spec.getG();
-            java.math.BigInteger tweak = new java.math.BigInteger(1, tweakBytes);
-            org.bouncycastle.math.ec.ECPoint tweakPoint = G.multiply(tweak);
-            org.bouncycastle.math.ec.ECPoint internalPoint = curve.decodePoint(comp);
-            org.bouncycastle.math.ec.ECPoint outputPoint = internalPoint.add(tweakPoint);
-            byte[] outputComp = outputPoint.getEncoded(true);
-            byte[] outputXOnly = new byte[32];
-            System.arraycopy(outputComp, 1, outputXOnly, 0, 32);
-
-            // Encode as Bech32m SegwitAddress v1
-            Class<?> segwitAddrCls = Class.forName("org.bitcoinj.base.SegwitAddress");
-            java.lang.reflect.Method fromProgram = segwitAddrCls.getMethod("fromProgram", Network.class, int.class, byte[].class);
-            Object addr = fromProgram.invoke(null, network, 1, outputXOnly);
-            return addr.toString();
-        } catch (Exception ex) {
-            android.util.Log.e("PaperWallet", "real taproot failed " + ex.getMessage(), ex);
-            try {
-                // Fallback without tweak (still valid bc1p but not BIP341 tweaked)
-                byte[] comp = useKey.getPubKey();
-                byte[] xOnly = new byte[32];
-                System.arraycopy(comp, 1, xOnly, 0, 32);
-                Class<?> segwitAddrCls = Class.forName("org.bitcoinj.base.SegwitAddress");
-                java.lang.reflect.Method fromProgram = segwitAddrCls.getMethod("fromProgram", Network.class, int.class, byte[].class);
-                Object addr = fromProgram.invoke(null, network, 1, xOnly);
-                return addr.toString();
-            } catch (Exception e2) {
-                return useKey.toAddress(ScriptType.P2WPKH, network).toString();
-            }
-        }
     }
 
     private void generateNew() {
@@ -473,16 +394,9 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         Toast.makeText(this, getString(R.string.paper_wallet_copied, label), Toast.LENGTH_SHORT).show();
     }
 
-    /**
-     * Build bitmap for print/save/share.
-     * Fix: use raw full keys (currentAddress, currentPrivKey...) instead of TextView text
-     * to avoid truncated characters due to TextView ellipsize/wrap on small screen.
-     * Also force monospace small text for long bech32/taproot addresses.
-     */
     private Bitmap buildPrintBitmap() {
         View printView = getLayoutInflater().inflate(R.layout.paper_wallet_print, null);
 
-        // Always use full raw data, not the UI TextView which may be truncated
         String publicForPrint;
         if (publicHexMode) {
             publicForPrint = currentPubKeyHex;
@@ -503,7 +417,6 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         TextView addrText = printView.findViewById(R.id.print_address);
         TextView privText = printView.findViewById(R.id.print_privkey);
 
-        // Force display full string: monospace, small size, no singleLine, allow break
         if (addrText!= null) {
             addrText.setText(publicForPrint);
             addrText.setTextSize(10f);
@@ -539,7 +452,6 @@ public class PaperWalletActivity extends AbstractWalletActivity {
             printPrivLabel.setText(s);
         }
 
-        // Increase width to 1080px for long bc1p addresses to avoid cutoff
         int widthSpec = View.MeasureSpec.makeMeasureSpec(1080, View.MeasureSpec.EXACTLY);
         int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         printView.measure(widthSpec, heightSpec);
@@ -551,7 +463,6 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         return bitmap;
     }
 
-    
     private File getShareFile() throws Exception {
         File dir = new File(getCacheDir(), "paperwallet");
         dir.mkdirs();
