@@ -108,9 +108,7 @@ public final class RequestWalletBalanceTask {
         public final String[] params;
         private static transient int idCounter = 0;
         public ElectrumRequest(final String method, final String[] params) { this(idCounter++, method, params); }
-        public ElectrumRequest(final int id, final String method, final String[] params) {
-            this.id = id; this.method = method; this.params = params;
-        }
+        public ElectrumRequest(final int id, final String method, final String[] params) { this.id = id; this.method = method; this.params = params; }
     }
 
     public static class ListunspentResponse {
@@ -137,7 +135,8 @@ public final class RequestWalletBalanceTask {
     }
 
     /**
-     * Get network for taproot address creation (MAINNET, TESTNET, SIGNET, REGTEST)
+     * FIX: Get network for taproot address creation (MAINNET, TESTNET, REGTEST, SIGNET)
+     * Original code always used MAINNET logic, causing signet sweep to fail for bech32m.
      */
     private org.bitcoinj.base.Network getNetworkForAddress() {
         String id = Constants.NETWORK_PARAMETERS.getId().toLowerCase();
@@ -148,24 +147,20 @@ public final class RequestWalletBalanceTask {
     }
 
     /**
-     * Create real BIP341 taproot output script with TapTweak.
-     * output_key = internal_key + hash_TapTweak(xonly) * G
+     * FIX: Create real BIP341 taproot output script with TapTweak.
+     * Original code had no P2TR support, so bc1p/tb1p could never be queried.
+     * Tries native bitcoinj P2TR first, then falls back to manual BouncyCastle tweak.
      */
     private Script createP2TRScript(ECKey key) {
         try {
-            // Try native bitcoinj 0.17.1+ P2TR support first
             try {
                 org.bitcoinj.base.Network network = getNetworkForAddress();
                 Address p2trAddr = key.toAddress(org.bitcoinj.base.ScriptType.P2TR, network);
                 return ScriptBuilder.createOutputScript(p2trAddr);
-            } catch (Exception ignore) {
-                // Fallback manual tweaked P2TR
-            }
-
+            } catch (Exception ignore) {}
             byte[] comp = key.getPubKey();
             byte[] xOnly = new byte[32];
             System.arraycopy(comp, 1, xOnly, 0, 32);
-
             java.security.MessageDigest sha256 = java.security.MessageDigest.getInstance("SHA-256");
             byte[] tag = sha256.digest("TapTweak".getBytes(StandardCharsets.UTF_8));
             sha256.reset();
@@ -173,20 +168,15 @@ public final class RequestWalletBalanceTask {
             sha256.update(tag);
             sha256.update(xOnly);
             byte[] tweakBytes = sha256.digest();
-
             org.bouncycastle.jce.spec.ECNamedCurveParameterSpec spec = org.bouncycastle.jce.ECNamedCurveTable.getParameterSpec("secp256k1");
-            org.bouncycastle.math.ec.ECCurve curve = spec.getCurve();
             org.bouncycastle.math.ec.ECPoint G = spec.getG();
             java.math.BigInteger tweak = new java.math.BigInteger(1, tweakBytes);
-            org.bouncycastle.math.ec.ECPoint tweakPoint = G.multiply(tweak);
-            org.bouncycastle.math.ec.ECPoint internalPoint = curve.decodePoint(comp);
-            org.bouncycastle.math.ec.ECPoint outputPoint = internalPoint.add(tweakPoint);
+            org.bouncycastle.math.ec.ECPoint internalPoint = spec.getCurve().decodePoint(comp);
+            org.bouncycastle.math.ec.ECPoint outputPoint = internalPoint.add(G.multiply(tweak));
             byte[] outputComp = outputPoint.getEncoded(true);
             byte[] outputXOnly = new byte[32];
             System.arraycopy(outputComp, 1, outputXOnly, 0, 32);
-
-            // Build witness program: OP_1 <32-byte-xonly>
-            return new ScriptBuilder().op(81).data(outputXOnly).build(); // 81 = OP_1
+            return new ScriptBuilder().op(81).data(outputXOnly).build(); // OP_1
         } catch (Exception e) {
             log.warn("createP2TRScript failed: {}", e.getMessage());
             return null;
@@ -199,27 +189,25 @@ public final class RequestWalletBalanceTask {
             public void run() {
                 org.bitcoinj.core.Context.propagate(Constants.CONTEXT);
 
-                // Ensure compressed key for segwit/taproot (BIP143/BIP341 requires compressed)
+                // FIX: Ensure compressed key for segwit/taproot (BIP143/BIP341 requires compressed)
                 ECKey compKey = key.isCompressed()? key : ECKey.fromPrivate(key.getPrivKey(), true);
-                org.bitcoinj.base.Network network = getNetworkForAddress();
-
                 final Address legacyAddress = LegacyAddress.fromKey(Constants.NETWORK_PARAMETERS, key);
                 final List<Script> scriptList = new ArrayList<>();
                 final List<String> addressList = new ArrayList<>();
 
-                // 1. P2PKH legacy 1... / m...
+                // 1. P2PKH legacy 1... / m... (original supported)
                 Script p2pkhScript = ScriptBuilder.createP2PKHOutputScript(legacyAddress.getHash());
                 scriptList.add(p2pkhScript);
                 addressList.add(legacyAddress.toString());
 
                 if (compKey.isCompressed()) {
-                    // 2. P2WPKH native segwit bc1q... / tb1q...
+                    // 2. P2WPKH native segwit bc1q... / tb1q... (original supported)
                     final Address segwitAddress = SegwitAddress.fromKey(Constants.NETWORK_PARAMETERS, compKey);
                     Script p2wpkhScript = ScriptBuilder.createP2WPKHOutputScript(segwitAddress.getHash());
                     scriptList.add(p2wpkhScript);
                     addressList.add(segwitAddress.toString());
 
-                    // 3. P2SH(P2WPKH) BIP49 3... / 2... (FIX: original file missed this)
+                    // 3. FIX: P2SH(P2WPKH) BIP49 3... / 2... (original file missed this)
                     try {
                         Script p2shScript = ScriptBuilder.createP2SHOutputScript(p2wpkhScript);
                         scriptList.add(p2shScript);
@@ -229,18 +217,16 @@ public final class RequestWalletBalanceTask {
                         log.warn("Failed to create P2SH-P2WPKH: {}", e.getMessage());
                     }
 
-                    // 4. P2TR taproot BIP86 bc1p... / tb1p... (FIX: main missing)
+                    // 4. FIX: P2TR taproot BIP86 bc1p... / tb1p... (main missing feature)
                     try {
                         Script p2trScript = createP2TRScript(compKey);
                         if (p2trScript!= null) {
                             scriptList.add(p2trScript);
-                            // Try to get address string for log
                             try {
-                                Address p2trAddr = compKey.toAddress(org.bitcoinj.base.ScriptType.P2TR, network);
+                                Address p2trAddr = compKey.toAddress(org.bitcoinj.base.ScriptType.P2TR, getNetworkForAddress());
                                 addressList.add(p2trAddr.toString());
                             } catch (Exception ex) {
-                                // fallback: use script hash as label
-                                addressList.add("P2TR:" + p2trScript.toString().substring(0, 20));
+                                addressList.add("P2TR");
                             }
                         }
                     } catch (Exception e) {
@@ -269,11 +255,12 @@ public final class RequestWalletBalanceTask {
 
                             final Set<UTXO> utxos = new HashSet<>();
 
+                            // FIX: Use unique request IDs (1000 + s) instead of ScriptType.ordinal() to avoid collision
                             for (int s = 0; s < outputScripts.length; s++) {
                                 final Script outputScript = outputScripts[s];
-                                final int requestId = 1000 + s; // Use unique id instead of ordinal to avoid collision (P2SH and P2PKH can share)
+                                final int requestId = 1000 + s;
                                 requestAdapter.toJson(sink, new ElectrumRequest(requestId, "blockchain.scripthash.listunspent",
-                                        new String[]{Constants.HEX.encode(Sha256Hash.of(outputScript.getProgram()).getReversedBytes())}));
+                                        new String[] { Constants.HEX.encode(Sha256Hash.of(outputScript.getProgram()).getReversedBytes()) }));
                                 sink.writeUtf8("\n").flush();
 
                                 final ListunspentResponse listunspentResponse = listunspentResponseAdapter.fromJson(source);
@@ -296,7 +283,7 @@ public final class RequestWalletBalanceTask {
                                     final UTXO utxo = new UTXO(utxoHash, utxoIndex, utxoValue, responseUtxo.height, false, outputScript);
 
                                     requestAdapter.toJson(sink, new ElectrumRequest("blockchain.transaction.get",
-                                            new String[]{Constants.HEX.encode(utxo.getHash().getBytes())}));
+                                            new String[] { Constants.HEX.encode(utxo.getHash().getBytes()) }));
                                     sink.writeUtf8("\n").flush();
 
                                     final TransactionResponse transactionResponse = transactionResponseAdapter.fromJson(source);
@@ -365,7 +352,7 @@ public final class RequestWalletBalanceTask {
                 }
 
                 final int trustThreshold = servers.size() / 2;
-                for (final Iterator<Multiset.Entry<UTXO>> i = countedUtxos.entrySet().iterator(); i.hasNext(); ) {
+                for (final Iterator<Multiset.Entry<UTXO>> i = countedUtxos.entrySet().iterator(); i.hasNext();) {
                     final Multiset.Entry<UTXO> entry = i.next();
                     if (entry.getCount() < trustThreshold)
                         i.remove();
@@ -416,7 +403,7 @@ public final class RequestWalletBalanceTask {
     }
 
     public static class ElectrumServer {
-        public enum Type {TCP, TLS}
+        public enum Type { TCP, TLS }
         public final InetSocketAddress socketAddress;
         public final Type type;
         @Nullable
@@ -461,7 +448,7 @@ public final class RequestWalletBalanceTask {
     private SSLSocketFactory sslTrustAllCertificates() {
         try {
             final SSLContext context = SSLContext.getInstance("SSL");
-            context.init(null, new TrustManager[]{TRUST_ALL_CERTIFICATES}, null);
+            context.init(null, new TrustManager[] { TRUST_ALL_CERTIFICATES }, null);
             return context.getSocketFactory();
         } catch (final Exception x) {
             throw new RuntimeException(x);
