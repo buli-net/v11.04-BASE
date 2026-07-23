@@ -74,12 +74,13 @@ public abstract class SendCoinsOfflineTask {
                     }
                     if (hasP2TR) break;
                 }
-                Transaction transaction;
-                if (hasP2TR) transaction = sendCoinsOfflineTaproot(sendRequest);
+                Transaction tmpTx;
+                if (hasP2TR) tmpTx = sendCoinsOfflineTaproot(sendRequest);
                 else {
-                    try { transaction = wallet.sendCoinsOffline(sendRequest); }
-                    catch (Exception e) { transaction = sendCoinsOfflineManual(sendRequest); }
+                    try { tmpTx = wallet.sendCoinsOffline(sendRequest); }
+                    catch (Exception e) { tmpTx = sendCoinsOfflineManual(sendRequest); }
                 }
+                final Transaction transaction = tmpTx;
                 log.info("send successful: {}", transaction.getTxId());
                 callbackHandler.post(() -> onSuccess(transaction));
             } catch (final InsufficientMoneyException x) {
