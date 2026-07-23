@@ -27,6 +27,7 @@ import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.core.TransactionWitness;
 import org.bitcoinj.core.UTXO;
 import org.bitcoinj.crypto.ECKey;
+import org.bitcoinj.script.Script;
 import org.bitcoinj.wallet.SendRequest;
 import org.bitcoinj.wallet.Wallet;
 import org.bitcoinj.wallet.Wallet.CouldNotAdjustDownwards;
@@ -74,16 +75,10 @@ public abstract class SendCoinsOfflineTask {
                     if (hasP2TR) break;
                 }
                 final Transaction transaction;
-                if (hasP2TR) {
-                    transaction = sendCoinsOfflineTaproot(sendRequest);
-                } else {
-                    // thử sweep gốc, nếu fail thì fallback sang manual
-                    try {
-                        transaction = wallet.sendCoinsOffline(sendRequest);
-                    } catch (Exception e) {
-                        log.warn("wallet.sendCoinsOffline failed, fallback manual: {}", e.getMessage());
-                        transaction = sendCoinsOfflineManual(sendRequest);
-                    }
+                if (hasP2TR) transaction = sendCoinsOfflineTaproot(sendRequest);
+                else {
+                    try { transaction = wallet.sendCoinsOffline(sendRequest); }
+                    catch (Exception e) { transaction = sendCoinsOfflineManual(sendRequest); }
                 }
                 log.info("send successful: {}", transaction.getTxId());
                 callbackHandler.post(() -> onSuccess(transaction));
@@ -129,11 +124,10 @@ public abstract class SendCoinsOfflineTask {
             UTXO u = utxos.get(i);
             ECKey key = wallet.getImportedKeys().iterator().next();
             try {
-                // P2PKH
                 org.bitcoinj.crypto.TransactionSignature sig = tx.calculateSignature(i, key, u.getScript(), Transaction.SigHash.ALL, false);
-                tx.getInput(i).setScriptSig(org.bitcoinj.script.ScriptBuilder.createInputScript(sig, key));
+                Script scriptSig = org.bitcoinj.script.ScriptBuilder.createInputScript(sig, key);
+                setScriptSigReflection(tx.getInput(i), scriptSig);
             } catch (Exception ex) {
-                // P2WPKH
                 org.bitcoinj.crypto.TransactionSignature sig = tx.calculateWitnessSignature(i, key, u.getScript(), u.getValue(), Transaction.SigHash.ALL, false);
                 setWitnessReflection(tx.getInput(i), TransactionWitness.of(sig.encodeToBitcoin(), key.getPubKey()));
             }
@@ -177,11 +171,31 @@ public abstract class SendCoinsOfflineTask {
                     setWitnessReflection(tx.getInput(i), TransactionWitness.of(sig.encodeToBitcoin(), key.getPubKey()));
                 } catch (Exception ex) {
                     org.bitcoinj.crypto.TransactionSignature sig = tx.calculateSignature(i, key, u.getScript(), Transaction.SigHash.ALL, false);
-                    tx.getInput(i).setScriptSig(org.bitcoinj.script.ScriptBuilder.createInputScript(sig, key));
+                    Script scriptSig = org.bitcoinj.script.ScriptBuilder.createInputScript(sig, key);
+                    setScriptSigReflection(tx.getInput(i), scriptSig);
                 }
             }
         }
         return tx;
+    }
+
+    private void setScriptSigReflection(TransactionInput input, Script scriptSig) throws Exception {
+        try {
+            Method m = TransactionInput.class.getMethod("setScriptSig", Script.class);
+            m.invoke(input, scriptSig);
+            return;
+        } catch (NoSuchMethodException e) {
+        }
+        try {
+            Method m = TransactionInput.class.getDeclaredMethod("setScriptSig", Script.class);
+            m.setAccessible(true);
+            m.invoke(input, scriptSig);
+            return;
+        } catch (Exception e) {
+        }
+        Field f = TransactionInput.class.getDeclaredField("scriptBytes");
+        f.setAccessible(true);
+        f.set(input, scriptSig.getProgram());
     }
 
     private void setWitnessReflection(TransactionInput input, TransactionWitness witness) throws Exception {
@@ -192,17 +206,20 @@ public abstract class SendCoinsOfflineTask {
         } catch (NoSuchMethodException e) {
         }
         try {
+            Method m = TransactionInput.class.getDeclaredMethod("setWitness", TransactionWitness.class);
+            m.setAccessible(true);
+            m.invoke(input, witness);
+            return;
+        } catch (Exception e) {
+        }
+        try {
             Field f = TransactionInput.class.getDeclaredField("witness");
             f.setAccessible(true);
             f.set(input, witness);
+            return;
         } catch (Exception ex) {
-            // 0.17.1 final không có field public, thử set qua Transaction
-            try {
-                Method m2 = Transaction.class.getMethod("setWitness", int.class, TransactionWitness.class);
-                m2.invoke(input.getParentTransaction(), input.getIndex(), witness);
-            } catch (Exception e2) {
-                throw new RuntimeException(e2);
-            }
+            Method m2 = Transaction.class.getMethod("setWitness", int.class, TransactionWitness.class);
+            m2.invoke(input.getParentTransaction(), input.getIndex(), witness);
         }
     }
 
