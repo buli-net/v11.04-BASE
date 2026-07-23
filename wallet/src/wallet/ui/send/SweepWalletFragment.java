@@ -386,14 +386,11 @@ public class SweepWalletFragment extends Fragment {
         return org.bitcoinj.base.BitcoinNetwork.MAINNET;
     }
 
-    // FIXED: BIP341 taproot tweak with parity check - prevents crash on THU HOI
     private ECKey createTaprootTweakedKey(ECKey internalKey) {
         try {
             byte[] compPub = internalKey.getPubKey();
             byte[] xOnly = new byte[32];
             System.arraycopy(compPub, 1, xOnly, 0, 32);
-
-            // BIP341: if internal key has odd Y (0x03), negate priv before tweak
             org.bouncycastle.jce.spec.ECNamedCurveParameterSpec spec = org.bouncycastle.jce.ECNamedCurveTable.getParameterSpec("secp256k1");
             java.math.BigInteger n = spec.getN();
             java.math.BigInteger priv = internalKey.getPrivKey();
@@ -401,7 +398,6 @@ public class SweepWalletFragment extends Fragment {
             if (isOdd) {
                 priv = n.subtract(priv);
             }
-
             java.security.MessageDigest sha256 = java.security.MessageDigest.getInstance("SHA-256");
             byte[] tag = sha256.digest("TapTweak".getBytes(java.nio.charset.StandardCharsets.UTF_8));
             sha256.reset();
