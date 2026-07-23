@@ -473,42 +473,6 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         Toast.makeText(this, getString(R.string.paper_wallet_copied, label), Toast.LENGTH_SHORT).show();
     }
 
-   /* private Bitmap buildPrintBitmap() {
-        View printView = getLayoutInflater().inflate(R.layout.paper_wallet_print, null);
-        String publicForPrint = addressView.getText().toString();
-        String privKeyForPrint = privKeyView.getText().toString();
-        if (!publicVisible) publicForPrint = getString(R.string.paper_wallet_hidden);
-        if (!keyVisible) privKeyForPrint = getString(R.string.paper_wallet_hidden);
-        ((TextView) printView.findViewById(R.id.print_address)).setText(publicForPrint);
-        ((TextView) printView.findViewById(R.id.print_privkey)).setText(privKeyForPrint);
-        if (publicVisible &&!publicForPrint.equals(getString(R.string.paper_wallet_hidden))) {
-            ((ImageView) printView.findViewById(R.id.print_qr_address)).setImageBitmap(makeQr(publicForPrint));
-        }
-        if (keyVisible &&!privKeyForPrint.equals(getString(R.string.paper_wallet_hidden))) {
-            ((ImageView) printView.findViewById(R.id.print_qr_key)).setImageBitmap(makeQr(privKeyForPrint));
-        }
-        TextView printPublicLabel = printView.findViewById(R.id.print_public_label);
-        if (printPublicLabel!= null) {
-            String s = getString(R.string.paper_wallet_public_label) + (publicHexMode? " (" + typeNames[typeIndex] + " / " + getString(R.string.paper_wallet_public_format_hex) + ")" : " (" + typeNames[typeIndex] + ")");
-            printPublicLabel.setText(s);
-        }
-        TextView printPrivLabel = printView.findViewById(R.id.print_privkey_label);
-        if (printPrivLabel!= null) {
-            String s = getString(R.string.paper_wallet_private_label) + (bip38Mode? " (" + getString(R.string.paper_wallet_private_format_bip38) + ")" : (privKeyHexMode? " (" + getString(R.string.paper_wallet_private_format_hex) + ")" : " (" + getString(R.string.paper_wallet_private_format_wif) + ")"));
-            printPrivLabel.setText(s);
-        }
-        int widthSpec = View.MeasureSpec.makeMeasureSpec(720, View.MeasureSpec.EXACTLY);
-        int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-        printView.measure(widthSpec, heightSpec);
-        printView.layout(0, 0, printView.getMeasuredWidth(), printView.getMeasuredHeight());
-        Bitmap bitmap = Bitmap.createBitmap(printView.getMeasuredWidth(), printView.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        canvas.drawColor(0xFFFFFFFF);
-        printView.draw(canvas);
-        return bitmap;
-    }
-*/
-
     /**
      * Build bitmap for print/save/share.
      * Fix: use raw full keys (currentAddress, currentPrivKey...) instead of TextView text
