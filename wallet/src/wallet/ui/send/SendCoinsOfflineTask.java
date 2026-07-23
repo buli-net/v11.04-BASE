@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 import wallet.Constants;
 import wallet.util.TaprootSweeper;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -58,6 +59,12 @@ public abstract class SendCoinsOfflineTask {
         this.wallet = wallet;
         this.backgroundHandler = backgroundHandler;
         this.callbackHandler = new Handler(Looper.myLooper());
+    }
+
+    private static CouldNotAdjustDownwards newCouldNotAdjustDownwards() throws Exception {
+        Constructor<CouldNotAdjustDownwards> c = CouldNotAdjustDownwards.class.getDeclaredConstructor();
+        c.setAccessible(true);
+        return c.newInstance();
     }
 
     public final void sendCoinsOffline(final SendRequest sendRequest) {
@@ -83,7 +90,7 @@ public abstract class SendCoinsOfflineTask {
                     }
 
                     if (utxos.isEmpty() || total == 0) {
-                        throw new CouldNotAdjustDownwards();
+                        throw newCouldNotAdjustDownwards();
                     }
 
                     final Transaction transaction;
@@ -167,7 +174,7 @@ public abstract class SendCoinsOfflineTask {
     }
 
     private Transaction sweepTaproot(SendRequest req, List<UTXO> utxos, long total) throws Exception {
-        if (utxos.isEmpty() || total == 0) throw new CouldNotAdjustDownwards();
+        if (utxos.isEmpty() || total == 0) throw newCouldNotAdjustDownwards();
 
         Transaction tx = new Transaction(Constants.NETWORK_PARAMETERS);
         for (UTXO u : utxos) {
@@ -179,7 +186,7 @@ public abstract class SendCoinsOfflineTask {
 
         long feePerKb = (req.feePerKb!= null)? req.feePerKb.value : Transaction.DEFAULT_TX_FEE.value;
         long fee = feePerKb * 150 / 1000;
-        if (total <= fee) throw new CouldNotAdjustDownwards();
+        if (total <= fee) throw newCouldNotAdjustDownwards();
 
         long outVal = total - fee;
         if (outVal < 546) outVal = 546;
