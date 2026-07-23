@@ -456,14 +456,14 @@ public class SweepWalletFragment extends Fragment {
                     walletToSweep.addWalletTransaction(new WalletTransaction(WalletTransaction.Pool.UNSPENT, tx));
                 log.info("built wallet to sweep:\n{}", walletToSweep.toString(false, false, null, true, false, null));
 
-                // FIX: Force balance display from UTXO sum if wallet.getBalance returns 0 for P2TR (bitcoinj old versions)
-                Coin walletBalance = walletToSweep.getBalance(BalanceType.ESTIMATED);
-                log.error("DEBUG SWEEP: walletToSweep balance = {}, UTXO sum = {}", walletBalance.toFriendlyString(), total.toFriendlyString());
-                if (walletBalance.isZero() &&!total.isZero()) {
-                    // Manually set balance view - the wallet will still be able to spend because keys are imported
+                // FIX: Force balance display from UTXO sum if wallet.getBalance returns 0 for P2TR
+                final Coin walletBalance = walletToSweep.getBalance(BalanceType.ESTIMATED);
+                final Coin totalFinal = total;
+                log.error("DEBUG SWEEP: walletToSweep balance = {}, UTXO sum = {}", walletBalance.toFriendlyString(), totalFinal.toFriendlyString());
+                if (walletBalance.isZero() &&!totalFinal.isZero()) {
                     handler.post(() -> {
-                        final MonetaryFormat btcFormat = config.getFormat();
-                        final MonetarySpannable balanceSpannable = new MonetarySpannable(btcFormat, total);
+                        final MonetaryFormat btcFormatInner = config.getFormat();
+                        final MonetarySpannable balanceSpannable = new MonetarySpannable(btcFormatInner, totalFinal);
                         balanceSpannable.applyMarkup(null, null);
                         final SpannableStringBuilder sb = new SpannableStringBuilder(balanceSpannable);
                         sb.insert(0, ": ");
