@@ -380,73 +380,64 @@
     <string name="error_http">HTTP error %1$s:\n%2$s</string>
     <string name="error_bluetooth">Bluetooth error: %1$s</string>
 
-    <!-- add create paper wallet -->
+<!-- Paper Wallet -->
+<string name="paper_wallet_activity_title">Paper Wallet</string>
+<string name="paper_wallet_warning">WARNING: Paper wallet contains private key. Anyone with this key can spend all coins. Do not share, do not screenshot to others. Print and store in safe place.</string>
 
-    <!-- Paper Wallet Activity -->
-    <string name="paper_wallet_activity_title">Create paper wallet</string>
-    <string name="paper_wallet_print_title">Paper Wallet</string>
+<string name="paper_wallet_public_label">Public Address</string>
+<string name="paper_wallet_private_label">Private Key</string>
+<string name="paper_wallet_hidden">••••••••••••••••••••••••</string>
 
-    <!-- Labels -->
-    <string name="paper_wallet_warning">Anyone with the private key can spend.</string>
-    <string name="paper_wallet_public_label">Public</string>
-    <string name="paper_wallet_private_label">Private</string>
+<string name="paper_wallet_copy">Copy</string>
+<string name="paper_wallet_hide">Hide</string>
+<string name="paper_wallet_show">Show</string>
+<string name="paper_wallet_hide_key">Hide key</string>
+<string name="paper_wallet_show_key">Show key</string>
 
-    <!-- Buttons -->
-    <string name="paper_wallet_copy">Copy</string>
-    <string name="paper_wallet_show">Show</string>
-    <string name="paper_wallet_hide">Hide</string>
-    <string name="paper_wallet_show_key">Show</string>
-    <string name="paper_wallet_hide_key">Hide</string>
-    <string name="paper_wallet_generate_new">Generate new</string>
-    <string name="paper_wallet_save">Save</string>
-    <string name="paper_wallet_share">Share</string>
-    <string name="paper_wallet_print">Print</string>
-    <string name="paper_wallet_export_txt">Export TXT</string>
+<!-- Only types sweepable by original wallet -->
+<string name="paper_wallet_public_format_legacy_uncomp">Legacy Uncompressed (1...)</string>
+<string name="paper_wallet_public_format_legacy">Legacy (1...)</string>
+<string name="paper_wallet_public_format_bech32">Bech32 (bc1q...)</string>
+<string name="paper_wallet_public_format_hex">HEX</string>
 
-    <!-- Paper wallet address types -->
-    <string name="paper_wallet_public_format_legacy_uncomp">LEGACY_UNCOMP</string>
-    <string name="paper_wallet_public_format_legacy">LEGACY</string>
-    <string name="paper_wallet_public_format_p2sh">P2SH-SEGWIT</string>
-    <string name="paper_wallet_public_format_taproot">TAPROOT</string>
-    <string name="paper_wallet_public_format_bech32">BECH32</string>
-    <string name="paper_wallet_public_format_hex">HEX</string>
-    <string name="paper_wallet_public_type">Public type: %s</string>
+<!-- Kept for backward compatibility, not used -->
+<string name="paper_wallet_public_format_p2sh">P2SH (3...)</string>
+<string name="paper_wallet_public_format_taproot">Taproot (bc1p...)</string>
 
-    <string name="paper_wallet_public_format_toast">Public: %s</string>
-    <string name="paper_wallet_private_format_toast">Private: %s</string>
+<string name="paper_wallet_private_format_wif">WIF</string>
+<string name="paper_wallet_private_format_hex">HEX</string>
+<string name="paper_wallet_private_format_bip38">BIP38</string>
 
-    <!-- Private formats -->
-    <string name="paper_wallet_private_format_wif">WIF</string>
-    <string name="paper_wallet_private_format_hex">HEX</string>
-    <string name="paper_wallet_private_format_bip38">BIP38</string>
+<string name="paper_wallet_public_type">Type: %1$s</string>
+<string name="paper_wallet_public_format_toast">Switched to: %1$s</string>
+<string name="paper_wallet_private_format_toast">Switched to: %1$s</string>
 
-    <!-- BIP38 -->
-    <string name="paper_wallet_encrypt_bip38">Encrypt with BIP38</string>
-    <string name="paper_wallet_passphrase">Passphrase</string>
-    <string name="paper_wallet_passphrase_confirm">Confirm passphrase</string>
-    <string name="paper_wallet_bip38_hint">If you lose the passphrase, funds are lost.</string>
+<string name="paper_wallet_generated">New paper wallet generated</string>
+<string name="paper_wallet_copied">Copied %1$s</string>
 
-    <!-- Toasts / Messages -->
-    <string name="paper_wallet_generated">New paper wallet generated</string>
-    <string name="paper_wallet_encrypting_bip38">Encrypting BIP38...</string>
-    <string name="paper_wallet_bip38_ready">Paper wallet BIP38 ready</string>
-    <string name="paper_wallet_bip38_failed">BIP38 encryption failed: %s</string>
-    <string name="paper_wallet_passphrase_empty">Enter a BIP38 passphrase</string>
-    <string name="paper_wallet_passphrase_mismatch">Passphrases do not match</string>
-    <string name="paper_wallet_copied">%s copied</string>
+<string name="paper_wallet_encrypt_bip38">Encrypt BIP38</string>
+<string name="paper_wallet_passphrase">Encryption passphrase</string>
+<string name="paper_wallet_passphrase_confirm">Confirm passphrase</string>
+<string name="paper_wallet_passphrase_empty">Passphrase empty</string>
+<string name="paper_wallet_passphrase_mismatch">Passphrase mismatch</string>
+<string name="paper_wallet_encrypting_bip38">Encrypting BIP38...</string>
+<string name="paper_wallet_bip38_ready">BIP38 encryption done</string>
+<string name="paper_wallet_bip38_failed">BIP38 encryption failed: %1$s</string>
+<string name="paper_wallet_bip38_hint">BIP38: Private key is encrypted with password. Password required to sweep.</string>
 
-    <!-- Save/Share/Export -->
-    <string name="paper_wallet_saved">Saved to Pictures/PaperWallet/%s</string>
-    <string name="paper_wallet_exported">Exported to Documents/PaperWallet/%s</string>
-    <string name="paper_wallet_save_failed">Save failed: %s</string>
-    <string name="paper_wallet_export_failed">Export failed: %s</string>
-    <string name="paper_wallet_share_failed">Share failed: %s</string>
-    <string name="paper_wallet_print_failed">Print failed: %s</string>
+<string name="paper_wallet_saved">Saved %1$s to Pictures/PaperWallet</string>
+<string name="paper_wallet_save_failed">Save failed: %1$s</string>
+<string name="paper_wallet_exported">Exported %1$s to Documents/PaperWallet</string>
+<string name="paper_wallet_export_failed">Export failed: %1$s</string>
+<string name="paper_wallet_share">Share paper wallet</string>
+<string name="paper_wallet_share_failed">Share failed: %1$s</string>
+<string name="paper_wallet_print_failed">Print failed: %1$s</string>
 
-    <!-- Print/Export -->
-    <string name="paper_wallet_hidden">HIDDEN</string>
-
-    <!-- end add create paper wallet -->
+<string name="paper_wallet_options_refresh">Generate new</string>
+<string name="paper_wallet_options_save">Save image</string>
+<string name="paper_wallet_options_share">Share</string>
+<string name="paper_wallet_options_print">Print</string>
+<string name="paper_wallet_options_export">Export TXT</string>
 
     <!-- TransactionDetailsActivity -->
      <!-- wallet/src/wallet/ui/TransactionDetailsActivity.java -->
