@@ -473,7 +473,7 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         Toast.makeText(this, getString(R.string.paper_wallet_copied, label), Toast.LENGTH_SHORT).show();
     }
 
-    private Bitmap buildPrintBitmap() {
+   /* private Bitmap buildPrintBitmap() {
         View printView = getLayoutInflater().inflate(R.layout.paper_wallet_print, null);
         String publicForPrint = addressView.getText().toString();
         String privKeyForPrint = privKeyView.getText().toString();
@@ -507,7 +507,87 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         printView.draw(canvas);
         return bitmap;
     }
+*/
 
+    /**
+     * Build bitmap for print/save/share.
+     * Fix: use raw full keys (currentAddress, currentPrivKey...) instead of TextView text
+     * to avoid truncated characters due to TextView ellipsize/wrap on small screen.
+     * Also force monospace small text for long bech32/taproot addresses.
+     */
+    private Bitmap buildPrintBitmap() {
+        View printView = getLayoutInflater().inflate(R.layout.paper_wallet_print, null);
+
+        // Always use full raw data, not the UI TextView which may be truncated
+        String publicForPrint;
+        if (publicHexMode) {
+            publicForPrint = currentPubKeyHex;
+        } else {
+            publicForPrint = currentAddress;
+        }
+
+        String privKeyForPrint;
+        if (bip38Mode &&!currentPrivKeyBip38.isEmpty()) {
+            privKeyForPrint = currentPrivKeyBip38;
+        } else {
+            privKeyForPrint = privKeyHexMode? currentPrivKeyHex : currentPrivKeyWif;
+        }
+
+        if (!publicVisible) publicForPrint = getString(R.string.paper_wallet_hidden);
+        if (!keyVisible) privKeyForPrint = getString(R.string.paper_wallet_hidden);
+
+        TextView addrText = printView.findViewById(R.id.print_address);
+        TextView privText = printView.findViewById(R.id.print_privkey);
+
+        // Force display full string: monospace, small size, no singleLine, allow break
+        if (addrText!= null) {
+            addrText.setText(publicForPrint);
+            addrText.setTextSize(10f);
+            addrText.setTypeface(android.graphics.Typeface.MONOSPACE);
+            addrText.setSingleLine(false);
+            addrText.setMaxLines(10);
+            addrText.setHorizontallyScrolling(false);
+        }
+        if (privText!= null) {
+            privText.setText(privKeyForPrint);
+            privText.setTextSize(10f);
+            privText.setTypeface(android.graphics.Typeface.MONOSPACE);
+            privText.setSingleLine(false);
+            privText.setMaxLines(10);
+            privText.setHorizontallyScrolling(false);
+        }
+
+        if (publicVisible &&!publicForPrint.equals(getString(R.string.paper_wallet_hidden))) {
+            ((ImageView) printView.findViewById(R.id.print_qr_address)).setImageBitmap(makeQr(publicForPrint));
+        }
+        if (keyVisible &&!privKeyForPrint.equals(getString(R.string.paper_wallet_hidden))) {
+            ((ImageView) printView.findViewById(R.id.print_qr_key)).setImageBitmap(makeQr(privKeyForPrint));
+        }
+
+        TextView printPublicLabel = printView.findViewById(R.id.print_public_label);
+        if (printPublicLabel!= null) {
+            String s = getString(R.string.paper_wallet_public_label) + (publicHexMode? " (" + typeNames[typeIndex] + " / " + getString(R.string.paper_wallet_public_format_hex) + ")" : " (" + typeNames[typeIndex] + ")");
+            printPublicLabel.setText(s);
+        }
+        TextView printPrivLabel = printView.findViewById(R.id.print_privkey_label);
+        if (printPrivLabel!= null) {
+            String s = getString(R.string.paper_wallet_private_label) + (bip38Mode? " (" + getString(R.string.paper_wallet_private_format_bip38) + ")" : (privKeyHexMode? " (" + getString(R.string.paper_wallet_private_format_hex) + ")" : " (" + getString(R.string.paper_wallet_private_format_wif) + ")"));
+            printPrivLabel.setText(s);
+        }
+
+        // Increase width to 1080px for long bc1p addresses to avoid cutoff
+        int widthSpec = View.MeasureSpec.makeMeasureSpec(1080, View.MeasureSpec.EXACTLY);
+        int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        printView.measure(widthSpec, heightSpec);
+        printView.layout(0, 0, printView.getMeasuredWidth(), printView.getMeasuredHeight());
+        Bitmap bitmap = Bitmap.createBitmap(printView.getMeasuredWidth(), printView.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawColor(0xFFFFFFFF);
+        printView.draw(canvas);
+        return bitmap;
+    }
+
+    
     private File getShareFile() throws Exception {
         File dir = new File(getCacheDir(), "paperwallet");
         dir.mkdirs();
