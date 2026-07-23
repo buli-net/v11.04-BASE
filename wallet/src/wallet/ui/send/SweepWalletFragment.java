@@ -177,11 +177,8 @@ public class SweepWalletFragment extends Fragment {
             if (walletToSweep!= null) {
                 balanceView.setVisibility(View.VISIBLE);
                 final MonetaryFormat btcFormat = config.getFormat();
-                // FIX: getBalance may return 0 for P2TR if isMine fails in old bitcoinj, so sum UTXO directly as fallback
                 Coin balance = walletToSweep.getBalance(BalanceType.ESTIMATED);
                 if (balance.isZero()) {
-                    // fallback will be set in requestWalletBalance onResult, keep existing view
-                    // but try to display at least what wallet reports
                 }
                 final MonetarySpannable balanceSpannable = new MonetarySpannable(btcFormat, balance);
                 balanceSpannable.applyMarkup(null, null);
@@ -352,11 +349,6 @@ public class SweepWalletFragment extends Fragment {
         }
     }
 
-    /**
-     * FIX TAPROOT: Import both internal compressed key and tweaked key.
-     * Original only imported raw key, can only spend P2PKH/P2WPKH.
-     * For P2TR key-path spend, tweaked_priv = internal_priv + hash_TapTweak(xonly) mod n
-     */
     private void askConfirmSweep(final ECKey key) {
         final Wallet walletToSweep = Wallet.createBasic(Constants.NETWORK_PARAMETERS);
         ECKey compressedKey;
@@ -394,11 +386,22 @@ public class SweepWalletFragment extends Fragment {
         return org.bitcoinj.base.BitcoinNetwork.MAINNET;
     }
 
+    // FIXED: BIP341 taproot tweak with parity check - prevents crash on THU HOI
     private ECKey createTaprootTweakedKey(ECKey internalKey) {
         try {
             byte[] compPub = internalKey.getPubKey();
             byte[] xOnly = new byte[32];
             System.arraycopy(compPub, 1, xOnly, 0, 32);
+
+            // BIP341: if internal key has odd Y (0x03), negate priv before tweak
+            org.bouncycastle.jce.spec.ECNamedCurveParameterSpec spec = org.bouncycastle.jce.ECNamedCurveTable.getParameterSpec("secp256k1");
+            java.math.BigInteger n = spec.getN();
+            java.math.BigInteger priv = internalKey.getPrivKey();
+            boolean isOdd = (compPub[0] & 0x01) == 1;
+            if (isOdd) {
+                priv = n.subtract(priv);
+            }
+
             java.security.MessageDigest sha256 = java.security.MessageDigest.getInstance("SHA-256");
             byte[] tag = sha256.digest("TapTweak".getBytes(java.nio.charset.StandardCharsets.UTF_8));
             sha256.reset();
@@ -407,9 +410,6 @@ public class SweepWalletFragment extends Fragment {
             sha256.update(xOnly);
             byte[] tweakBytes = sha256.digest();
             java.math.BigInteger tweak = new java.math.BigInteger(1, tweakBytes);
-            java.math.BigInteger priv = internalKey.getPrivKey();
-            org.bouncycastle.jce.spec.ECNamedCurveParameterSpec spec = org.bouncycastle.jce.ECNamedCurveTable.getParameterSpec("secp256k1");
-            java.math.BigInteger n = spec.getN();
             java.math.BigInteger tweakedPriv = priv.add(tweak).mod(n);
             return ECKey.fromPrivate(tweakedPriv, true);
         } catch (Exception e) {
@@ -431,7 +431,6 @@ public class SweepWalletFragment extends Fragment {
                 final Set<UTXO> sortedUtxos = new TreeSet<>(UTXO_COMPARATOR);
                 for (final UTXO utxo : utxos) if (!utxoSpentBy(walletTxns, utxo)) sortedUtxos.add(utxo);
 
-                // Log for debugging taproot
                 log.error("DEBUG SWEEP: got {} UTXOs after filter: {}", sortedUtxos.size(), sortedUtxos);
                 Coin total = Coin.ZERO;
                 for (UTXO u : sortedUtxos) total = total.add(u.getValue());
@@ -456,7 +455,6 @@ public class SweepWalletFragment extends Fragment {
                     walletToSweep.addWalletTransaction(new WalletTransaction(WalletTransaction.Pool.UNSPENT, tx));
                 log.info("built wallet to sweep:\n{}", walletToSweep.toString(false, false, null, true, false, null));
 
-                // FIX: Force balance display from UTXO sum if wallet.getBalance returns 0 for P2TR
                 final Coin walletBalance = walletToSweep.getBalance(BalanceType.ESTIMATED);
                 final Coin totalFinal = total;
                 log.error("DEBUG SWEEP: walletToSweep balance = {}, UTXO sum = {}", walletBalance.toFriendlyString(), totalFinal.toFriendlyString());
@@ -469,7 +467,6 @@ public class SweepWalletFragment extends Fragment {
                         sb.insert(0, ": ");
                         sb.insert(0, getString(R.string.sweep_wallet_fragment_balance));
                         balanceView.setText(sb);
-                        // enable button by updating view
                         updateView();
                     });
                 }
@@ -491,9 +488,7 @@ public class SweepWalletFragment extends Fragment {
             }
         };
         final Wallet walletToSweep = viewModel.walletToSweep.getValue();
-        // FIX: Use compressed key if possible, and if multiple keys, use first (internal) to query - RequestWalletBalanceTask will derive P2TR from it
         ECKey key = walletToSweep.getImportedKeys().iterator().next();
-        // If wallet has 2 keys, first is internal, which is correct for query
         log.error("DEBUG SWEEP: querying with key pub={} compressed={} keys={}", key.getPublicKeyAsHex().substring(0,10), key.isCompressed(), walletToSweep.getImportedKeys().size());
         new RequestWalletBalanceTask(backgroundHandler, callback).requestWalletBalance(activity.getAssets(), key);
     }
@@ -531,9 +526,7 @@ public class SweepWalletFragment extends Fragment {
         } else if (state == SweepWalletViewModel.State.CONFIRM_SWEEP) {
             viewCancel.setText(R.string.button_cancel);
             viewGo.setText(R.string.sweep_wallet_fragment_button_sweep);
-            // FIX: Enable sweep even if wallet.getBalance returns 0 but we have UTXOs - check UTXO sum via balanceView tag
             boolean hasBalance = wallet!= null && walletToSweep!= null && (walletToSweep.getBalance(BalanceType.ESTIMATED).signum() > 0 || balanceView.getText().toString().contains("0.00")==false);
-            // simpler: if any UTXO exists, allow
             if (walletToSweep!= null && walletToSweep.getTransactions(false).size() > 0) hasBalance = true;
             viewGo.setEnabled(wallet!= null && walletToSweep!= null && fees!= null && hasBalance);
         } else if (state == SweepWalletViewModel.State.PREPARATION) {
