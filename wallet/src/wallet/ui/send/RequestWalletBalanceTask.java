@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package wallet.ui.send;
@@ -93,7 +93,6 @@ public final class RequestWalletBalanceTask {
 
     public interface ResultCallback {
         void onResult(Set<UTXO> utxos);
-
         void onFail(int messageResId, Object... messageArgs);
     }
 
@@ -107,17 +106,10 @@ public final class RequestWalletBalanceTask {
         public final int id;
         public final String method;
         public final String[] params;
-
         private static transient int idCounter = 0;
-
-        public ElectrumRequest(final String method, final String[] params) {
-            this(idCounter++, method, params);
-        }
-
+        public ElectrumRequest(final String method, final String[] params) { this(idCounter++, method, params); }
         public ElectrumRequest(final int id, final String method, final String[] params) {
-            this.id = id;
-            this.method = method;
-            this.params = params;
+            this.id = id; this.method = method; this.params = params;
         }
     }
 
@@ -125,7 +117,6 @@ public final class RequestWalletBalanceTask {
         public int id;
         public Utxo[] result;
         public Error error;
-
         public static class Utxo {
             public String tx_hash;
             public int tx_pos;
@@ -145,32 +136,127 @@ public final class RequestWalletBalanceTask {
         public String message;
     }
 
+    /**
+     * Get network for taproot address creation (MAINNET, TESTNET, SIGNET, REGTEST)
+     */
+    private org.bitcoinj.base.Network getNetworkForAddress() {
+        String id = Constants.NETWORK_PARAMETERS.getId().toLowerCase();
+        if (id.contains("regtest")) return org.bitcoinj.base.BitcoinNetwork.REGTEST;
+        if (id.contains("signet")) return org.bitcoinj.base.BitcoinNetwork.SIGNET;
+        if (id.contains("test")) return org.bitcoinj.base.BitcoinNetwork.TESTNET;
+        return org.bitcoinj.base.BitcoinNetwork.MAINNET;
+    }
+
+    /**
+     * Create real BIP341 taproot output script with TapTweak.
+     * output_key = internal_key + hash_TapTweak(xonly) * G
+     */
+    private Script createP2TRScript(ECKey key) {
+        try {
+            // Try native bitcoinj 0.17.1+ P2TR support first
+            try {
+                org.bitcoinj.base.Network network = getNetworkForAddress();
+                Address p2trAddr = key.toAddress(org.bitcoinj.base.ScriptType.P2TR, network);
+                return ScriptBuilder.createOutputScript(p2trAddr);
+            } catch (Exception ignore) {
+                // Fallback manual tweaked P2TR
+            }
+
+            byte[] comp = key.getPubKey();
+            byte[] xOnly = new byte[32];
+            System.arraycopy(comp, 1, xOnly, 0, 32);
+
+            java.security.MessageDigest sha256 = java.security.MessageDigest.getInstance("SHA-256");
+            byte[] tag = sha256.digest("TapTweak".getBytes(StandardCharsets.UTF_8));
+            sha256.reset();
+            sha256.update(tag);
+            sha256.update(tag);
+            sha256.update(xOnly);
+            byte[] tweakBytes = sha256.digest();
+
+            org.bouncycastle.jce.spec.ECNamedCurveParameterSpec spec = org.bouncycastle.jce.ECNamedCurveTable.getParameterSpec("secp256k1");
+            org.bouncycastle.math.ec.ECCurve curve = spec.getCurve();
+            org.bouncycastle.math.ec.ECPoint G = spec.getG();
+            java.math.BigInteger tweak = new java.math.BigInteger(1, tweakBytes);
+            org.bouncycastle.math.ec.ECPoint tweakPoint = G.multiply(tweak);
+            org.bouncycastle.math.ec.ECPoint internalPoint = curve.decodePoint(comp);
+            org.bouncycastle.math.ec.ECPoint outputPoint = internalPoint.add(tweakPoint);
+            byte[] outputComp = outputPoint.getEncoded(true);
+            byte[] outputXOnly = new byte[32];
+            System.arraycopy(outputComp, 1, outputXOnly, 0, 32);
+
+            // Build witness program: OP_1 <32-byte-xonly>
+            return new ScriptBuilder().op(81).data(outputXOnly).build(); // 81 = OP_1
+        } catch (Exception e) {
+            log.warn("createP2TRScript failed: {}", e.getMessage());
+            return null;
+        }
+    }
+
     public void requestWalletBalance(final AssetManager assets, final ECKey key) {
         backgroundHandler.post(new Runnable() {
             @Override
             public void run() {
                 org.bitcoinj.core.Context.propagate(Constants.CONTEXT);
 
+                // Ensure compressed key for segwit/taproot (BIP143/BIP341 requires compressed)
+                ECKey compKey = key.isCompressed()? key : ECKey.fromPrivate(key.getPrivKey(), true);
+                org.bitcoinj.base.Network network = getNetworkForAddress();
+
                 final Address legacyAddress = LegacyAddress.fromKey(Constants.NETWORK_PARAMETERS, key);
-                final Script[] outputScripts;
-                final String addressesStr;
-                if (key.isCompressed()) {
-                    final Address segwitAddress = SegwitAddress.fromKey(Constants.NETWORK_PARAMETERS, key);
-                    outputScripts = new Script[] { ScriptBuilder.createP2PKHOutputScript(legacyAddress.getHash()),
-                            ScriptBuilder.createP2WPKHOutputScript(segwitAddress.getHash()) };
-                    addressesStr = legacyAddress.toString() + "," + segwitAddress.toString();
-                } else {
-                    outputScripts = new Script[] { ScriptBuilder.createP2PKHOutputScript(legacyAddress.getHash()) };
-                    addressesStr = legacyAddress.toString();
+                final List<Script> scriptList = new ArrayList<>();
+                final List<String> addressList = new ArrayList<>();
+
+                // 1. P2PKH legacy 1... / m...
+                Script p2pkhScript = ScriptBuilder.createP2PKHOutputScript(legacyAddress.getHash());
+                scriptList.add(p2pkhScript);
+                addressList.add(legacyAddress.toString());
+
+                if (compKey.isCompressed()) {
+                    // 2. P2WPKH native segwit bc1q... / tb1q...
+                    final Address segwitAddress = SegwitAddress.fromKey(Constants.NETWORK_PARAMETERS, compKey);
+                    Script p2wpkhScript = ScriptBuilder.createP2WPKHOutputScript(segwitAddress.getHash());
+                    scriptList.add(p2wpkhScript);
+                    addressList.add(segwitAddress.toString());
+
+                    // 3. P2SH(P2WPKH) BIP49 3... / 2... (FIX: original file missed this)
+                    try {
+                        Script p2shScript = ScriptBuilder.createP2SHOutputScript(p2wpkhScript);
+                        scriptList.add(p2shScript);
+                        Address p2shAddress = LegacyAddress.fromScriptHash(Constants.NETWORK_PARAMETERS, p2shScript.getPubKeyHash());
+                        addressList.add(p2shAddress.toString());
+                    } catch (Exception e) {
+                        log.warn("Failed to create P2SH-P2WPKH: {}", e.getMessage());
+                    }
+
+                    // 4. P2TR taproot BIP86 bc1p... / tb1p... (FIX: main missing)
+                    try {
+                        Script p2trScript = createP2TRScript(compKey);
+                        if (p2trScript!= null) {
+                            scriptList.add(p2trScript);
+                            // Try to get address string for log
+                            try {
+                                Address p2trAddr = compKey.toAddress(org.bitcoinj.base.ScriptType.P2TR, network);
+                                addressList.add(p2trAddr.toString());
+                            } catch (Exception ex) {
+                                // fallback: use script hash as label
+                                addressList.add("P2TR:" + p2trScript.toString().substring(0, 20));
+                            }
+                        }
+                    } catch (Exception e) {
+                        log.warn("Failed to create P2TR: {}", e.getMessage());
+                    }
                 }
+
+                final Script[] outputScripts = scriptList.toArray(new Script[0]);
+                final String addressesStr = String.join(",", addressList);
 
                 final List<ElectrumServer> servers = loadElectrumServers(
                         Assets.open(assets, Constants.Files.ELECTRUM_SERVERS_ASSET));
                 final List<Callable<Set<UTXO>>> tasks = new ArrayList<>(servers.size());
                 for (final ElectrumServer server : servers) {
                     tasks.add(() -> {
-                        log.info("{} - trying to request wallet balance for {}", server.socketAddress,
-                                addressesStr);
+                        log.info("{} - trying to request wallet balance for {}", server.socketAddress, addressesStr);
                         try (final Socket socket = connect(server)) {
                             final BufferedSink sink = Okio.buffer(Okio.sink(socket));
                             sink.timeout().timeout(5000, TimeUnit.MILLISECONDS);
@@ -178,31 +264,25 @@ public final class RequestWalletBalanceTask {
                             source.timeout().timeout(5000, TimeUnit.MILLISECONDS);
                             final Moshi moshi = new Moshi.Builder().build();
                             final JsonAdapter<ElectrumRequest> requestAdapter = moshi.adapter(ElectrumRequest.class);
-                            final JsonAdapter<ListunspentResponse> listunspentResponseAdapter =
-                                    moshi.adapter(ListunspentResponse.class);
-                            final JsonAdapter<TransactionResponse> transactionResponseAdapter =
-                                    moshi.adapter(TransactionResponse.class);
+                            final JsonAdapter<ListunspentResponse> listunspentResponseAdapter = moshi.adapter(ListunspentResponse.class);
+                            final JsonAdapter<TransactionResponse> transactionResponseAdapter = moshi.adapter(TransactionResponse.class);
 
                             final Set<UTXO> utxos = new HashSet<>();
 
-                            for (final Script outputScript : outputScripts) {
-                                requestAdapter.toJson(sink, new ElectrumRequest(
-                                        outputScript.getScriptType().ordinal(), "blockchain.scripthash.listunspent",
-                                        new String[] { Constants.HEX.encode(
-                                                Sha256Hash.of(outputScript.getProgram()).getReversedBytes()) }));
+                            for (int s = 0; s < outputScripts.length; s++) {
+                                final Script outputScript = outputScripts[s];
+                                final int requestId = 1000 + s; // Use unique id instead of ordinal to avoid collision (P2SH and P2PKH can share)
+                                requestAdapter.toJson(sink, new ElectrumRequest(requestId, "blockchain.scripthash.listunspent",
+                                        new String[]{Constants.HEX.encode(Sha256Hash.of(outputScript.getProgram()).getReversedBytes())}));
                                 sink.writeUtf8("\n").flush();
 
-                                final ListunspentResponse listunspentResponse =
-                                        listunspentResponseAdapter.fromJson(source);
-                                final int expectedResponseId = outputScript.getScriptType().ordinal();
-                                if (listunspentResponse.id != expectedResponseId) {
-                                    log.warn("{} - id mismatch listunspentResponse:{} vs request:{}",
-                                            server.socketAddress, listunspentResponse.id, expectedResponseId);
+                                final ListunspentResponse listunspentResponse = listunspentResponseAdapter.fromJson(source);
+                                if (listunspentResponse.id!= requestId) {
+                                    log.warn("{} - id mismatch listunspentResponse:{} vs request:{}", server.socketAddress, listunspentResponse.id, requestId);
                                     return null;
                                 }
-                                if (listunspentResponse.error != null) {
-                                    log.info("{} - server error {}: {}", server.socketAddress,
-                                            listunspentResponse.error.code, listunspentResponse.error.message);
+                                if (listunspentResponse.error!= null) {
+                                    log.info("{} - server error {}: {}", server.socketAddress, listunspentResponse.error.code, listunspentResponse.error.message);
                                     return null;
                                 }
                                 if (listunspentResponse.result == null) {
@@ -212,21 +292,16 @@ public final class RequestWalletBalanceTask {
                                 for (final ListunspentResponse.Utxo responseUtxo : listunspentResponse.result) {
                                     final Sha256Hash utxoHash = Sha256Hash.wrap(responseUtxo.tx_hash);
                                     final int utxoIndex = responseUtxo.tx_pos;
-                                    // the value cannot be trusted; will be validated below
                                     final Coin utxoValue = Coin.valueOf(responseUtxo.value);
-                                    final UTXO utxo = new UTXO(utxoHash, utxoIndex, utxoValue, responseUtxo.height,
-                                            false, outputScript);
+                                    final UTXO utxo = new UTXO(utxoHash, utxoIndex, utxoValue, responseUtxo.height, false, outputScript);
 
-                                    // validation of value and some sanity checks
                                     requestAdapter.toJson(sink, new ElectrumRequest("blockchain.transaction.get",
-                                            new String[] { Constants.HEX.encode(utxo.getHash().getBytes()) }));
+                                            new String[]{Constants.HEX.encode(utxo.getHash().getBytes())}));
                                     sink.writeUtf8("\n").flush();
 
-                                    final TransactionResponse transactionResponse =
-                                            transactionResponseAdapter.fromJson(source);
-                                    if (transactionResponse.error != null) {
-                                        log.info("{} - server error {}: {}", server.socketAddress,
-                                                transactionResponse.error.code, transactionResponse.error.message);
+                                    final TransactionResponse transactionResponse = transactionResponseAdapter.fromJson(source);
+                                    if (transactionResponse.error!= null) {
+                                        log.info("{} - server error {}: {}", server.socketAddress, transactionResponse.error.code, transactionResponse.error.message);
                                         return null;
                                     }
                                     if (transactionResponse.result == null) {
@@ -241,7 +316,6 @@ public final class RequestWalletBalanceTask {
                                     else if (!tx.getOutput(utxo.getIndex()).getScriptPubKey().equals(outputScript))
                                         log.warn("{} - lied about output script", server.socketAddress);
                                     else
-                                        // use valid UTXO
                                         utxos.add(utxo);
                                 }
                             }
@@ -260,8 +334,7 @@ public final class RequestWalletBalanceTask {
                     });
                 }
 
-                final ExecutorService threadPool = Executors.newFixedThreadPool(servers.size(),
-                        new ContextPropagatingThreadFactory("request"));
+                final ExecutorService threadPool = Executors.newFixedThreadPool(servers.size(), new ContextPropagatingThreadFactory("request"));
                 final List<Future<Set<UTXO>>> futures;
                 try {
                     futures = threadPool.invokeAll(tasks, 10, TimeUnit.SECONDS);
@@ -277,7 +350,7 @@ public final class RequestWalletBalanceTask {
                     if (!future.isCancelled()) {
                         try {
                             final Set<UTXO> utxos = future.get();
-                            if (utxos != null) {
+                            if (utxos!= null) {
                                 countedUtxos.addAll(utxos);
                                 numSuccess++;
                             } else {
@@ -292,15 +365,14 @@ public final class RequestWalletBalanceTask {
                 }
 
                 final int trustThreshold = servers.size() / 2;
-                for (final Iterator<Multiset.Entry<UTXO>> i = countedUtxos.entrySet().iterator(); i.hasNext();) {
+                for (final Iterator<Multiset.Entry<UTXO>> i = countedUtxos.entrySet().iterator(); i.hasNext(); ) {
                     final Multiset.Entry<UTXO> entry = i.next();
                     if (entry.getCount() < trustThreshold)
                         i.remove();
                 }
 
                 final Set<UTXO> utxos = countedUtxos.elementSet();
-                log.info("{} successes, {} fails, {} time-outs, {} UTXOs {}", numSuccess, numFail, numTimeOuts,
-                        utxos.size(), utxos);
+                log.info("{} successes, {} fails, {} time-outs, {} UTXOs {}", numSuccess, numFail, numTimeOuts, utxos.size(), utxos);
                 if (numSuccess < trustThreshold)
                     onFail(R.string.sweep_wallet_fragment_request_wallet_balance_failed_connection);
                 else if (utxos.isEmpty())
@@ -318,16 +390,11 @@ public final class RequestWalletBalanceTask {
                     final Certificate certificate = sslSession.getPeerCertificates()[0];
                     final String certificateFingerprint = sslCertificateFingerprint(certificate);
                     if (server.certificateFingerprint == null) {
-                        // signed by CA
-                        if (!HttpsURLConnection.getDefaultHostnameVerifier().verify(server.socketAddress.getHostName(),
-                                sslSession))
-                            throw new SSLPeerUnverifiedException("Expected " + server.socketAddress.getHostName()
-                                    + ", got " + sslSession.getPeerPrincipal());
+                        if (!HttpsURLConnection.getDefaultHostnameVerifier().verify(server.socketAddress.getHostName(), sslSession))
+                            throw new SSLPeerUnverifiedException("Expected " + server.socketAddress.getHostName() + ", got " + sslSession.getPeerPrincipal());
                     } else {
-                        // self-signed
                         if (!certificateFingerprint.equals(server.certificateFingerprint))
-                            throw new SSLPeerUnverifiedException("Expected " + server.certificateFingerprint + " for "
-                                    + server.socketAddress.getHostName() + ", got " + certificateFingerprint);
+                            throw new SSLPeerUnverifiedException("Expected " + server.certificateFingerprint + " for " + server.socketAddress.getHostName() + ", got " + certificateFingerprint);
                     }
                 } else if (server.type == ElectrumServer.Type.TCP) {
                     socket = new Socket();
@@ -349,30 +416,22 @@ public final class RequestWalletBalanceTask {
     }
 
     public static class ElectrumServer {
-        public enum Type {
-            TCP, TLS
-        }
-
+        public enum Type {TCP, TLS}
         public final InetSocketAddress socketAddress;
         public final Type type;
         @Nullable
         public final String certificateFingerprint;
-
-        public ElectrumServer(final String type, final String host, final @Nullable String port,
-                final @Nullable String certificateFingerprint) {
+        public ElectrumServer(final String type, final String host, final @Nullable String port, final @Nullable String certificateFingerprint) {
             this.type = Type.valueOf(type.toUpperCase());
-            if (port != null)
+            if (port!= null)
                 this.socketAddress = InetSocketAddress.createUnresolved(host, Integer.parseInt(port));
             else if ("tcp".equalsIgnoreCase(type))
-                this.socketAddress = InetSocketAddress.createUnresolved(host,
-                        Constants.ELECTRUM_SERVER_DEFAULT_PORT_TCP);
+                this.socketAddress = InetSocketAddress.createUnresolved(host, Constants.ELECTRUM_SERVER_DEFAULT_PORT_TCP);
             else if ("tls".equalsIgnoreCase(type))
-                this.socketAddress = InetSocketAddress.createUnresolved(host,
-                        Constants.ELECTRUM_SERVER_DEFAULT_PORT_TLS);
+                this.socketAddress = InetSocketAddress.createUnresolved(host, Constants.ELECTRUM_SERVER_DEFAULT_PORT_TLS);
             else
                 throw new IllegalStateException("Cannot handle: " + type);
-            this.certificateFingerprint = certificateFingerprint != null ?
-                    certificateFingerprint.toLowerCase(Locale.US) : null;
+            this.certificateFingerprint = certificateFingerprint!= null? certificateFingerprint.toLowerCase(Locale.US) : null;
         }
     }
 
@@ -383,17 +442,14 @@ public final class RequestWalletBalanceTask {
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
             while (true) {
                 line = reader.readLine();
-                if (line == null)
-                    break;
+                if (line == null) break;
                 line = line.trim();
-                if (line.length() == 0 || line.charAt(0) == '#')
-                    continue;
-
+                if (line.length() == 0 || line.charAt(0) == '#') continue;
                 final Iterator<String> i = splitter.split(line).iterator();
                 final String type = i.next();
                 final String host = i.next();
-                final String port = i.hasNext() ? Strings.emptyToNull(i.next()) : null;
-                final String fingerprint = i.hasNext() ? Strings.emptyToNull(i.next()) : null;
+                final String port = i.hasNext()? Strings.emptyToNull(i.next()) : null;
+                final String fingerprint = i.hasNext()? Strings.emptyToNull(i.next()) : null;
                 servers.add(new ElectrumServer(type, host, port, fingerprint));
             }
         } catch (final Exception x) {
@@ -405,7 +461,7 @@ public final class RequestWalletBalanceTask {
     private SSLSocketFactory sslTrustAllCertificates() {
         try {
             final SSLContext context = SSLContext.getInstance("SSL");
-            context.init(null, new TrustManager[] { TRUST_ALL_CERTIFICATES }, null);
+            context.init(null, new TrustManager[]{TRUST_ALL_CERTIFICATES}, null);
             return context.getSocketFactory();
         } catch (final Exception x) {
             throw new RuntimeException(x);
@@ -413,20 +469,9 @@ public final class RequestWalletBalanceTask {
     }
 
     private static final X509TrustManager TRUST_ALL_CERTIFICATES = new X509TrustManager() {
-        @Override
-        public void checkClientTrusted(final X509Certificate[] chain, final String authType)
-                throws CertificateException {
-        }
-
-        @Override
-        public void checkServerTrusted(final X509Certificate[] chain, final String authType)
-                throws CertificateException {
-        }
-
-        @Override
-        public X509Certificate[] getAcceptedIssuers() {
-            return new X509Certificate[0];
-        }
+        @Override public void checkClientTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {}
+        @Override public void checkServerTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {}
+        @Override public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
     };
 
     private String sslCertificateFingerprint(final Certificate certificate) {
