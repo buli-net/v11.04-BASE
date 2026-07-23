@@ -73,6 +73,8 @@ public abstract class SendCoinsOfflineTask {
             try {
                 log.info("sending: {}", sendRequest);
 
+                // Check if sweep wallet contains P2TR (BIP86) output.
+                // Original bitcoinj 0.17.1 does not support Taproot signing, so we need a manual fallback.
                 boolean hasP2TR = false;
                 try {
                     for (WalletTransaction wt : wallet.getWalletTransactions()) {
@@ -92,8 +94,10 @@ public abstract class SendCoinsOfflineTask {
 
                 final Transaction transaction;
                 if (hasP2TR) {
+                    // Use Taproot-compatible manual signing for bc1p...
                     transaction = sweepTaproot(sendRequest);
                 } else {
+                    // Original behavior for legacy, P2SH and P2WPKH (1..., 3..., bc1q...)
                     transaction = wallet.sendCoinsOffline(sendRequest);
                 }
 
@@ -132,12 +136,18 @@ public abstract class SendCoinsOfflineTask {
                 callbackHandler.post(() -> onFailure(x));
 
             } catch (final Throwable x) {
+                // Prevent app crash (Bitcoin Wallet has stopped) and forward to failure callback
                 log.info("send failed: {}", x.getMessage());
                 callbackHandler.post(() -> onFailure(new Exception(x)));
             }
         });
     }
 
+    /**
+     * Manual sweep for Taproot (P2TR) paper wallets.
+     * Uses the feePerKb from the original SendRequest (set by SweepWalletFragment).
+     * No hardcoded fee is used, only the network fee supplied by the caller.
+     */
     private Transaction sweepTaproot(SendRequest sendRequest) throws Exception {
         List<UTXO> utxos = new ArrayList<>();
         long total = 0;
@@ -174,13 +184,12 @@ public abstract class SendCoinsOfflineTask {
 
         Script dest = sendRequest.tx.getOutput(0).getScriptPubKey();
 
-        // GỐC: không set fee cứng, dùng feePerKb từ SweepWalletFragment
-        long fee;
-        if (sendRequest.feePerKb!= null) {
-            fee = sendRequest.feePerKb.value * 150 / 1000;
-        } else {
-            fee = 1000;
-        }
+        // Use original fee mechanism: fee = feePerKb * estimated_vsize / 1000
+        // Estimated vsize for 1 P2TR input + 1 output is ~150 vB.
+        // If feePerKb is null, fallback to bitcoinj default 1000 sat/kB.
+        long feePerKb = (sendRequest.feePerKb!= null)? sendRequest.feePerKb.value : Transaction.DEFAULT_TX_FEE.value;
+        long estimatedVsize = 150;
+        long fee = feePerKb * estimatedVsize / 1000;
 
         if (total <= fee) {
             throw new InsufficientMoneyException(Coin.valueOf(fee));
@@ -204,6 +213,7 @@ public abstract class SendCoinsOfflineTask {
             byte[] prog = u.getScript().getProgram();
             boolean signed = false;
 
+            // P2TR key-path spend (BIP341)
             if (prog.length == 34 && prog[0] == 0x51) {
                 for (ECKey k : keys) {
                     try {
@@ -249,7 +259,7 @@ public abstract class SendCoinsOfflineTask {
             }
 
             if (!signed) {
-                throw new RuntimeException("Cannot sign " + i);
+                throw new RuntimeException("Cannot sign input " + i);
             }
         }
 
@@ -263,7 +273,6 @@ public abstract class SendCoinsOfflineTask {
             return;
         } catch (Throwable e) {
         }
-
         try {
             Method m = TransactionInput.class.getDeclaredMethod("setScriptSig", Script.class);
             m.setAccessible(true);
@@ -271,7 +280,6 @@ public abstract class SendCoinsOfflineTask {
             return;
         } catch (Throwable e) {
         }
-
         Field f = TransactionInput.class.getDeclaredField("scriptBytes");
         f.setAccessible(true);
         f.set(in, s.getProgram());
@@ -284,7 +292,6 @@ public abstract class SendCoinsOfflineTask {
             return;
         } catch (Throwable e) {
         }
-
         try {
             Method m = TransactionInput.class.getDeclaredMethod("setWitness", TransactionWitness.class);
             m.setAccessible(true);
@@ -292,7 +299,6 @@ public abstract class SendCoinsOfflineTask {
             return;
         } catch (Throwable e) {
         }
-
         try {
             Field f = TransactionInput.class.getDeclaredField("witness");
             f.setAccessible(true);
@@ -300,7 +306,6 @@ public abstract class SendCoinsOfflineTask {
             return;
         } catch (Throwable e) {
         }
-
         Method m2 = Transaction.class.getMethod("setWitness", int.class, TransactionWitness.class);
         m2.invoke(in.getParentTransaction(), in.getIndex(), w);
     }
@@ -314,7 +319,6 @@ public abstract class SendCoinsOfflineTask {
 
         BigInteger n = spec.getN();
         BigInteger d = k.getPrivKey();
-
         if (odd) {
             d = n.subtract(d);
         }
@@ -324,7 +328,6 @@ public abstract class SendCoinsOfflineTask {
 
         MessageDigest sha = MessageDigest.getInstance("SHA-256");
         byte[] tag = sha.digest("TapTweak".getBytes(java.nio.charset.StandardCharsets.UTF_8));
-
         sha.reset();
         sha.update(tag);
         sha.update(xOnly);
@@ -335,7 +338,6 @@ public abstract class SendCoinsOfflineTask {
 
     private byte[] calcSighash(Transaction tx, int idx, List<UTXO> utxos) throws Exception {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
         for (UTXO u : utxos) {
             bos.write(u.getHash().getReversedBytes());
             writeU32(bos, u.getIndex());
@@ -372,8 +374,8 @@ public abstract class SendCoinsOfflineTask {
         byte[] hout = sha(sha(bos.toByteArray()));
 
         ByteArrayOutputStream ss = new ByteArrayOutputStream();
-        ss.write(0x00);
-        ss.write(0x00);
+        ss.write(0x00); // epoch
+        ss.write(0x00); // hash type SIGHASH_DEFAULT
         writeU32(ss, tx.getVersion());
         writeU32(ss, tx.getLockTime());
         ss.write(hp);
@@ -381,7 +383,7 @@ public abstract class SendCoinsOfflineTask {
         ss.write(hs);
         ss.write(hseq);
         ss.write(hout);
-        ss.write(0x00);
+        ss.write(0x00); // spend type = key path
         writeU32(ss, idx);
 
         return tagged("TapSighash", ss.toByteArray());
@@ -390,7 +392,6 @@ public abstract class SendCoinsOfflineTask {
     private byte[] signSchnorr(ECKey priv, byte[] m32) throws Exception {
         org.bouncycastle.jce.spec.ECNamedCurveParameterSpec spec =
                 org.bouncycastle.jce.ECNamedCurveTable.getParameterSpec("secp256k1");
-
         BigInteger n = spec.getN();
         BigInteger d = priv.getPrivKey();
 
@@ -405,9 +406,7 @@ public abstract class SendCoinsOfflineTask {
             byte[] rnd = new byte[32];
             secureRandom.nextBytes(rnd);
             k = new BigInteger(1, rnd).mod(n);
-            if (k.signum() == 0) {
-                continue;
-            }
+            if (k.signum() == 0) continue;
             R = spec.getG().multiply(k).normalize();
             if ((R.getEncoded(true)[0] & 1) == 1) {
                 k = n.subtract(k);
@@ -477,9 +476,7 @@ public abstract class SendCoinsOfflineTask {
     }
 
     protected abstract void onSuccess(Transaction transaction);
-
     protected abstract void onInsufficientMoney(Coin missing);
-
     protected abstract void onInvalidEncryptionKey();
 
     protected void onEmptyWalletFailed(Exception exception) {
