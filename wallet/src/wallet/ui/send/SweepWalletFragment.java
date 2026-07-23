@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package wallet.ui.send;
@@ -174,31 +174,16 @@ public class SweepWalletFragment extends Fragment {
         viewModel.progress.observe(this, new ProgressDialogFragment.Observer(fragmentManager));
         viewModel.privateKeyToSweep.observe(this, privateKeyToSweep -> updateView());
         viewModel.walletToSweep.observe(this, walletToSweep -> {
-            if (walletToSweep!= null) {
+            if (walletToSweep != null) {
                 balanceView.setVisibility(View.VISIBLE);
                 final MonetaryFormat btcFormat = config.getFormat();
-                // FIX: tính cả P2TR, vì getBalance() gốc không tính bc1p
-                Coin balance = walletToSweep.getBalance(BalanceType.ESTIMATED);
-                if (balance.isZero()) {
-                    // tính tay từ transactions để hỗ trợ P2TR
-                    Coin manual = Coin.ZERO;
-                    for (WalletTransaction wt : walletToSweep.getWalletTransactions()) {
-                        for (TransactionOutput out : wt.getTransaction().getOutputs()) {
-                            if (!out.getValue().isZero()) manual = manual.add(out.getValue());
-                        }
-                    }
-                    if (!manual.isZero()) balance = manual;
-                }
-                // Nếu vẫn 0 -> hiện dialog như ảnh 1
-                if (balance.isZero()) {
-                    // không set text ở đây, để requestWalletBalance xử lý dialog
-                }
-                final MonetarySpannable balanceSpannable = new MonetarySpannable(btcFormat, balance);
+                final MonetarySpannable balanceSpannable = new MonetarySpannable(btcFormat,
+                        walletToSweep.getBalance(BalanceType.ESTIMATED));
                 balanceSpannable.applyMarkup(null, null);
-                final SpannableStringBuilder sb = new SpannableStringBuilder(balanceSpannable);
-                sb.insert(0, ": ");
-                sb.insert(0, getString(R.string.sweep_wallet_fragment_balance));
-                balanceView.setText(sb);
+                final SpannableStringBuilder balance = new SpannableStringBuilder(balanceSpannable);
+                balance.insert(0, ": ");
+                balance.insert(0, getString(R.string.sweep_wallet_fragment_balance));
+                balanceView.setText(balance);
             } else {
                 balanceView.setVisibility(View.GONE);
             }
@@ -241,7 +226,7 @@ public class SweepWalletFragment extends Fragment {
                 final SweepWalletViewModel.State state = viewModel.state.getValue();
                 final PackageManager pm = activity.getPackageManager();
                 final MenuItem reloadAction = menu.findItem(R.id.sweep_wallet_options_reload);
-                reloadAction.setEnabled(state == SweepWalletViewModel.State.CONFIRM_SWEEP && viewModel.walletToSweep.getValue()!= null);
+                reloadAction.setEnabled(state == SweepWalletViewModel.State.CONFIRM_SWEEP && viewModel.walletToSweep.getValue() != null);
                 final MenuItem scanAction = menu.findItem(R.id.sweep_wallet_options_scan);
                 scanAction.setVisible(pm.hasSystemFeature(PackageManager.FEATURE_CAMERA) || pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT));
                 scanAction.setEnabled(state == SweepWalletViewModel.State.DECODE_KEY || state == SweepWalletViewModel.State.CONFIRM_SWEEP);
@@ -263,6 +248,7 @@ public class SweepWalletFragment extends Fragment {
 
         if (savedInstanceState == null) {
             final Intent intent = activity.getIntent();
+
             if (intent.hasExtra(SweepWalletActivity.INTENT_EXTRA_KEY)) {
                 final String encodedKey = intent.getStringExtra(SweepWalletActivity.INTENT_EXTRA_KEY);
                 EncodedPrivateKey privateKeyToSweep;
@@ -272,6 +258,8 @@ public class SweepWalletFragment extends Fragment {
                     privateKeyToSweep = BIP38PrivateKey.fromBase58(Constants.NETWORK_PARAMETERS, encodedKey);
                 }
                 viewModel.privateKeyToSweep.setValue(privateKeyToSweep);
+
+                // delay until fragment is resumed
                 handler.post(maybeDecodeKeyRunnable);
             }
         }
@@ -292,23 +280,33 @@ public class SweepWalletFragment extends Fragment {
         });
 
         messageView = view.findViewById(R.id.sweep_wallet_fragment_message);
+
         passwordViewGroup = view.findViewById(R.id.sweep_wallet_fragment_password_group);
         passwordView = view.findViewById(R.id.sweep_wallet_fragment_password);
         badPasswordView = view.findViewById(R.id.sweep_wallet_fragment_bad_password);
+
         balanceView = view.findViewById(R.id.sweep_wallet_fragment_balance);
+
         hintView = view.findViewById(R.id.sweep_wallet_fragment_hint);
+
         sweepTransactionView = view.findViewById(R.id.transaction_row);
         sweepTransactionView.setVisibility(View.GONE);
-        sweepTransactionView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(activity, R.anim.transaction_layout_anim));
+        sweepTransactionView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(activity,
+                R.anim.transaction_layout_anim));
         sweepTransactionViewHolder = new TransactionsAdapter.TransactionViewHolder(view);
+
         viewGo = view.findViewById(R.id.send_coins_go);
         viewGo.setOnClickListener(v -> {
             final SweepWalletViewModel.State state = viewModel.state.getValue();
-            if (state == SweepWalletViewModel.State.DECODE_KEY) handleDecrypt();
-            if (state == SweepWalletViewModel.State.CONFIRM_SWEEP) handleSweep();
+            if (state == SweepWalletViewModel.State.DECODE_KEY)
+                handleDecrypt();
+            if (state == SweepWalletViewModel.State.CONFIRM_SWEEP)
+                handleSweep();
         });
+
         viewCancel = view.findViewById(R.id.send_coins_cancel);
         viewCancel.setOnClickListener(v -> activity.finish());
+
         return view;
     }
 
@@ -319,7 +317,8 @@ public class SweepWalletFragment extends Fragment {
     }
 
     private void handleReload() {
-        if (viewModel.walletToSweep.getValue() == null) return;
+        if (viewModel.walletToSweep.getValue() == null)
+            return;
         requestWalletBalance();
     }
 
@@ -328,7 +327,8 @@ public class SweepWalletFragment extends Fragment {
     private void maybeDecodeKey() {
         checkState(viewModel.state.getValue() == SweepWalletViewModel.State.DECODE_KEY);
         final EncodedPrivateKey privateKeyToSweep = viewModel.privateKeyToSweep.getValue();
-        checkState(privateKeyToSweep!= null);
+        checkState(privateKeyToSweep != null);
+
         if (privateKeyToSweep instanceof DumpedPrivateKey) {
             try {
                 final ECKey key = ((DumpedPrivateKey) privateKeyToSweep).getKey();
@@ -339,19 +339,29 @@ public class SweepWalletFragment extends Fragment {
             }
         } else if (privateKeyToSweep instanceof BIP38PrivateKey) {
             badPasswordView.setVisibility(View.INVISIBLE);
+
             final String password = passwordView.getText().toString().trim();
-            passwordView.setText(null);
+            passwordView.setText(null); // get rid of it asap
+
             if (!password.isEmpty()) {
                 viewModel.progress.setValue(getString(R.string.sweep_wallet_fragment_decrypt_progress));
+
                 new DecodePrivateKeyTask(backgroundHandler) {
-                    @Override protected void onSuccess(ECKey decryptedKey) {
+                    @Override
+                    protected void onSuccess(ECKey decryptedKey) {
                         log.info("successfully decoded BIP38 private key");
+
                         viewModel.progress.setValue(null);
+
                         askConfirmSweep(decryptedKey);
                     }
-                    @Override protected void onBadPassphrase() {
+
+                    @Override
+                    protected void onBadPassphrase() {
                         log.info("failed decoding BIP38 private key (bad password)");
+
                         viewModel.progress.setValue(null);
+
                         badPasswordView.setVisibility(View.VISIBLE);
                         passwordView.requestFocus();
                     }
@@ -364,100 +374,38 @@ public class SweepWalletFragment extends Fragment {
 
     private void askConfirmSweep(final ECKey key) {
         final Wallet walletToSweep = Wallet.createBasic(Constants.NETWORK_PARAMETERS);
-        ECKey compressedKey;
-        if (key.isCompressed()) {
-            compressedKey = key;
-        } else {
-            compressedKey = ECKey.fromPrivate(key.getPrivKey(), true);
-            log.info("Converted uncompressed key to compressed for segwit/taproot sweeping");
-        }
-        walletToSweep.importKey(compressedKey);
-        try {
-            ECKey tweakedKey = createTaprootTweakedKey(compressedKey);
-            if (tweakedKey!= null &&!tweakedKey.getPrivKey().equals(compressedKey.getPrivKey())) {
-                walletToSweep.importKey(tweakedKey);
-                try {
-                    org.bitcoinj.base.Network net = getNetworkForAddress();
-                    log.info("Imported tweaked P2TR key: {}", tweakedKey.toAddress(org.bitcoinj.base.ScriptType.P2TR, net));
-                } catch (Exception e) {
-                    log.info("Imported tweaked P2TR key");
-                }
-            }
-        } catch (Exception e) {
-            log.warn("Failed to create tweaked P2TR key: {}", e.getMessage());
-        }
+        walletToSweep.importKey(key);
         viewModel.walletToSweep.setValue(walletToSweep);
+
         viewModel.state.setValue(SweepWalletViewModel.State.CONFIRM_SWEEP);
+
+        // delay until fragment is resumed
         handler.post(requestWalletBalanceRunnable);
     }
 
-    private org.bitcoinj.base.Network getNetworkForAddress() {
-        String id = Constants.NETWORK_PARAMETERS.getId().toLowerCase();
-        if (id.contains("regtest")) return org.bitcoinj.base.BitcoinNetwork.REGTEST;
-        if (id.contains("signet")) return org.bitcoinj.base.BitcoinNetwork.SIGNET;
-        if (id.contains("test")) return org.bitcoinj.base.BitcoinNetwork.TESTNET;
-        return org.bitcoinj.base.BitcoinNetwork.MAINNET;
-    }
-
-    private ECKey createTaprootTweakedKey(ECKey internalKey) {
-        try {
-            byte[] compPub = internalKey.getPubKey();
-            byte[] xOnly = new byte[32];
-            System.arraycopy(compPub, 1, xOnly, 0, 32);
-            org.bouncycastle.jce.spec.ECNamedCurveParameterSpec spec = org.bouncycastle.jce.ECNamedCurveTable.getParameterSpec("secp256k1");
-            java.math.BigInteger n = spec.getN();
-            java.math.BigInteger priv = internalKey.getPrivKey();
-            boolean isOdd = (compPub[0] & 0x01) == 1;
-            if (isOdd) {
-                priv = n.subtract(priv);
-            }
-            java.security.MessageDigest sha256 = java.security.MessageDigest.getInstance("SHA-256");
-            byte[] tag = sha256.digest("TapTweak".getBytes(java.nio.charset.StandardCharsets.UTF_8));
-            sha256.reset();
-            sha256.update(tag);
-            sha256.update(tag);
-            sha256.update(xOnly);
-            byte[] tweakBytes = sha256.digest();
-            java.math.BigInteger tweak = new java.math.BigInteger(1, tweakBytes);
-            java.math.BigInteger tweakedPriv = priv.add(tweak).mod(n);
-            return ECKey.fromPrivate(tweakedPriv, true);
-        } catch (Exception e) {
-            log.error("createTaprootTweakedKey failed", e);
-            return null;
-        }
-    }
-
     private final Runnable requestWalletBalanceRunnable = () -> requestWalletBalance();
-    private static final Comparator<UTXO> UTXO_COMPARATOR = (lhs, rhs) -> ComparisonChain.start().compare(lhs.getHash(), rhs.getHash()).compare(lhs.getIndex(), rhs.getIndex()).result();
+
+    private static final Comparator<UTXO> UTXO_COMPARATOR = (lhs, rhs) -> ComparisonChain.start().compare(lhs.getHash(), rhs.getHash()).compare(lhs.getIndex(), rhs.getIndex())
+            .result();
 
     private void requestWalletBalance() {
         viewModel.progress.setValue(getString(R.string.sweep_wallet_fragment_request_wallet_balance_progress));
+
         final RequestWalletBalanceTask.ResultCallback callback = new RequestWalletBalanceTask.ResultCallback() {
-            @Override public void onResult(final Set<UTXO> utxos) {
+            @Override
+            public void onResult(final Set<UTXO> utxos) {
                 final Wallet wallet = walletActivityViewModel.wallet.getValue();
+
                 viewModel.progress.setValue(null);
+
+                // Filter UTXOs we've already spent and sort the rest.
                 final Set<Transaction> walletTxns = wallet.getTransactions(false);
                 final Set<UTXO> sortedUtxos = new TreeSet<>(UTXO_COMPARATOR);
-                for (final UTXO utxo : utxos) if (!utxoSpentBy(walletTxns, utxo)) sortedUtxos.add(utxo);
+                for (final UTXO utxo : utxos)
+                    if (!utxoSpentBy(walletTxns, utxo))
+                        sortedUtxos.add(utxo);
 
-                log.error("DEBUG SWEEP: got {} UTXOs after filter: {}", sortedUtxos.size(), sortedUtxos);
-                Coin total = Coin.ZERO;
-                for (UTXO u : sortedUtxos) total = total.add(u.getValue());
-                log.error("DEBUG SWEEP: total value = {}", total.toFriendlyString());
-
-                // FIX QUAN TRỌNG: nếu ví giấy trống thì phải báo như ảnh 1
-                if (sortedUtxos.isEmpty() || total.isZero()) {
-                    handler.post(() -> {
-                        balanceView.setText(getString(R.string.sweep_wallet_fragment_balance) + ": BTC 0.00");
-                        viewModel.showDialogWithRetryRequestBalance.setValue(
-                                DialogEvent.warn(R.string.sweep_wallet_fragment_request_wallet_balance_failed_title,
-                                        R.string.sweep_wallet_fragment_empty)
-                        );
-                        updateView();
-                    });
-                    return;
-                }
-
+                // Fake transaction funding the wallet to sweep.
                 final Map<Sha256Hash, Transaction> fakeTxns = new HashMap<>();
                 for (final UTXO utxo : sortedUtxos) {
                     Transaction fakeTx = fakeTxns.get(utxo.getHash());
@@ -466,52 +414,46 @@ public class SweepWalletFragment extends Fragment {
                         fakeTx.getConfidence().setConfidenceType(ConfidenceType.BUILDING);
                         fakeTxns.put(fakeTx.getTxId(), fakeTx);
                     }
-                    final TransactionOutput fakeOutput = new TransactionOutput(Constants.NETWORK_PARAMETERS, fakeTx, utxo.getValue(), utxo.getScript().getProgram());
+                    final TransactionOutput fakeOutput = new TransactionOutput(Constants.NETWORK_PARAMETERS, fakeTx,
+                            utxo.getValue(), utxo.getScript().getProgram());
+                    // Fill with output dummies as needed.
                     while (fakeTx.getOutputs().size() < utxo.getIndex())
-                        fakeTx.addOutput(new TransactionOutput(Constants.NETWORK_PARAMETERS, fakeTx, Coin.NEGATIVE_SATOSHI, new byte[] {}));
+                        fakeTx.addOutput(new TransactionOutput(Constants.NETWORK_PARAMETERS, fakeTx,
+                                Coin.NEGATIVE_SATOSHI, new byte[] {}));
+                    // Add the actual output we will spend later.
                     fakeTx.addOutput(fakeOutput);
                 }
+
                 final Wallet walletToSweep = viewModel.walletToSweep.getValue();
                 walletToSweep.clearTransactions(0);
                 for (final Transaction tx : fakeTxns.values())
                     walletToSweep.addWalletTransaction(new WalletTransaction(WalletTransaction.Pool.UNSPENT, tx));
-                log.info("built wallet to sweep:\n{}", walletToSweep.toString(false, false, null, true, false, null));
-
-                final Coin walletBalance = walletToSweep.getBalance(BalanceType.ESTIMATED);
-                final Coin totalFinal = total;
-                log.error("DEBUG SWEEP: walletToSweep balance = {}, UTXO sum = {}", walletBalance.toFriendlyString(), totalFinal.toFriendlyString());
-                if (walletBalance.isZero() &&!totalFinal.isZero()) {
-                    handler.post(() -> {
-                        final MonetaryFormat btcFormatInner = config.getFormat();
-                        final MonetarySpannable balanceSpannable = new MonetarySpannable(btcFormatInner, totalFinal);
-                        balanceSpannable.applyMarkup(null, null);
-                        final SpannableStringBuilder sb = new SpannableStringBuilder(balanceSpannable);
-                        sb.insert(0, ": ");
-                        sb.insert(0, getString(R.string.sweep_wallet_fragment_balance));
-                        balanceView.setText(sb);
-                        updateView();
-                    });
-                }
-
+                log.info("built wallet to sweep:\n{}",
+                        walletToSweep.toString(false, false, null, true, false, null));
                 viewModel.walletToSweep.setValue(walletToSweep);
             }
+
             private boolean utxoSpentBy(final Set<Transaction> transactions, final UTXO utxo) {
                 for (final Transaction tx : transactions) {
                     for (final TransactionInput input : tx.getInputs()) {
                         final TransactionOutPoint outpoint = input.getOutpoint();
-                        if (outpoint.getHash().equals(utxo.getHash()) && outpoint.getIndex() == utxo.getIndex()) return true;
+                        if (outpoint.getHash().equals(utxo.getHash()) && outpoint.getIndex() == utxo.getIndex())
+                            return true;
                     }
                 }
                 return false;
             }
-            @Override public void onFail(final int messageResId, final Object... messageArgs) {
+
+            @Override
+            public void onFail(final int messageResId, final Object... messageArgs) {
                 viewModel.progress.setValue(null);
-                viewModel.showDialogWithRetryRequestBalance.setValue(DialogEvent.warn(R.string.sweep_wallet_fragment_request_wallet_balance_failed_title, messageResId, messageArgs));
+                viewModel.showDialogWithRetryRequestBalance.setValue(DialogEvent.warn(
+                        R.string.sweep_wallet_fragment_request_wallet_balance_failed_title, messageResId, messageArgs));
             }
         };
+
         final Wallet walletToSweep = viewModel.walletToSweep.getValue();
-        ECKey key = walletToSweep.getImportedKeys().iterator().next();
-        log.error("DEBUG SWEEP: querying with key pub={} compressed={} keys={}", key.getPublicKeyAsHex().substring(0,10), key.isCompressed(), walletToSweep.getImportedKeys().size());
+        final ECKey key = walletToSweep.getImportedKeys().iterator().next();
         new RequestWalletBalanceTask(backgroundHandler, callback).requestWalletBalance(activity.getAssets(), key);
     }
 
@@ -525,41 +467,39 @@ public class SweepWalletFragment extends Fragment {
         if (state == SweepWalletViewModel.State.DECODE_KEY && privateKeyToSweep == null) {
             messageView.setVisibility(View.VISIBLE);
             messageView.setText(R.string.sweep_wallet_fragment_wallet_unknown);
-        } else if (state == SweepWalletViewModel.State.DECODE_KEY && privateKeyToSweep!= null) {
+        } else if (state == SweepWalletViewModel.State.DECODE_KEY && privateKeyToSweep != null) {
             messageView.setVisibility(View.VISIBLE);
             messageView.setText(R.string.sweep_wallet_fragment_encrypted);
-        } else if (privateKeyToSweep!= null) {
+        } else if (privateKeyToSweep != null) {
             messageView.setVisibility(View.GONE);
         }
-        passwordViewGroup.setVisibility(state == SweepWalletViewModel.State.DECODE_KEY && privateKeyToSweep!= null? View.VISIBLE : View.GONE);
-        hintView.setVisibility(state == SweepWalletViewModel.State.DECODE_KEY && privateKeyToSweep == null? View.VISIBLE : View.GONE);
+
+        passwordViewGroup.setVisibility(
+                state == SweepWalletViewModel.State.DECODE_KEY && privateKeyToSweep != null ? View.VISIBLE : View.GONE);
+
+        hintView.setVisibility(
+                state == SweepWalletViewModel.State.DECODE_KEY && privateKeyToSweep == null ? View.VISIBLE : View.GONE);
+
         final Transaction sentTransaction = viewModel.sentTransaction.getValue();
-        if (sentTransaction!= null) {
+        if (sentTransaction != null) {
             sweepTransactionView.setVisibility(View.VISIBLE);
-            sweepTransactionViewHolder.fullBind(new TransactionsAdapter.ListItem.TransactionItem(activity, sentTransaction, wallet, null, btcFormat, application.maxConnectedPeers()));
+            sweepTransactionViewHolder
+                    .fullBind(new TransactionsAdapter.ListItem.TransactionItem(activity, sentTransaction, wallet,
+                            null, btcFormat, application.maxConnectedPeers()));
         } else {
             sweepTransactionView.setVisibility(View.GONE);
         }
+
         final Wallet walletToSweep = viewModel.walletToSweep.getValue();
         if (state == SweepWalletViewModel.State.DECODE_KEY) {
             viewCancel.setText(R.string.button_cancel);
             viewGo.setText(R.string.sweep_wallet_fragment_button_decrypt);
-            viewGo.setEnabled(privateKeyToSweep!= null);
+            viewGo.setEnabled(privateKeyToSweep != null);
         } else if (state == SweepWalletViewModel.State.CONFIRM_SWEEP) {
             viewCancel.setText(R.string.button_cancel);
             viewGo.setText(R.string.sweep_wallet_fragment_button_sweep);
-            // FIX: kiểm tra có balance thực sự không, kể cả P2TR
-            boolean hasBalance = false;
-            if (wallet!= null && walletToSweep!= null) {
-                Coin bal = walletToSweep.getBalance(BalanceType.ESTIMATED);
-                if (bal.signum() > 0) hasBalance = true;
-                else {
-                    for (WalletTransaction wt : walletToSweep.getWalletTransactions()) {
-                        if (!wt.getTransaction().getOutputs().isEmpty()) { hasBalance = true; break; }
-                    }
-                }
-            }
-            viewGo.setEnabled(wallet!= null && walletToSweep!= null && fees!= null && hasBalance);
+            viewGo.setEnabled(wallet != null && walletToSweep != null
+                    && walletToSweep.getBalance(BalanceType.ESTIMATED).signum() > 0 && fees != null);
         } else if (state == SweepWalletViewModel.State.PREPARATION) {
             viewCancel.setText(R.string.button_cancel);
             viewGo.setText(R.string.send_coins_preparation_msg);
@@ -577,45 +517,87 @@ public class SweepWalletFragment extends Fragment {
             viewGo.setText(R.string.send_coins_failed_msg);
             viewGo.setEnabled(false);
         }
-        viewCancel.setEnabled(state!= SweepWalletViewModel.State.PREPARATION);
+
+        viewCancel.setEnabled(state != SweepWalletViewModel.State.PREPARATION);
     }
 
-    private void handleDecrypt() { handler.post(maybeDecodeKeyRunnable); }
+    private void handleDecrypt() {
+        handler.post(maybeDecodeKeyRunnable);
+    }
 
     private void handleSweep() {
         viewModel.state.setValue(SweepWalletViewModel.State.PREPARATION);
+
         final Wallet wallet = walletActivityViewModel.wallet.getValue();
         final Wallet walletToSweep = viewModel.walletToSweep.getValue();
         final Map<FeeCategory, Coin> fees = viewModel.getDynamicFees().getValue();
         final SendRequest sendRequest = SendRequest.emptyWallet(wallet.freshReceiveAddress());
         sendRequest.feePerKb = fees.get(FeeCategory.NORMAL);
+
         new SendCoinsOfflineTask(walletToSweep, backgroundHandler) {
-            @Override protected void onSuccess(final Transaction transaction) {
+            @Override
+            protected void onSuccess(final Transaction transaction) {
                 viewModel.sentTransaction.setValue(transaction);
                 viewModel.state.setValue(SweepWalletViewModel.State.SENDING);
+
                 final ListenableFuture<Transaction> future = walletActivityViewModel.broadcastTransaction(transaction);
-                future.addListener(() -> { if (config.getSendCoinsAutoclose()) handler.postDelayed(() -> activity.finish(), Constants.AUTOCLOSE_DELAY.toMillis()); }, Threading.THREAD_POOL);
+                future.addListener(() -> {
+                    // Auto-close the dialog after a short delay
+                    if (config.getSendCoinsAutoclose())
+                        handler.postDelayed(() -> activity.finish(), Constants.AUTOCLOSE_DELAY.toMillis());
+                }, Threading.THREAD_POOL);
             }
-            @Override protected void onInsufficientMoney(@Nullable final Coin missing) {
+
+            @Override
+            protected void onInsufficientMoney(@Nullable final Coin missing) {
                 viewModel.state.setValue(SweepWalletViewModel.State.FAILED);
-                viewModel.showDialog.setValue(DialogEvent.warn(R.string.sweep_wallet_fragment_insufficient_money_title, R.string.sweep_wallet_fragment_insufficient_money_msg));
+                viewModel.showDialog.setValue(DialogEvent.warn(
+                        R.string.sweep_wallet_fragment_insufficient_money_title,
+                        R.string.sweep_wallet_fragment_insufficient_money_msg)
+                );
             }
-            @Override protected void onEmptyWalletFailed(Exception exception) {
+
+            @Override
+            protected void onEmptyWalletFailed(Exception exception) {
                 viewModel.state.setValue(SweepWalletViewModel.State.FAILED);
-                viewModel.showDialog.setValue(DialogEvent.warn(R.string.sweep_wallet_fragment_insufficient_money_title, R.string.sweep_wallet_fragment_insufficient_money_msg));
+                viewModel.showDialog.setValue(DialogEvent.warn(
+                        R.string.sweep_wallet_fragment_insufficient_money_title,
+                        R.string.sweep_wallet_fragment_insufficient_money_msg)
+                );
             }
-            @Override protected void onFailure(final Exception exception) {
+
+            @Override
+            protected void onFailure(final Exception exception) {
                 viewModel.state.setValue(SweepWalletViewModel.State.FAILED);
-                viewModel.showDialog.setValue(DialogEvent.warn(0, R.string.send_coins_error_msg, exception.toString()));
+                viewModel.showDialog.setValue(DialogEvent.warn(0, R.string.send_coins_error_msg,
+                        exception.toString())
+                );
             }
-            @Override protected void onInvalidEncryptionKey() { throw new RuntimeException(); }
-        }.sendCoinsOffline(sendRequest);
+
+            @Override
+            protected void onInvalidEncryptionKey() {
+                throw new RuntimeException(); // cannot happen
+            }
+        }.sendCoinsOffline(sendRequest); // send asynchronously
     }
 
     private static class FakeTransaction extends Transaction {
         private final Sha256Hash txId, wTxId;
-        public FakeTransaction(final NetworkParameters params, final Sha256Hash txId, final Sha256Hash wTxId) { super(params); this.txId = txId; this.wTxId = wTxId; }
-        @Override public Sha256Hash getTxId() { return txId; }
-        @Override public Sha256Hash getWTxId() { return wTxId; }
+
+        public FakeTransaction(final NetworkParameters params, final Sha256Hash txId, final Sha256Hash wTxId) {
+            super(params);
+            this.txId = txId;
+            this.wTxId = wTxId;
+        }
+
+        @Override
+        public Sha256Hash getTxId() {
+            return txId;
+        }
+
+        @Override
+        public Sha256Hash getWTxId() {
+            return wTxId;
+        }
     }
 }
