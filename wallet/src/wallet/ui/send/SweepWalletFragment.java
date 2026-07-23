@@ -177,8 +177,21 @@ public class SweepWalletFragment extends Fragment {
             if (walletToSweep!= null) {
                 balanceView.setVisibility(View.VISIBLE);
                 final MonetaryFormat btcFormat = config.getFormat();
+                // FIX: tính cả P2TR, vì getBalance() gốc không tính bc1p
                 Coin balance = walletToSweep.getBalance(BalanceType.ESTIMATED);
                 if (balance.isZero()) {
+                    // tính tay từ transactions để hỗ trợ P2TR
+                    Coin manual = Coin.ZERO;
+                    for (WalletTransaction wt : walletToSweep.getWalletTransactions()) {
+                        for (TransactionOutput out : wt.getTransaction().getOutputs()) {
+                            if (!out.getValue().isZero()) manual = manual.add(out.getValue());
+                        }
+                    }
+                    if (!manual.isZero()) balance = manual;
+                }
+                // Nếu vẫn 0 -> hiện dialog như ảnh 1
+                if (balance.isZero()) {
+                    // không set text ở đây, để requestWalletBalance xử lý dialog
                 }
                 final MonetarySpannable balanceSpannable = new MonetarySpannable(btcFormat, balance);
                 balanceSpannable.applyMarkup(null, null);
@@ -432,6 +445,19 @@ public class SweepWalletFragment extends Fragment {
                 for (UTXO u : sortedUtxos) total = total.add(u.getValue());
                 log.error("DEBUG SWEEP: total value = {}", total.toFriendlyString());
 
+                // FIX QUAN TRỌNG: nếu ví giấy trống thì phải báo như ảnh 1
+                if (sortedUtxos.isEmpty() || total.isZero()) {
+                    handler.post(() -> {
+                        balanceView.setText(getString(R.string.sweep_wallet_fragment_balance) + ": BTC 0.00");
+                        viewModel.showDialogWithRetryRequestBalance.setValue(
+                                DialogEvent.warn(R.string.sweep_wallet_fragment_request_wallet_balance_failed_title,
+                                        R.string.sweep_wallet_fragment_empty)
+                        );
+                        updateView();
+                    });
+                    return;
+                }
+
                 final Map<Sha256Hash, Transaction> fakeTxns = new HashMap<>();
                 for (final UTXO utxo : sortedUtxos) {
                     Transaction fakeTx = fakeTxns.get(utxo.getHash());
@@ -522,8 +548,17 @@ public class SweepWalletFragment extends Fragment {
         } else if (state == SweepWalletViewModel.State.CONFIRM_SWEEP) {
             viewCancel.setText(R.string.button_cancel);
             viewGo.setText(R.string.sweep_wallet_fragment_button_sweep);
-            boolean hasBalance = wallet!= null && walletToSweep!= null && (walletToSweep.getBalance(BalanceType.ESTIMATED).signum() > 0 || balanceView.getText().toString().contains("0.00")==false);
-            if (walletToSweep!= null && walletToSweep.getTransactions(false).size() > 0) hasBalance = true;
+            // FIX: kiểm tra có balance thực sự không, kể cả P2TR
+            boolean hasBalance = false;
+            if (wallet!= null && walletToSweep!= null) {
+                Coin bal = walletToSweep.getBalance(BalanceType.ESTIMATED);
+                if (bal.signum() > 0) hasBalance = true;
+                else {
+                    for (WalletTransaction wt : walletToSweep.getWalletTransactions()) {
+                        if (!wt.getTransaction().getOutputs().isEmpty()) { hasBalance = true; break; }
+                    }
+                }
+            }
             viewGo.setEnabled(wallet!= null && walletToSweep!= null && fees!= null && hasBalance);
         } else if (state == SweepWalletViewModel.State.PREPARATION) {
             viewCancel.setText(R.string.button_cancel);
