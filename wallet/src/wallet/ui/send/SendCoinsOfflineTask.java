@@ -171,16 +171,13 @@ public abstract class SendCoinsOfflineTask {
             if (prog.length == 34 && prog[0] == 0x51) {
                 ECKey tweakedKey = findTweakedKeyForXOnly(prog);
                 if (tweakedKey == null) {
-                    // fallback: use first imported key and derive tweaked
                     ECKey first = wallet.getImportedKeys().iterator().next();
                     tweakedKey = deriveTweakedKey(first);
                 }
                 byte[] sighash = calcTapSighash(tx, i, utxos);
                 byte[] sig = signSchnorr(tweakedKey, sighash);
-                // FIX 0.17.1: dùng of() + reflection vì setWitness không public ở bản release
                 setWitnessReflection(tx.getInput(i), TransactionWitness.of(sig));
             } else {
-                // For non-P2TR, use normal signing path via wallet if possible
                 ECKey key = wallet.getImportedKeys().iterator().next();
                 org.bitcoinj.crypto.TransactionSignature sig = tx.calculateWitnessSignature(i, key, u.getScript(), u.getValue(), Transaction.SigHash.ALL, false);
                 setWitnessReflection(tx.getInput(i), TransactionWitness.of(sig.encodeToBitcoin(), key.getPubKey()));
@@ -195,7 +192,6 @@ public abstract class SendCoinsOfflineTask {
             m.invoke(input, witness);
             return;
         } catch (NoSuchMethodException e) {
-            // 0.17.1 release không có setWitness public -> set field
         }
         Field f = TransactionInput.class.getDeclaredField("witness");
         f.setAccessible(true);
@@ -267,22 +263,31 @@ public abstract class SendCoinsOfflineTask {
         BigInteger d = privKey.getPrivKey();
         org.bouncycastle.math.ec.ECPoint P = spec.getG().multiply(d).normalize();
         if ((P.getEncoded(true)[0] & 1) == 1) d = n.subtract(d);
-        BigInteger k; org.bouncycastle.math.ec.ECPoint R;
+        BigInteger k = null;
+        org.bouncycastle.math.ec.ECPoint R = null;
         do {
-            byte[] rand = new byte[32]; secureRandom.nextBytes(rand);
+            byte[] rand = new byte[32];
+            secureRandom.nextBytes(rand);
             k = new BigInteger(1, rand).mod(n);
             if (k.signum() == 0) continue;
             R = spec.getG().multiply(k).normalize();
             if ((R.getEncoded(true)[0] & 1) == 1) k = n.subtract(k);
-        } while (k.signum() == 0);
-        byte[] rX = new byte[32]; System.arraycopy(R.getEncoded(true), 1, rX, 0, 32);
-        byte[] pX = new byte[32]; System.arraycopy(spec.getG().multiply(d).normalize().getEncoded(true), 1, pX, 0, 32);
-        ByteArrayOutputStream eb = new ByteArrayOutputStream(); eb.write(rX); eb.write(pX); eb.write(msg32);
+        } while (k == null || k.signum() == 0 || R == null);
+        byte[] rX = new byte[32];
+        System.arraycopy(R.getEncoded(true), 1, rX, 0, 32);
+        byte[] pX = new byte[32];
+        System.arraycopy(spec.getG().multiply(d).normalize().getEncoded(true), 1, pX, 0, 32);
+        ByteArrayOutputStream eb = new ByteArrayOutputStream();
+        eb.write(rX);
+        eb.write(pX);
+        eb.write(msg32);
         byte[] eBytes = taggedHash("BIP0340/challenge", eb.toByteArray());
         BigInteger e = new BigInteger(1, eBytes).mod(n);
         BigInteger s = k.add(e.multiply(d)).mod(n);
-        ByteArrayOutputStream sig = new ByteArrayOutputStream(); sig.write(rX);
-        byte[] sBytes = s.toByteArray(); byte[] s32 = new byte[32];
+        ByteArrayOutputStream sig = new ByteArrayOutputStream();
+        sig.write(rX);
+        byte[] sBytes = s.toByteArray();
+        byte[] s32 = new byte[32];
         if (sBytes.length > 32) System.arraycopy(sBytes, sBytes.length - 32, s32, 0, 32);
         else System.arraycopy(sBytes, 0, s32, 32 - sBytes.length, sBytes.length);
         sig.write(s32);
