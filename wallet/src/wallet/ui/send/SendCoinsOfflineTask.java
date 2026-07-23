@@ -37,6 +37,8 @@ import org.slf4j.LoggerFactory;
 import wallet.Constants;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -159,16 +161,14 @@ public abstract class SendCoinsOfflineTask {
         org.bitcoinj.script.Script destScript = sendRequest.tx.getOutput(0).getScriptPubKey();
         long fee = sendRequest.feePerKb!= null? 150 * sendRequest.feePerKb.value / 1000 + 200 : 1000;
         long outVal = total - fee;
-        // FIX 0.17.1: CouldNotAdjustDownwards() constructor is private in 0.17.1
         if (outVal < 546) throw new InsufficientMoneyException(Coin.valueOf(546));
         tx.addOutput(Coin.valueOf(outVal), destScript);
 
-        // Sign each input
+        // Sign
         for (int i = 0; i < utxos.size(); i++) {
             UTXO u = utxos.get(i);
             byte[] prog = u.getScript().getProgram();
             if (prog.length == 34 && prog[0] == 0x51) {
-                // P2TR key-path spend
                 ECKey tweakedKey = findTweakedKeyForXOnly(prog);
                 if (tweakedKey == null) {
                     // fallback: use first imported key and derive tweaked
@@ -177,17 +177,29 @@ public abstract class SendCoinsOfflineTask {
                 }
                 byte[] sighash = calcTapSighash(tx, i, utxos);
                 byte[] sig = signSchnorr(tweakedKey, sighash);
-                // FIX 0.17.1: 0.17.1 has private constructor, use of()
-                tx.getInput(i).setWitness(TransactionWitness.of(sig));
+                // FIX 0.17.1: dùng of() + reflection vì setWitness không public ở bản release
+                setWitnessReflection(tx.getInput(i), TransactionWitness.of(sig));
             } else {
                 // For non-P2TR, use normal signing path via wallet if possible
                 ECKey key = wallet.getImportedKeys().iterator().next();
                 org.bitcoinj.crypto.TransactionSignature sig = tx.calculateWitnessSignature(i, key, u.getScript(), u.getValue(), Transaction.SigHash.ALL, false);
-                // FIX 0.17.1: use of(sig, pubkey)
-                tx.getInput(i).setWitness(TransactionWitness.of(sig.encodeToBitcoin(), key.getPubKey()));
+                setWitnessReflection(tx.getInput(i), TransactionWitness.of(sig.encodeToBitcoin(), key.getPubKey()));
             }
         }
         return tx;
+    }
+
+    private void setWitnessReflection(TransactionInput input, TransactionWitness witness) throws Exception {
+        try {
+            Method m = TransactionInput.class.getMethod("setWitness", TransactionWitness.class);
+            m.invoke(input, witness);
+            return;
+        } catch (NoSuchMethodException e) {
+            // 0.17.1 release không có setWitness public -> set field
+        }
+        Field f = TransactionInput.class.getDeclaredField("witness");
+        f.setAccessible(true);
+        f.set(input, witness);
     }
 
     private ECKey findTweakedKeyForXOnly(byte[] prog) {
@@ -216,7 +228,7 @@ public abstract class SendCoinsOfflineTask {
         System.arraycopy(comp, 1, xOnly, 0, 32);
         MessageDigest sha = MessageDigest.getInstance("SHA-256");
         byte[] tag = sha.digest("TapTweak".getBytes(java.nio.charset.StandardCharsets.UTF_8));
-        sha.reset(); sha.update(tag); sha.update(xOnly);
+        sha.reset(); sha.update(tag); sha.update(tag); sha.update(xOnly);
         byte[] tweakBytes = sha.digest();
         BigInteger tweak = new BigInteger(1, tweakBytes);
         BigInteger tweakedPriv = priv.add(tweak).mod(n);
