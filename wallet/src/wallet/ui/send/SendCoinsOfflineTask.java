@@ -77,8 +77,8 @@ public abstract class SendCoinsOfflineTask {
                 Transaction tmp;
                 try {
                     tmp = wallet.sendCoinsOffline(sendRequest);
-                } catch (Exception e) {
-                    log.warn("native sendCoinsOffline failed, use manual: {}", e.toString());
+                } catch (Throwable e) {
+                    log.warn("native sweep failed, use manual: {}", e.toString());
                     tmp = sweepManual(sendRequest);
                 }
 
@@ -89,25 +89,20 @@ public abstract class SendCoinsOfflineTask {
                 callbackHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        onSuccess(transaction);
+                        try {
+                            onSuccess(transaction);
+                        } catch (Throwable t) {
+                            log.error("onSuccess crashed", t);
+                            onFailure(new Exception(t));
+                        }
                     }
                 });
 
             } catch (final InsufficientMoneyException x) {
-                final Coin missing = x.missing;
-                if (missing!= null) {
-                    log.info("send failed, {} missing", missing.toFriendlyString());
-                } else {
-                    log.info("send failed, insufficient coins");
-                }
                 callbackHandler.post(() -> onInsufficientMoney(x.missing));
-
             } catch (final ECKey.KeyIsEncryptedException x) {
-                log.info("send failed, key is encrypted: {}", x.getMessage());
                 callbackHandler.post(() -> onFailure(x));
-
             } catch (final Wallet.BadWalletEncryptionKeyException x) {
-                log.info("send failed, bad spending password: {}", x.getMessage());
                 final boolean isEncrypted = wallet.isEncrypted();
                 callbackHandler.post(() -> {
                     if (isEncrypted) {
@@ -116,18 +111,14 @@ public abstract class SendCoinsOfflineTask {
                         onFailure(x);
                     }
                 });
-
             } catch (final CouldNotAdjustDownwards x) {
-                log.info("send failed, could not adjust downwards: {}", x.getMessage());
                 callbackHandler.post(() -> onEmptyWalletFailed(x));
-
             } catch (final TransactionCompletionException x) {
-                log.info("send failed, cannot complete: {}", x.getMessage());
                 callbackHandler.post(() -> onFailure(x));
-
-            } catch (final Exception x) {
-                log.error("send failed with unexpected exception", x);
-                callbackHandler.post(() -> onFailure(x));
+            } catch (final Throwable x) {
+                log.error("send failed with unexpected throwable", x);
+                final Exception ex = new Exception(x);
+                callbackHandler.post(() -> onFailure(ex));
             }
         });
     }
@@ -192,10 +183,15 @@ public abstract class SendCoinsOfflineTask {
         tx.addOutput(Coin.valueOf(outVal), destScript);
 
         List<ECKey> allKeys = new ArrayList<>();
-        allKeys.addAll(wallet.getImportedKeys());
         try {
-            allKeys.addAll(wallet.getActiveKeyChain().getLeafKeys());
-        } catch (Exception ignore) {
+            allKeys.addAll(wallet.getImportedKeys());
+        } catch (Throwable ignore) {
+        }
+        try {
+            if (wallet.getActiveKeyChain()!= null) {
+                allKeys.addAll(wallet.getActiveKeyChain().getLeafKeys());
+            }
+        } catch (Throwable ignore) {
         }
 
         for (int i = 0; i < utxos.size(); i++) {
@@ -219,7 +215,7 @@ public abstract class SendCoinsOfflineTask {
                         setWitnessReflection(tx.getInput(i), TransactionWitness.of(sig));
                         signed = true;
                         break;
-                    } catch (Exception ignore) {
+                    } catch (Throwable ignore) {
                     }
                 }
             }
@@ -232,7 +228,7 @@ public abstract class SendCoinsOfflineTask {
                         setWitnessReflection(tx.getInput(i), TransactionWitness.of(sig.encodeToBitcoin(), k.getPubKey()));
                         signed = true;
                         break;
-                    } catch (Exception ignore) {
+                    } catch (Throwable ignore) {
                     }
                 }
             }
@@ -246,7 +242,7 @@ public abstract class SendCoinsOfflineTask {
                         setScriptSigReflection(tx.getInput(i), scriptSig);
                         signed = true;
                         break;
-                    } catch (Exception ignore) {
+                    } catch (Throwable ignore) {
                     }
                 }
             }
@@ -260,15 +256,19 @@ public abstract class SendCoinsOfflineTask {
     }
 
     private boolean isXOnlyMatch(byte[] prog, ECKey k) {
-        if (prog.length!= 34) {
+        try {
+            if (prog.length!= 34) {
+                return false;
+            }
+            byte[] xOnly = new byte[32];
+            System.arraycopy(prog, 2, xOnly, 0, 32);
+            byte[] pub = k.getPubKey();
+            byte[] x = new byte[32];
+            System.arraycopy(pub, 1, x, 0, 32);
+            return java.util.Arrays.equals(x, xOnly);
+        } catch (Throwable t) {
             return false;
         }
-        byte[] xOnly = new byte[32];
-        System.arraycopy(prog, 2, xOnly, 0, 32);
-        byte[] pub = k.getPubKey();
-        byte[] x = new byte[32];
-        System.arraycopy(pub, 1, x, 0, 32);
-        return java.util.Arrays.equals(x, xOnly);
     }
 
     private void setScriptSigReflection(TransactionInput input, Script scriptSig) {
@@ -277,19 +277,26 @@ public abstract class SendCoinsOfflineTask {
                 Method m = TransactionInput.class.getMethod("setScriptSig", Script.class);
                 m.invoke(input, scriptSig);
                 return;
-            } catch (Exception e) {
+            } catch (Throwable e) {
             }
             try {
                 Method m = TransactionInput.class.getDeclaredMethod("setScriptSig", Script.class);
                 m.setAccessible(true);
                 m.invoke(input, scriptSig);
                 return;
-            } catch (Exception e) {
+            } catch (Throwable e) {
             }
-            Field f = TransactionInput.class.getDeclaredField("scriptBytes");
+            try {
+                Field f = TransactionInput.class.getDeclaredField("scriptBytes");
+                f.setAccessible(true);
+                f.set(input, scriptSig.getProgram());
+                return;
+            } catch (Throwable e) {
+            }
+            Field f = TransactionInput.class.getDeclaredField("scriptSig");
             f.setAccessible(true);
-            f.set(input, scriptSig.getProgram());
-        } catch (Exception e) {
+            f.set(input, scriptSig);
+        } catch (Throwable e) {
             throw new RuntimeException(e);
         }
     }
@@ -300,25 +307,32 @@ public abstract class SendCoinsOfflineTask {
                 Method m = TransactionInput.class.getMethod("setWitness", TransactionWitness.class);
                 m.invoke(input, witness);
                 return;
-            } catch (Exception e) {
+            } catch (Throwable e) {
             }
             try {
                 Method m = TransactionInput.class.getDeclaredMethod("setWitness", TransactionWitness.class);
                 m.setAccessible(true);
                 m.invoke(input, witness);
                 return;
-            } catch (Exception e) {
+            } catch (Throwable e) {
             }
             try {
                 Field f = TransactionInput.class.getDeclaredField("witness");
                 f.setAccessible(true);
                 f.set(input, witness);
                 return;
-            } catch (Exception e) {
+            } catch (Throwable e) {
             }
-            Method m2 = Transaction.class.getMethod("setWitness", int.class, TransactionWitness.class);
-            m2.invoke(input.getParentTransaction(), input.getIndex(), witness);
-        } catch (Exception e) {
+            try {
+                Method m2 = Transaction.class.getMethod("setWitness", int.class, TransactionWitness.class);
+                m2.invoke(input.getParentTransaction(), input.getIndex(), witness);
+                return;
+            } catch (Throwable e) {
+            }
+            Field f = TransactionInput.class.getDeclaredField("witness");
+            f.setAccessible(true);
+            f.set(input, witness);
+        } catch (Throwable e) {
             throw new RuntimeException(e);
         }
     }
