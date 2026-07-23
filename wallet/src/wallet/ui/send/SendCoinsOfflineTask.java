@@ -24,8 +24,10 @@ import org.bitcoinj.core.InsufficientMoneyException;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionInput;
 import org.bitcoinj.core.TransactionOutput;
+import org.bitcoinj.core.TransactionWitness;
 import org.bitcoinj.core.UTXO;
 import org.bitcoinj.crypto.ECKey;
+import org.bitcoinj.crypto.TransactionSignature;
 import org.bitcoinj.wallet.SendRequest;
 import org.bitcoinj.wallet.Wallet;
 import org.bitcoinj.wallet.Wallet.CouldNotAdjustDownwards;
@@ -42,6 +44,7 @@ import java.nio.ByteOrder;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class SendCoinsOfflineTask {
@@ -50,8 +53,6 @@ public abstract class SendCoinsOfflineTask {
     private final Handler callbackHandler;
 
     private static final Logger log = LoggerFactory.getLogger(SendCoinsOfflineTask.class);
-
-    // FIX P2TR: random for schnorr nonce
     private static final SecureRandom secureRandom = new SecureRandom();
 
     public SendCoinsOfflineTask(final Wallet wallet, final Handler backgroundHandler) {
@@ -63,79 +64,50 @@ public abstract class SendCoinsOfflineTask {
     public final void sendCoinsOffline(final SendRequest sendRequest) {
         backgroundHandler.post(() -> {
             org.bitcoinj.core.Context.propagate(Constants.CONTEXT);
-
             try {
                 log.info("sending: {}", sendRequest);
-
-                // FIX P2TR: If wallet contains P2TR UTXO (bc1p), bitcoinj 0.17.1 cannot sign it and will crash.
-                // Detect and do manual BIP341 key-path signing.
                 boolean hasP2TR = false;
                 for (WalletTransaction wt : wallet.getWalletTransactions()) {
                     for (TransactionOutput out : wt.getTransaction().getOutputs()) {
                         byte[] prog = out.getScriptPubKey().getProgram();
-                        if (prog.length == 34 && prog[0] == 0x51) { // OP_1 32 bytes = P2TR
-                            hasP2TR = true;
-                            break;
-                        }
+                        if (prog.length == 34 && prog[0] == 0x51) { hasP2TR = true; break; }
                     }
                 }
-
                 final Transaction transaction;
                 if (hasP2TR) {
                     log.info("P2TR UTXO detected, using manual Taproot BIP341 signing");
                     transaction = sendCoinsOfflineTaproot(sendRequest);
                 } else {
-                    transaction = wallet.sendCoinsOffline(sendRequest); // can take long - original code
+                    transaction = wallet.sendCoinsOffline(sendRequest);
                 }
-
                 log.info("send successful, transaction committed: {}", transaction.getTxId());
-
                 callbackHandler.post(() -> onSuccess(transaction));
             } catch (final InsufficientMoneyException x) {
                 final Coin missing = x.missing;
-                if (missing!= null)
-                    log.info("send failed, {} missing", missing.toFriendlyString());
-                else
-                    log.info("send failed, insufficient coins");
-
+                if (missing!= null) log.info("send failed, {} missing", missing.toFriendlyString());
+                else log.info("send failed, insufficient coins");
                 callbackHandler.post(() -> onInsufficientMoney(x.missing));
             } catch (final ECKey.KeyIsEncryptedException x) {
                 log.info("send failed, key is encrypted: {}", x.getMessage());
-
                 callbackHandler.post(() -> onFailure(x));
             } catch (final Wallet.BadWalletEncryptionKeyException x) {
                 log.info("send failed, bad spending password: {}", x.getMessage());
-
                 final boolean isEncrypted = wallet.isEncrypted();
-                callbackHandler.post(() -> {
-                    if (isEncrypted)
-                        onInvalidEncryptionKey();
-                    else
-                        onFailure(x);
-                });
+                callbackHandler.post(() -> { if (isEncrypted) onInvalidEncryptionKey(); else onFailure(x); });
             } catch (final CouldNotAdjustDownwards x) {
                 log.info("send failed, could not adjust downwards: {}", x.getMessage());
-
                 callbackHandler.post(() -> onEmptyWalletFailed(x));
             } catch (final TransactionCompletionException x) {
                 log.info("send failed, cannot complete: {}", x.getMessage());
-
                 callbackHandler.post(() -> onFailure(x));
             } catch (final Exception x) {
-                // FIX P2TR: catch crash that caused "Bitcoin Wallet đã dừng"
                 log.error("send failed with unexpected exception", x);
                 callbackHandler.post(() -> onFailure(x));
             }
         });
     }
 
-    // ========================================================================
-    // FIX P2TR: Manual Taproot BIP86 key-path sweep for bitcoinj 0.17.1
-    // Original library has no Schnorr/BIP341 support, so we implement it.
-    // ========================================================================
-
     private Transaction sendCoinsOfflineTaproot(SendRequest sendRequest) throws Exception {
-        // Collect fake UTXOs from walletToSweep (added in SweepWalletFragment.requestWalletBalance)
         List<UTXO> utxos = new ArrayList<>();
         long total = 0;
         for (WalletTransaction wt : wallet.getWalletTransactions()) {
@@ -148,41 +120,30 @@ public abstract class SendCoinsOfflineTask {
             }
         }
         if (utxos.isEmpty()) throw new InsufficientMoneyException(Coin.valueOf(546));
-
         Transaction tx = new Transaction(Constants.NETWORK_PARAMETERS);
-        for (UTXO u : utxos) {
-            tx.addInput(u.getHash(), u.getIndex(), u.getScript());
-        }
-        // Destination output from original SendRequest (freshReceiveAddress)
+        for (UTXO u : utxos) tx.addInput(u.getHash(), u.getIndex(), u.getScript());
         if (sendRequest.tx.getOutputs().isEmpty()) throw new RuntimeException("No destination");
         org.bitcoinj.script.Script destScript = sendRequest.tx.getOutput(0).getScriptPubKey();
         long fee = sendRequest.feePerKb!= null? 150 * sendRequest.feePerKb.value / 1000 + 200 : 1000;
         long outVal = total - fee;
-        if (outVal < 546) throw new CouldNotAdjustDownwards();
+        // FIX 0.17.1: CouldNotAdjustDownwards constructor is not public -> throw InsufficientMoneyException
+        if (outVal < 546) throw new InsufficientMoneyException(Coin.valueOf(546));
         tx.addOutput(Coin.valueOf(outVal), destScript);
 
-        // Sign
         for (int i = 0; i < utxos.size(); i++) {
             UTXO u = utxos.get(i);
             byte[] prog = u.getScript().getProgram();
             if (prog.length == 34 && prog[0] == 0x51) {
                 ECKey tweakedKey = findTweakedKeyForXOnly(prog);
-                if (tweakedKey == null) {
-                    // fallback: use first imported key and derive tweaked
-                    ECKey first = wallet.getImportedKeys().iterator().next();
-                    tweakedKey = deriveTweakedKey(first);
-                }
+                if (tweakedKey == null) tweakedKey = deriveTweakedKey(wallet.getImportedKeys().iterator().next());
                 byte[] sighash = calcTapSighash(tx, i, utxos);
                 byte[] sig = signSchnorr(tweakedKey, sighash);
-                tx.getInput(i).setWitness(new org.bitcoinj.core.TransactionWitness(1));
-                tx.getInput(i).getWitness().setPush(0, sig);
+                // FIX 0.17.1 API: TransactionWitness(List<byte[]>), not (int) and no setPush
+                tx.getInput(i).setWitness(new TransactionWitness(Arrays.asList(sig)));
             } else {
-                // For non-P2TR, use normal signing path via wallet if possible
                 ECKey key = wallet.getImportedKeys().iterator().next();
-                org.bitcoinj.core.TransactionSignature sig = tx.calculateWitnessSignature(i, key, u.getScript(), u.getValue(), Transaction.SigHash.ALL, false);
-                tx.getInput(i).setWitness(new org.bitcoinj.core.TransactionWitness(2));
-                tx.getInput(i).getWitness().setPush(0, sig.encodeToBitcoin());
-                tx.getInput(i).getWitness().setPush(1, key.getPubKey());
+                TransactionSignature sig = tx.calculateWitnessSignature(i, key, u.getScript(), u.getValue(), Transaction.SigHash.ALL, false);
+                tx.getInput(i).setWitness(new TransactionWitness(Arrays.asList(sig.encodeToBitcoin(), key.getPubKey())));
             }
         }
         return tx;
@@ -287,14 +248,8 @@ public abstract class SendCoinsOfflineTask {
     private void writeCompactSize(ByteArrayOutputStream os, long v) { if (v < 253) os.write((int)v); else if (v < 0x10000) { os.write(253); writeUint32LE(os, v); } else { os.write(254); writeUint64LE(os, v); } }
 
     protected abstract void onSuccess(Transaction transaction);
-
     protected abstract void onInsufficientMoney(Coin missing);
-
     protected abstract void onInvalidEncryptionKey();
-
-    protected void onEmptyWalletFailed(Exception exception) {
-        onFailure(exception);
-    }
-
+    protected void onEmptyWalletFailed(Exception exception) { onFailure(exception); }
     protected abstract void onFailure(Exception exception);
 }
