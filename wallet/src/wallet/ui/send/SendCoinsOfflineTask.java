@@ -82,6 +82,10 @@ public abstract class SendCoinsOfflineTask {
                         }
                     }
 
+                    if (utxos.isEmpty() || total == 0) {
+                        throw new CouldNotAdjustDownwards();
+                    }
+
                     final Transaction transaction;
                     if (hasP2TR) {
                         transaction = sweepTaproot(sendRequest, utxos, total);
@@ -98,7 +102,7 @@ public abstract class SendCoinsOfflineTask {
                     });
 
                 } catch (final InsufficientMoneyException x) {
-                    if (x.missing != null)
+                    if (x.missing!= null)
                         log.info("send failed, {} missing", x.missing.toFriendlyString());
                     else
                         log.info("send failed, insufficient coins");
@@ -132,7 +136,7 @@ public abstract class SendCoinsOfflineTask {
                     });
 
                 } catch (final CouldNotAdjustDownwards x) {
-                    log.info("send failed, could not adjust downwards: {}", x.getMessage());
+                    log.info("send failed, empty paper wallet: {}", x.getMessage());
                     callbackHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -163,7 +167,7 @@ public abstract class SendCoinsOfflineTask {
     }
 
     private Transaction sweepTaproot(SendRequest req, List<UTXO> utxos, long total) throws Exception {
-        if (utxos.isEmpty()) throw new InsufficientMoneyException(Coin.valueOf(546));
+        if (utxos.isEmpty() || total == 0) throw new CouldNotAdjustDownwards();
 
         Transaction tx = new Transaction(Constants.NETWORK_PARAMETERS);
         for (UTXO u : utxos) {
@@ -173,9 +177,9 @@ public abstract class SendCoinsOfflineTask {
         if (req.tx.getOutputs().isEmpty()) throw new RuntimeException("No destination");
         Script dest = req.tx.getOutput(0).getScriptPubKey();
 
-        long feePerKb = (req.feePerKb != null) ? req.feePerKb.value : Transaction.DEFAULT_TX_FEE.value;
+        long feePerKb = (req.feePerKb!= null)? req.feePerKb.value : Transaction.DEFAULT_TX_FEE.value;
         long fee = feePerKb * 150 / 1000;
-        if (total <= fee) throw new InsufficientMoneyException(Coin.valueOf(fee));
+        if (total <= fee) throw new CouldNotAdjustDownwards();
 
         long outVal = total - fee;
         if (outVal < 546) outVal = 546;
