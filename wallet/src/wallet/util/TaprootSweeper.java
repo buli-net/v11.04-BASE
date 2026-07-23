@@ -1,3 +1,10 @@
+/*
+ * Taproot key-path signer for P2TR (bc1p) paper wallets.
+ * bitcoinj 0.17.1 can parse and send to P2TR but cannot spend from P2TR yet,
+ * so we implement BIP340 / BIP341 manually here.
+ * Original style, no merge.
+ */
+
 package wallet.util;
 
 import org.bitcoinj.core.Transaction;
@@ -18,11 +25,6 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.List;
 
-/**
- * Taproot key-path signer for P2TR (bc1p) paper wallets.
- * bitcoinj 0.17.1 can parse and send to P2TR but cannot spend from it,
- * so we implement BIP340 / BIP341 manually.
- */
 public final class TaprootSweeper {
 
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
@@ -39,7 +41,7 @@ public final class TaprootSweeper {
         ECKey tweakedKey = tweakPrivateKey(key);
         byte[] sighash = calculateTaprootSighash(tx, inputIndex, utxos);
         byte[] signature = signSchnorr(tweakedKey, sighash);
-        setWitness(tx.getInput(inputIndex), TransactionWitness.of(signature));
+        setWitnessCompat(tx.getInput(inputIndex), TransactionWitness.of(signature));
     }
 
     private static ECKey tweakPrivateKey(ECKey key) throws Exception {
@@ -175,27 +177,24 @@ public final class TaprootSweeper {
         return sig.toByteArray();
     }
 
-    private static void setWitness(TransactionInput input, TransactionWitness witness) throws Exception {
+    private static void setWitnessCompat(TransactionInput input, TransactionWitness witness) throws Exception {
         try {
             Method m = TransactionInput.class.getMethod("setWitness", TransactionWitness.class);
             m.invoke(input, witness);
             return;
-        } catch (Throwable ignore) {
-        }
+        } catch (Throwable ignore) {}
         try {
             Method m = TransactionInput.class.getDeclaredMethod("setWitness", TransactionWitness.class);
             m.setAccessible(true);
             m.invoke(input, witness);
             return;
-        } catch (Throwable ignore) {
-        }
+        } catch (Throwable ignore) {}
         try {
             Field f = TransactionInput.class.getDeclaredField("witness");
             f.setAccessible(true);
             f.set(input, witness);
             return;
-        } catch (Throwable ignore) {
-        }
+        } catch (Throwable ignore) {}
         Method m = Transaction.class.getMethod("setWitness", int.class, TransactionWitness.class);
         m.invoke(input.getParentTransaction(), input.getIndex(), witness);
     }
@@ -212,10 +211,6 @@ public final class TaprootSweeper {
     private static byte[] sha256Double(byte[] data) throws Exception {
         MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
         return sha256.digest(sha256.digest(data));
-    }
-
-    private static byte[] sha256(byte[] data) throws Exception {
-        return MessageDigest.getInstance("SHA-256").digest(data);
     }
 
     private static void writeUInt32LE(ByteArrayOutputStream os, long value) {
