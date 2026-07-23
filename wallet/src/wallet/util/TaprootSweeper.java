@@ -2,7 +2,6 @@
  * Taproot key-path signer for P2TR (bc1p) paper wallets.
  * bitcoinj 0.17.1 can parse and send to P2TR but cannot spend from P2TR yet,
  * so we implement BIP340 / BIP341 manually here.
- * Original style, no merge.
  */
 
 package wallet.util;
@@ -134,10 +133,10 @@ public final class TaprootSweeper {
             d = n.subtract(d);
         }
 
-        BigInteger k;
-        org.bouncycastle.math.ec.ECPoint R;
+        BigInteger k = null;
+        org.bouncycastle.math.ec.ECPoint R = null;
 
-        do {
+        while (R == null) {
             byte[] randomBytes = new byte[32];
             SECURE_RANDOM.nextBytes(randomBytes);
             k = new BigInteger(1, randomBytes).mod(n);
@@ -146,7 +145,10 @@ public final class TaprootSweeper {
             if ((R.getEncoded(true)[0] & 1) == 1) {
                 k = n.subtract(k);
             }
-        } while (k.signum() == 0);
+            if (k.signum() == 0) {
+                R = null;
+            }
+        }
 
         byte[] rX = new byte[32];
         System.arraycopy(R.getEncoded(true), 1, rX, 0, 32);
