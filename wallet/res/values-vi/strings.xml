@@ -381,73 +381,83 @@
     <string name="error_bluetooth">Lỗi Bluetooth: %1$s</string>
 
 
-    <!-- add create paper wallet -->
+<!-- Paper Wallet Activity -->
+<!-- Title of paper wallet screen -->
+<string name="paper_wallet_activity_title">Ví giấy</string>
+<!-- Warning text shown on top of paper wallet -->
+<string name="paper_wallet_warning">CẢNH BÁO: Ví giấy chứa khóa bí mật (private key). Ai có key này sẽ lấy được toàn bộ coin. Không chia sẻ, không chụp màn hình gửi người khác. Hãy in ra và cất nơi an toàn.</string>
 
-    <!-- Paper Wallet Activity -->
-    <string name="paper_wallet_activity_title">Tạo ví giấy</string>
-    <string name="paper_wallet_print_title">Ví Giấy</string>
+<!-- Labels -->
+<string name="paper_wallet_public_label">Địa chỉ công khai</string>
+<string name="paper_wallet_private_label">Khóa bí mật</string>
+<!-- Shown when address/key is hidden -->
+<string name="paper_wallet_hidden">••••••••••••••••••••••••</string>
 
-    <!-- Labels -->
-    <string name="paper_wallet_warning">Bất kỳ ai có khóa riêng tư đều có thể tiêu tiền.</string>
-    <string name="paper_wallet_public_label">Công khai</string>
-    <string name="paper_wallet_private_label">Riêng tư</string>
+<!-- Copy / Hide / Show -->
+<string name="paper_wallet_copy">Sao chép</string>
+<!-- %1$s = label of copied field -->
+<string name="paper_wallet_copied">Đã sao chép %1$s</string>
+<string name="paper_wallet_hide">Ẩn</string>
+<string name="paper_wallet_show">Hiện</string>
+<string name="paper_wallet_hide_key">Ẩn key</string>
+<string name="paper_wallet_show_key">Hiện key</string>
 
-    <!-- Buttons -->
-    <string name="paper_wallet_copy">Sao chép</string>
-    <string name="paper_wallet_show">Hiện</string>
-    <string name="paper_wallet_hide">Ẩn</string>
-    <string name="paper_wallet_show_key">Hiện</string>
-    <string name="paper_wallet_hide_key">Ẩn</string>
-    <string name="paper_wallet_generate_new">Tạo mới</string>
-    <string name="paper_wallet_save">Lưu</string>
-    <string name="paper_wallet_share">Chia sẻ</string>
-    <string name="paper_wallet_print">In</string>
-    <string name="paper_wallet_export_txt">Xuất TXT</string>
+<!-- Public address formats - ONLY sweepable by original wallet -->
+<!-- 0 = Legacy uncompressed P2PKH 1... WIF 5... -->
+<string name="paper_wallet_public_format_legacy_uncomp">L-Uncomp</string>
+<!-- 1 = Legacy compressed P2PKH 1... WIF K/L... -->
+<string name="paper_wallet_public_format_legacy">Legacy</string>
+<!-- 2 = Native SegWit Bech32 P2WPKH bc1q... - sweepable by original -->
+<string name="paper_wallet_public_format_bech32">Bech32</string>
+<!-- HEX view of pubkey -->
+<string name="paper_wallet_public_format_hex">HEX</string>
 
-    <!-- Paper wallet address types -->
-    <string name="paper_wallet_public_format_legacy_uncomp">LEGACY_UNCOMP</string>
-    <string name="paper_wallet_public_format_legacy">LEGACY</string>
-    <string name="paper_wallet_public_format_p2sh">P2SH-SEGWIT</string>
-    <string name="paper_wallet_public_format_taproot">TAPROOT</string>
-    <string name="paper_wallet_public_format_bech32">BECH32</string>
-    <string name="paper_wallet_public_format_hex">HEX</string>
-    <string name="paper_wallet_public_type">Loại: %s</string>
+<!-- Private key formats -->
+<string name="paper_wallet_private_format_wif">WIF</string>
+<string name="paper_wallet_private_format_hex">HEX</string>
+<string name="paper_wallet_private_format_bip38">BIP38</string>
 
-    <string name="paper_wallet_public_format_toast">Công khai: %s</string>
-    <string name="paper_wallet_private_format_toast">Riêng tư: %s</string>
+<!-- Type display -->
+<string name="paper_wallet_public_type">Loại: %1$s</string>
+<!-- Toast when switching address type, %1$s = type name -->
+<string name="paper_wallet_public_format_toast">Đã đổi sang: %1$s</string>
+<!-- Toast when switching private key format -->
+<string name="paper_wallet_private_format_toast">Đã đổi sang: %1$s</string>
 
-    <!-- Private formats -->
-    <string name="paper_wallet_private_format_wif">WIF</string>
-    <string name="paper_wallet_private_format_hex">HEX</string>
-    <string name="paper_wallet_private_format_bip38">BIP38</string>
+<!-- Generation -->
+<string name="paper_wallet_generated">Đã tạo ví giấy mới</string>
 
-    <!-- BIP38 -->
-    <string name="paper_wallet_encrypt_bip38">Mã hóa bằng BIP38</string>
-    <string name="paper_wallet_passphrase">Mật khẩu</string>
-    <string name="paper_wallet_passphrase_confirm">Xác nhận mật khẩu</string>
-    <string name="paper_wallet_bip38_hint">Nếu mất mật khẩu, tiền sẽ mất vĩnh viễn.</string>
+<!-- BIP38 encryption -->
+<string name="paper_wallet_encrypt_bip38">Mã hóa BIP38</string>
+<string name="paper_wallet_passphrase">Mật khẩu mã hóa</string>
+<string name="paper_wallet_passphrase_confirm">Xác nhận mật khẩu mã hóa</string>
+<string name="paper_wallet_passphrase_empty">Chưa nhập mật khẩu</string>
+<string name="paper_wallet_passphrase_mismatch">Mật khẩu không khớp</string>
+<string name="paper_wallet_encrypting_bip38">Đang mã hóa BIP38...</string>
+<string name="paper_wallet_bip38_ready">Đã mã hóa BIP38 xong</string>
+<!-- %1$s = error message -->
+<string name="paper_wallet_bip38_failed">Mã hóa BIP38 thất bại: %1$s</string>
+<string name="paper_wallet_bip38_hint">BIP38: Khóa bí mật đã được mã hóa bằng mật khẩu. Cần mật khẩu mới quét được.</string>
 
-    <!-- Toasts / Messages -->
-    <string name="paper_wallet_generated">Đã tạo ví giấy mới</string>
-    <string name="paper_wallet_encrypting_bip38">Đang mã hóa BIP38...</string>
-    <string name="paper_wallet_bip38_ready">Ví giấy BIP38 đã sẵn sàng</string>
-    <string name="paper_wallet_bip38_failed">Mã hóa BIP38 thất bại: %s</string>
-    <string name="paper_wallet_passphrase_empty">Nhập mật khẩu BIP38</string>
-    <string name="paper_wallet_passphrase_mismatch">Mật khẩu không khớp</string>
-    <string name="paper_wallet_copied">Đã sao chép %s</string>
+<!-- Save / Export / Share / Print -->
+<!-- %1$s = filename -->
+<string name="paper_wallet_saved">Đã lưu %1$s vào Pictures/PaperWallet</string>
+<string name="paper_wallet_save_failed">Lưu thất bại: %1$s</string>
+<string name="paper_wallet_exported">Đã xuất %1$s vào Documents/PaperWallet</string>
+<string name="paper_wallet_export_failed">Xuất thất bại: %1$s</string>
+<string name="paper_wallet_share">Chia sẻ ví giấy</string>
+<string name="paper_wallet_share_failed">Chia sẻ thất bại: %1$s</string>
+<string name="paper_wallet_print_failed">In thất bại: %1$s</string>
 
-    <!-- Save/Share/Export -->
-    <string name="paper_wallet_saved">Đã lưu vào Pictures/PaperWallet/%s</string>
-    <string name="paper_wallet_exported">Đã xuất ra Documents/PaperWallet/%s</string>
-    <string name="paper_wallet_save_failed">Lưu thất bại: %s</string>
-    <string name="paper_wallet_export_failed">Xuất thất bại: %s</string>
-    <string name="paper_wallet_share_failed">Chia sẻ thất bại: %s</string>
-    <string name="paper_wallet_print_failed">In thất bại: %s</string>
+<!-- Print layout - paper_wallet_print.xml -->
+<string name="paper_wallet_print_title">Bản in ví giấy</string>
 
-    <!-- Print/Export -->
-    <string name="paper_wallet_hidden">ĐÃ ẨN</string>
-
-    <!-- end add create paper wallet -->
+<!-- Options menu - paper_wallet_options.xml -->
+<string name="paper_wallet_options_refresh">Tạo mới</string>
+<string name="paper_wallet_options_save">Lưu ảnh</string>
+<string name="paper_wallet_options_share">Chia sẻ</string>
+<string name="paper_wallet_options_print">In</string>
+<string name="paper_wallet_options_export">Xuất TXT</string>
     
 <!-- TransactionDetailsActivity -->
     <!-- wallet/src/wallet/ui/TransactionDetailsActivity.java -->
