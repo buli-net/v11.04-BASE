@@ -399,8 +399,8 @@
 <string name="paper_wallet_copied">Copied %1$s</string>
 <string name="paper_wallet_hide">Hide</string>
 <string name="paper_wallet_show">Show</string>
-<string name="paper_wallet_hide_key">Hide key</string>
-<string name="paper_wallet_show_key">Show key</string>
+<string name="paper_wallet_hide_key">Hide</string>
+<string name="paper_wallet_show_key">Show</string>
 
 <!-- Public address formats - ONLY sweepable by original wallet -->
 <!-- 0 = Legacy uncompressed P2PKH 1... WIF 5... -->
