@@ -303,7 +303,7 @@ public class PaperWalletActivity extends AbstractWalletActivity {
             if (qrAddressView!= null &&!displayKey.isEmpty()) qrAddressView.setImageBitmap(makeQr(displayKey));
             else if (qrAddressView!= null) qrAddressView.setImageBitmap(null);
         } else {
-            addressView.setText("••••••••••••••••••••••••");
+            addressView.setText(getString(R.string.paper_wallet_hidden));
             toggleAddressBtn.setText(R.string.paper_wallet_show);
             toggleAddressBtn.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_eye_on_24dp, 0, 0);
             if (publicLabelView!= null) publicLabelView.setText(base);
@@ -336,7 +336,7 @@ public class PaperWalletActivity extends AbstractWalletActivity {
             if (qrKeyView!= null &&!displayKey.isEmpty()) qrKeyView.setImageBitmap(makeQr(displayKey));
             else if (qrKeyView!= null) qrKeyView.setImageBitmap(null);
         } else {
-            privKeyView.setText("••••••••••••••••••••••••");
+            privKeyView.setText(getString(R.string.paper_wallet_hidden));
             toggleKeyButton.setText(R.string.paper_wallet_show_key);
             toggleKeyButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_eye_on_24dp, 0, 0);
             if (privKeyLabelView!= null) privKeyLabelView.setText(base);
