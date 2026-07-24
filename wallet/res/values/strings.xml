@@ -408,7 +408,7 @@
 <!-- 1 = Legacy compressed P2PKH 1... WIF K/L... -->
 <string name="paper_wallet_public_format_legacy">Legacy-C</string>
 <!-- 2 = Native SegWit Bech32 P2WPKH bc1q... - sweepable by original -->
-<string name="paper_wallet_public_format_bech32">Bech32</string>
+<string name="paper_wallet_public_format_bech32">SegWit</string>
 <!-- HEX view of pubkey -->
 <string name="paper_wallet_public_format_hex">HEX</string>
 
