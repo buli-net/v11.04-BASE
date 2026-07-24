@@ -94,7 +94,6 @@ public class PaperWalletActivity extends AbstractWalletActivity {
 
         setTitle(R.string.paper_wallet_activity_title);
 
-        // CHỈ GIỮ LOẠI VÍ GỐC QUÉT ĐƯỢC
         typeNames = new String[]{
                 getString(R.string.paper_wallet_public_format_legacy_uncomp),
                 getString(R.string.paper_wallet_public_format_legacy),
@@ -185,30 +184,21 @@ public class PaperWalletActivity extends AbstractWalletActivity {
         return Bitmap.createScaledBitmap(qr, QR_SIZE, QR_SIZE, false);
     }
 
-    /**
-     * CHỈ GIỮ LOẠI QUÉT ĐƯỢC GỐC:
-     * 0 = LEGACY_UNCOMP (P2PKH uncompressed 1... WIF 5...),
-     * 1 = LEGACY (P2PKH compressed 1... WIF K/L...),
-     * 2 = BECH32 (BIP84 P2WPKH bc1q...),
-     * ĐÃ BỎ: P2SH (3...) và TAPROOT (bc1p...) vì ví gốc không quét được
-     */
     private String getAddressForType(ECKey key, Network network, int index) {
         try {
             boolean compressed = index!= 0;
             ECKey useKey = compressed? ECKey.fromPrivate(key.getPrivKey(), true) : ECKey.fromPrivate(key.getPrivKey(), false);
-
             if (index == 0) {
                 return useKey.toAddress(ScriptType.P2PKH, network).toString();
             } else if (index == 1) {
                 return useKey.toAddress(ScriptType.P2PKH, network).toString();
-            } else if (index == 2) {
+            } else {
                 return useKey.toAddress(ScriptType.P2WPKH, network).toString();
             }
         } catch (Exception e) {
             android.util.Log.e("PaperWallet", "getAddress failed idx=" + index + " " + e.getMessage(), e);
             return key.toAddress(ScriptType.P2PKH, network).toString();
         }
-        return key.toAddress(ScriptType.P2PKH, network).toString();
     }
 
     private void generateNew() {
