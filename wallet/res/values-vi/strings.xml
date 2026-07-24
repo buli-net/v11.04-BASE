@@ -399,8 +399,8 @@
 <string name="paper_wallet_copied">Đã sao chép %1$s</string>
 <string name="paper_wallet_hide">Ẩn</string>
 <string name="paper_wallet_show">Hiện</string>
-<string name="paper_wallet_hide_key">Ẩn key</string>
-<string name="paper_wallet_show_key">Hiện key</string>
+<string name="paper_wallet_hide_key">Ẩn</string>
+<string name="paper_wallet_show_key">Hiện</string>
 
 <!-- Public address formats - ONLY sweepable by original wallet -->
 <!-- 0 = Legacy uncompressed P2PKH 1... WIF 5... -->
@@ -408,7 +408,7 @@
 <!-- 1 = Legacy compressed P2PKH 1... WIF K/L... -->
 <string name="paper_wallet_public_format_legacy">Legacy-C</string>
 <!-- 2 = Native SegWit Bech32 P2WPKH bc1q... - sweepable by original -->
-<string name="paper_wallet_public_format_bech32">Bech32</string>
+<string name="paper_wallet_public_format_bech32">SegWit</string>
 <!-- HEX view of pubkey -->
 <string name="paper_wallet_public_format_hex">HEX</string>
 
