@@ -383,7 +383,7 @@
 
 <!-- Paper Wallet Activity -->
 <!-- Title of paper wallet screen -->
-<string name="paper_wallet_activity_title">Ví giấy</string>
+<string name="paper_wallet_activity_title">Tạo ví giấy</string>
 <!-- Warning text shown on top of paper wallet -->
 <string name="paper_wallet_warning">CẢNH BÁO: Ví giấy chứa khóa bí mật (private key). Ai có key này sẽ lấy được toàn bộ coin. Không chia sẻ, không chụp màn hình gửi người khác. Hãy in ra và cất nơi an toàn.</string>
 
@@ -404,9 +404,9 @@
 
 <!-- Public address formats - ONLY sweepable by original wallet -->
 <!-- 0 = Legacy uncompressed P2PKH 1... WIF 5... -->
-<string name="paper_wallet_public_format_legacy_uncomp">L-Uncomp</string>
+<string name="paper_wallet_public_format_legacy_uncomp">Legacy-U</string>
 <!-- 1 = Legacy compressed P2PKH 1... WIF K/L... -->
-<string name="paper_wallet_public_format_legacy">Legacy</string>
+<string name="paper_wallet_public_format_legacy">Legacy-C</string>
 <!-- 2 = Native SegWit Bech32 P2WPKH bc1q... - sweepable by original -->
 <string name="paper_wallet_public_format_bech32">Bech32</string>
 <!-- HEX view of pubkey -->
