@@ -383,7 +383,7 @@
 <!-- Paper Wallet -->
 
 <!-- Title of paper wallet screen -->
-<string name="paper_wallet_activity_title">Create Paper Wallet</string>
+<string name="paper_wallet_activity_title">Create paper wallet</string>
 <!-- Warning text shown on top of paper wallet -->
 <string name="paper_wallet_warning">WARNING: Paper wallet contains the private key. Anyone with this key can spend all coins. Do not share, do not screenshot to others. Print and store in safe place.</string>
 
