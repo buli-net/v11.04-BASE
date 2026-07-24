@@ -404,7 +404,7 @@
 
 <!-- Public address formats - ONLY sweepable by original wallet -->
 <!-- 0 = Legacy uncompressed P2PKH 1... WIF 5... -->
-<string name="paper_wallet_public_format_legacy_uncomp">Legacy Uncompressed (1...)</string>
+<string name="paper_wallet_public_format_legacy_uncomp">L-Uncomp</string>
 <!-- 1 = Legacy compressed P2PKH 1... WIF K/L... -->
 <string name="paper_wallet_public_format_legacy">Legacy</string>
 <!-- 2 = Native SegWit Bech32 P2WPKH bc1q... - sweepable by original -->
