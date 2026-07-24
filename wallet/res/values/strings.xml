@@ -381,50 +381,66 @@
     <string name="error_bluetooth">Bluetooth error: %1$s</string>
 
 <!-- Paper Wallet -->
-<string name="paper_wallet_activity_title">Paper Wallet</string>
-<string name="paper_wallet_warning">WARNING: Paper wallet contains the private key. Anyone with this key can spend all coins. Do not share it. Print and store securely.</string>
 
+<!-- Title of paper wallet screen -->
+<string name="paper_wallet_activity_title">Paper Wallet</string>
+<!-- Warning text shown on top of paper wallet -->
+<string name="paper_wallet_warning">WARNING: Paper wallet contains the private key. Anyone with this key can spend all coins. Do not share, do not screenshot to others. Print and store in safe place.</string>
+
+<!-- Labels -->
 <string name="paper_wallet_public_label">Public Address</string>
 <string name="paper_wallet_private_label">Private Key</string>
+<!-- Shown when address/key is hidden -->
 <string name="paper_wallet_hidden">••••••••••••••••••••••••</string>
 
+<!-- Copy / Hide / Show -->
 <string name="paper_wallet_copy">Copy</string>
+<!-- %1$s = label of copied field -->
 <string name="paper_wallet_copied">Copied %1$s</string>
 <string name="paper_wallet_hide">Hide</string>
 <string name="paper_wallet_show">Show</string>
 <string name="paper_wallet_hide_key">Hide key</string>
 <string name="paper_wallet_show_key">Show key</string>
 
-<!-- Address types - only 3 sweepable by original wallet -->
-<string name="paper_wallet_public_format_legacy_uncomp">Legacy Uncomp (1...)</string>
-<string name="paper_wallet_public_format_legacy">Legacy (1...)</string>
-<string name="paper_wallet_public_format_bech32">Bech32 (bc1q...)</string>
+<!-- Public address formats - ONLY sweepable by original wallet -->
+<!-- 0 = Legacy uncompressed P2PKH 1... WIF 5... -->
+<string name="paper_wallet_public_format_legacy_uncomp">Legacy Uncompressed (1...)</string>
+<!-- 1 = Legacy compressed P2PKH 1... WIF K/L... -->
+<string name="paper_wallet_public_format_legacy">Legacy</string>
+<!-- 2 = Native SegWit Bech32 P2WPKH bc1q... - sweepable by original -->
+<string name="paper_wallet_public_format_bech32">Bech32</string>
+<!-- HEX view of pubkey -->
 <string name="paper_wallet_public_format_hex">HEX</string>
 
-<!-- Compat - kept to avoid build errors if old layout still refs -->
-<string name="paper_wallet_public_format_p2sh">P2SH (3...)</string>
-<string name="paper_wallet_public_format_taproot">Taproot (bc1p...)</string>
-
+<!-- Private key formats -->
 <string name="paper_wallet_private_format_wif">WIF</string>
 <string name="paper_wallet_private_format_hex">HEX</string>
 <string name="paper_wallet_private_format_bip38">BIP38</string>
 
+<!-- Type display -->
 <string name="paper_wallet_public_type">Type: %1$s</string>
+<!-- Toast when switching address type, %1$s = type name -->
 <string name="paper_wallet_public_format_toast">Switched to: %1$s</string>
+<!-- Toast when switching private key format -->
 <string name="paper_wallet_private_format_toast">Switched to: %1$s</string>
 
+<!-- Generation -->
 <string name="paper_wallet_generated">New paper wallet generated</string>
 
+<!-- BIP38 encryption -->
 <string name="paper_wallet_encrypt_bip38">Encrypt BIP38</string>
-<string name="paper_wallet_passphrase">Passphrase</string>
+<string name="paper_wallet_passphrase">Encryption passphrase</string>
 <string name="paper_wallet_passphrase_confirm">Confirm passphrase</string>
 <string name="paper_wallet_passphrase_empty">Passphrase is empty</string>
 <string name="paper_wallet_passphrase_mismatch">Passphrases do not match</string>
 <string name="paper_wallet_encrypting_bip38">Encrypting BIP38...</string>
-<string name="paper_wallet_bip38_ready">BIP38 encryption ready</string>
-<string name="paper_wallet_bip38_failed">BIP38 failed: %1$s</string>
-<string name="paper_wallet_bip38_hint">BIP38: Private key is encrypted. You need the password to sweep.</string>
+<string name="paper_wallet_bip38_ready">BIP38 encryption done</string>
+<!-- %1$s = error message -->
+<string name="paper_wallet_bip38_failed">BIP38 encryption failed: %1$s</string>
+<string name="paper_wallet_bip38_hint">BIP38: Private key is encrypted with password. Password required to sweep.</string>
 
+<!-- Save / Export / Share / Print -->
+<!-- %1$s = filename -->
 <string name="paper_wallet_saved">Saved %1$s to Pictures/PaperWallet</string>
 <string name="paper_wallet_save_failed">Save failed: %1$s</string>
 <string name="paper_wallet_exported">Exported %1$s to Documents/PaperWallet</string>
@@ -433,20 +449,12 @@
 <string name="paper_wallet_share_failed">Share failed: %1$s</string>
 <string name="paper_wallet_print_failed">Print failed: %1$s</string>
 
-<!-- Menu -->
-<string name="paper_wallet_generate_new">Generate new</string>
-<string name="paper_wallet_save">Save image</string>
-<string name="paper_wallet_print">Print</string>
-<string name="paper_wallet_export_txt">Export TXT</string>
-
 <!-- Print layout - paper_wallet_print.xml -->
 <string name="paper_wallet_print_title">Paper Wallet Print</string>
-<string name="paper_wallet_print_public_label">Public:</string>
-<string name="paper_wallet_print_private_label">Private:</string>
 
 <!-- Options menu - paper_wallet_options.xml -->
-<string name="paper_wallet_options_refresh">Refresh</string>
-<string name="paper_wallet_options_save">Save</string>
+<string name="paper_wallet_options_refresh">Generate new</string>
+<string name="paper_wallet_options_save">Save image</string>
 <string name="paper_wallet_options_share">Share</string>
 <string name="paper_wallet_options_print">Print</string>
 <string name="paper_wallet_options_export">Export TXT</string>
